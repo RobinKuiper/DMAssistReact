@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import firebase, { Auth, GoogleProvider } from './Lib/firebase'
+import { Auth, GoogleProvider } from './Lib/firebase'
 
-import { Container, Sidebar, Segment, Menu, Icon, Header, Image } from 'semantic-ui-react'
+import { Sidebar, Segment, Menu, Icon, Header, Image } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 import Dashboard from './Containers/Dashboard'
