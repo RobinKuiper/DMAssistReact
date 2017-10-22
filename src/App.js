@@ -82,7 +82,7 @@ class App extends Component {
                   Monsters
                 </Menu.Item>
               </Link>
-              <Link to='/campaigns'>
+              <Link to='/campaigns/overview'>
                 <Menu.Item name='campaigns' onClick={() => {return}}>
                   <Icon name='newspaper' />
                   Campaigns
@@ -98,9 +98,9 @@ class App extends Component {
             <Sidebar.Pusher>
 
               <Route exact path='/' component={Dashboard} />
-              <Route exact path='/monsters' component={Monsters} />
-              <Route exact path='/campaigns' component={Campaigns} />
-              <Route exact path='/treasure-generator' component={TreasureGenerator} />
+              <Route path='/monsters' component={Monsters} />
+              <Route path='/campaigns' component={Campaigns} />
+              <Route path='/treasure-generator' component={TreasureGenerator} />
 
             </Sidebar.Pusher>
           </Sidebar.Pushable>
