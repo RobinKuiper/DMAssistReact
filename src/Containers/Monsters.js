@@ -218,7 +218,7 @@ export default class Monsters extends Component {
     return crToExp[cr]
   }
 
-  changePage = (direction) => this.setState({ page: this.state.page += direction })
+  changePage = (direction) => this.setState({ page: this.state.page + direction })
   changeLimit = (e, { value }) => this.setState({ limit: value })
 
   search(e){
