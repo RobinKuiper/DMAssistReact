@@ -50,7 +50,7 @@ class App extends Component {
     return (
       <div id='outer-container'>
         <Router>
-          <Sidebar.Pushable as={Segment} style={{backgroundColor: '#D1D5D6'}}>
+          <div>
             <Sidebar as={Menu} animation='push' width='thin' visible={true} vertical inverted style={{color: '#fff'}}>
               <Menu.Header textAlign={'left'} onClick={() => alert('blaat')} style={{fontSize: '14pt', textAlign: 'left', padding: 20}}>
                 DM <span style={{color: 'purple'}}>Assist</span>
@@ -82,7 +82,7 @@ class App extends Component {
                   Monsters
                 </Menu.Item>
               </Link>
-              <Link to='/campaigns/overview'>
+              <Link to='/campaigns'>
                 <Menu.Item name='campaigns' onClick={() => {return}}>
                   <Icon name='newspaper' />
                   Campaigns
@@ -95,6 +95,7 @@ class App extends Component {
                 </Menu.Item>
               </Link>
             </Sidebar>
+
             <Sidebar.Pusher>
 
               <Route exact path='/' component={Dashboard} />
@@ -103,7 +104,7 @@ class App extends Component {
               <Route path='/treasure-generator' component={TreasureGenerator} />
 
             </Sidebar.Pusher>
-          </Sidebar.Pushable>
+          </div>
         </Router>
       </div>
     );

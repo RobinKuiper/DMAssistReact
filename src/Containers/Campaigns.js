@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+
+import { Auth } from './../Lib/firebase'
 
 import { Button, Grid, Segment } from 'semantic-ui-react'
 
@@ -11,36 +12,45 @@ export default class Campaigns extends Component {
     super(props)
 
     this.state = {
-      loaded: true
+      user: Auth.currentUser,
+      loaded: true,
+      add: false
     }
   }
 
   render() {
     return (
       <main>
-      <Router>
         <Grid columns={1}>
           <Grid.Column>
             <Segment.Group raised>
               <Segment className='panel header' textAlign='center' inverted clearing>
                 Campaigns
 
-                <Link to='/campaigns/add'>
-                  <Button icon='add' color='green' floated='right' inverted circular />
-                </Link>
+                <Button icon='add' color='green' floated='right' inverted circular onClick={() => this.setState({add: true})} />
               </Segment>
 
               <Segment className='panel content' loading={!this.state.loaded}>
-                <Route path='/campaigns/add' component={Add} />
-                <Route path='/campaigns/overview' component={Overview} />
+                { this.state.user ?
+                    this.state.add ? <Add />
+                    : <Overview />
+                  : <div>Login</div>
+                }
               </Segment>
 
               <Segment className='panel bottom' clearing></Segment>
             </Segment.Group>
           </Grid.Column>
         </Grid>
-      </Router>
       </main>
     )
+  }
+
+  componentDidMount() {
+    Auth.onAuthStateChanged((user) => {
+      if (user){
+        this.setState({ user })
+      }
+    })
   }
 }
