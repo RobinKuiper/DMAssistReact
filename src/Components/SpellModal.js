@@ -31,10 +31,10 @@ export default class SpellModal extends Component {
 
                     <Grid.Column>
                       <List>
-                      {
-                        spell.classes.map(c => (
-                          <List.Item>{c}</List.Item>
-                        ))
+                      { spell.classes &&
+                          spell.classes.map(c => (
+                            <List.Item>{c}</List.Item>
+                          ))
                       }
                       </List>
                     </Grid.Column>
@@ -42,27 +42,20 @@ export default class SpellModal extends Component {
 
                   <Divider />
 
-                  <p>{spell.descriptions.main}</p>
-                  { spell.descriptions.level &&
-                    <div>
-                      <Header.Subheader>At Higher Levels</Header.Subheader>
-                      <p>{spell.descriptions.level}</p>
-                    </div>
-                  }
+                  <this.Descriptions descriptions={spell.descriptions} />
 
                   <Divider />
 
                   <List size='small' horizontal>
-                  {
-                    spell.components.map(component => (
-                      <List.Item>
-                        <Image size='mini' src={'./images/'+component+'.png'} />
-                        <div>{component}</div>
-                      </List.Item>
-                    ))
+                  { spell.components &&
+                      spell.components.map(component => (
+                        <List.Item>
+                          <Image size='mini' src={'./images/'+component+'.png'} />
+                          <div>{component}</div>
+                        </List.Item>
+                      ))
                   }
-                  {
-                    spell.material &&
+                  { spell.material &&
                       <List.Item><strong>Material</strong><span>{spell.material}</span></List.Item>
                   }
                   </List>
@@ -77,11 +70,21 @@ export default class SpellModal extends Component {
     )
   }
 
-  listItems = (items) => {
-    var r;
-    for (var i = 0; i < items.length; i++) {
-      r += <List.Item><strong>{items[i].name}</strong><span>{items[i].desc}</span></List.Item>
+  Descriptions = (props) => {
+    var main, level;
+    if(props.descriptions){
+      if(props.descriptions.main){
+        main = <p>{props.descriptions.main}</p>
+      }
+      if(props.descriptions.level){
+        level = (<div><Header.Subheader>At Higher Levels</Header.Subheader><p>{props.descriptions.level}</p></div>)
+      }
     }
-    return r;
+    return (
+      <div>
+        {main}
+        {level}
+      </div>
+    );
   }
 }

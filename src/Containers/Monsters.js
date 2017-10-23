@@ -24,7 +24,7 @@ export default class Monsters extends Component {
       limit: 10,
       page: 0,
       monsters: [], //[{name: 'blaat', challenge_rating: 9, hit_points: 10, armor_class: 21}],
-      loaded: true
+      loaded: false
     }
   }
 
