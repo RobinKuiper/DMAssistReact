@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 
+import { pageLimits } from './../Lib/Common'
 import firebase from './../Lib/firebase'
+
+import Panel from './Panel'
 
 import { Button, Grid, Header, Input, Segment, Dropdown, Table } from 'semantic-ui-react'
 
@@ -63,103 +66,82 @@ export default class Spells extends Component {
   }
 
   render() {
-    const limits = [
-      {
-        text: '10',
-        value: 10
-      },
-      {
-        text: '25',
-        value: 25
-      },
-      {
-        text: '50',
-        value: 50
-      },
-      {
-        text: '100',
-        value: 100
-      },
-      {
-        text: '200',
-        value: 200
-      },
-    ]
-
     return (
       <main>
         <Grid columns={1}>
           <Grid.Column>
-            <Segment.Group raised>
-              <Segment id="panelHeader" className='header' textAlign='center' inverted clearing>Spells</Segment>
-
-              <Segment className='panel content' loading={!this.state.loaded}>
-                <Grid columns={4}>
-                  <Grid.Column>
-                    <Button.Group size='tiny'>
-                      <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
-                      <Button>{this.state.page+1} / {Math.ceil(this.state.filteredSpells.length/this.state.limit)}</Button>
-                      <Button icon='chevron right' onClick={() => { this.changePage(1) }} disabled={this.state.page + 1 >= this.state.filteredSpells.length / this.state.limit } />
-                    </Button.Group>
-                  </Grid.Column>
-                  <Grid.Column textAlign='center'>
-                    <Input fluid icon='search' placeholder='Search...' value={this.state.searchQuery} onChange={this.search.bind(this)} />
-                  </Grid.Column>
-                  <Grid.Column textAlign='right'>
-                    <Dropdown compact selection options={limits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
-                  </Grid.Column>
-                </Grid>
-
-                <Table color='purple' sortable unstackable>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell sorted={this.state.sortBy === 'name' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('name') }}>
-                        Name
-                      </Table.HeaderCell>
-                      <Table.HeaderCell sorted={this.state.sortBy === 'school' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('armor_class') }}>
-                        School
-                      </Table.HeaderCell>
-                      <Table.HeaderCell sorted={this.state.sortBy === 'castingTime' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
-                        Casting Time
-                      </Table.HeaderCell>
-                      <Table.HeaderCell sorted={this.state.sortBy === 'duration' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('hit_points') }}>
-                        Duration
-                      </Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-
-                  <Table.Body>
-                    {
-                      this.state.filteredSpells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
-                        <Table.Row>
-                          <Table.Cell>
-                            <Header sub>{spell.name}</Header>
-                            <span style={{fontSize: '8pt'}}>{spell.school}</span>
-                          </Table.Cell>
-                          <Table.Cell>{spell.school}</Table.Cell>
-                          <Table.Cell>{spell.castingTime}</Table.Cell>
-                          <Table.Cell>{spell.Duration}</Table.Cell>
-                        </Table.Row>
-                      ))
-                    }
-                  </Table.Body>
-                </Table>
-              </Segment>
-
-              <Segment className='panel bottom' clearing loading={!this.state.loaded}>
-                <Button.Group size='tiny'>
-                  <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
-                  <Button>{this.state.page+1} / {Math.ceil(this.state.filteredSpells.length/this.state.limit)}</Button>
-                  <Button icon='chevron right' onClick={() => { this.changePage(1) }} disabled={this.state.page + 1 >= this.state.filteredSpells.length / this.state.limit } />
-                </Button.Group>
-                <span style={{float: 'right'}}>Total Spells: {this.state.filteredSpells.length}</span>
-              </Segment>
-            </Segment.Group>
+            <Panel title={'Spells'} content={this.renderContent.bind(this)} footer={this.renderFooter} loaded={this.state.loaded} />
           </Grid.Column>
         </Grid>
       </main>
     )
   }
+
+  renderFooter = () => (
+    <div>
+      <Button.Group size='tiny'>
+        <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
+        <Button>{this.state.page+1} / {Math.ceil(this.state.filteredSpells.length/this.state.limit)}</Button>
+        <Button icon='chevron right' onClick={() => { this.changePage(1) }} disabled={this.state.page + 1 >= this.state.filteredSpells.length / this.state.limit } />
+      </Button.Group>
+      <span style={{float: 'right'}}>Total Spells: {this.state.filteredSpells.length}</span>
+    </div>
+  )
+
+  renderContent = () => (
+    <div>
+      <Grid columns={4}>
+        <Grid.Column>
+          <Button.Group size='tiny'>
+            <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
+            <Button>{this.state.page+1} / {Math.ceil(this.state.filteredSpells.length/this.state.limit)}</Button>
+            <Button icon='chevron right' onClick={() => { this.changePage(1) }} disabled={this.state.page + 1 >= this.state.filteredSpells.length / this.state.limit } />
+          </Button.Group>
+        </Grid.Column>
+        <Grid.Column textAlign='center'>
+          <Input fluid icon='search' placeholder='Search...' value={this.state.searchQuery} onChange={this.search.bind(this)} />
+        </Grid.Column>
+        <Grid.Column textAlign='right'>
+          <Dropdown compact selection options={pageLimits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
+        </Grid.Column>
+      </Grid>
+
+      <Table color='purple' sortable unstackable>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell sorted={this.state.sortBy === 'name' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('name') }}>
+              Name
+            </Table.HeaderCell>
+            <Table.HeaderCell sorted={this.state.sortBy === 'school' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('armor_class') }}>
+              School
+            </Table.HeaderCell>
+            <Table.HeaderCell sorted={this.state.sortBy === 'castingTime' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
+              Casting Time
+            </Table.HeaderCell>
+            <Table.HeaderCell sorted={this.state.sortBy === 'duration' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('hit_points') }}>
+              Duration
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+
+        <Table.Body>
+          {
+            this.state.filteredSpells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
+              <Table.Row>
+                <Table.Cell>
+                  <Header sub>{spell.name}</Header>
+                  <span style={{fontSize: '8pt'}}>{spell.school}</span>
+                </Table.Cell>
+                <Table.Cell>{spell.school}</Table.Cell>
+                <Table.Cell>{spell.castingTime}</Table.Cell>
+                <Table.Cell>{spell.duration}</Table.Cell>
+              </Table.Row>
+            ))
+          }
+        </Table.Body>
+      </Table>
+    </div>
+  )
 
   changePage = (direction) => this.setState({ page: this.state.page + direction })
   changeLimit = (e, { value }) => this.setState({ limit: value })

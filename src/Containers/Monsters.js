@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Link } from 'react-router-dom'
 
+import { pageLimits } from './../Lib/Common'
 import firebase from './../Lib/firebase'
+
+import Panel from './Panel'
 
 import { Button, Grid, Header, Input, Segment, Dropdown, Table } from 'semantic-ui-react'
 
@@ -68,109 +71,88 @@ export default class Monsters extends Component {
   }
 
   render() {
-    const limits = [
-      {
-        text: '10',
-        value: 10
-      },
-      {
-        text: '25',
-        value: 25
-      },
-      {
-        text: '50',
-        value: 50
-      },
-      {
-        text: '100',
-        value: 100
-      },
-      {
-        text: '200',
-        value: 200
-      },
-    ]
-
     return (
       <main>
         <Grid columns={1}>
           <Grid.Column>
-            <Segment.Group raised>
-              <Segment id="panelHeader" className='header' textAlign='center' inverted clearing>Monsters</Segment>
-
-              <Segment className='panel content' loading={!this.state.loaded}>
-                <Grid columns={4}>
-                  <Grid.Column>
-                    <Button.Group size='tiny'>
-                      <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
-                      <Button>{this.state.page+1} / {Math.ceil(this.state.filteredMonsters.length/this.state.limit)}</Button>
-                      <Button icon='chevron right' onClick={() => { this.changePage(1) }} disabled={this.state.page + 1 >= this.state.filteredMonsters.length / this.state.limit } />
-                    </Button.Group>
-                  </Grid.Column>
-                  <Grid.Column textAlign='center'>
-                    <Input fluid icon='search' placeholder='Search...' value={this.state.searchQuery} onChange={this.search.bind(this)} />
-                  </Grid.Column>
-                  <Grid.Column textAlign='right'>
-                    <Dropdown compact selection options={limits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
-                  </Grid.Column>
-                </Grid>
-
-                <Table color='purple' selectable sortable unstackable>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
-                        CR
-                      </Table.HeaderCell>
-                      <Table.HeaderCell sorted={this.state.sortBy === 'name' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('name') }}>
-                        Name
-                      </Table.HeaderCell>
-                      <Table.HeaderCell sorted={this.state.sortBy === 'hit_points' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('hit_points') }}>
-                        HP
-                      </Table.HeaderCell>
-                      <Table.HeaderCell sorted={this.state.sortBy === 'armor_class' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('armor_class') }}>
-                        AC
-                      </Table.HeaderCell>
-                      <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
-                        Exp
-                      </Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-
-                  <Table.Body>
-                    {
-                      this.state.filteredMonsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => (
-                        <Table.Row>
-                          <Table.Cell>{this.formatCR(monster.challenge_rating)}</Table.Cell>
-                          <Table.Cell>
-                            <Link to={'/monster/'+monster.name}>
-                              <Header sub>{monster.name}</Header>
-                            </Link>
-                            <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
-                          </Table.Cell>
-                          <Table.Cell>{monster.hit_points}</Table.Cell>
-                          <Table.Cell>{monster.armor_class}</Table.Cell>
-                          <Table.Cell>{this.convertExp(monster.challenge_rating)} XP</Table.Cell>
-                        </Table.Row>
-                      ))
-                    }
-                  </Table.Body>
-                </Table>
-              </Segment>
-
-              <Segment className='panel bottom' clearing loading={!this.state.loaded}>
-                <Button.Group size='tiny'>
-                  <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
-                  <Button>{this.state.page+1} / {Math.ceil(this.state.filteredMonsters.length/this.state.limit)}</Button>
-                  <Button icon='chevron right' onClick={() => { this.changePage(1) }} disabled={this.state.page + 1 >= this.state.filteredMonsters.length / this.state.limit } />
-                </Button.Group>
-                <span style={{float: 'right'}}>Total Monsters: {this.state.filteredMonsters.length}</span>
-              </Segment>
-            </Segment.Group>
+            <Panel title={'Monsters'} content={this.renderContent} footer={this.renderFooter} loaded={this.state.loaded} />
           </Grid.Column>
         </Grid>
       </main>
     )
   }
+
+  renderFooter = () => (
+    <div>
+      <Button.Group size='tiny'>
+        <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
+        <Button>{this.state.page+1} / {Math.ceil(this.state.filteredMonsters.length/this.state.limit)}</Button>
+        <Button icon='chevron right' onClick={() => { this.changePage(1) }} disabled={this.state.page + 1 >= this.state.filteredMonsters.length / this.state.limit } />
+      </Button.Group>
+      <span style={{float: 'right'}}>Total Monsters: {this.state.filteredMonsters.length}</span>
+    </div>
+  )
+
+  renderContent = () => (
+    <div>
+      <Grid columns={4}>
+        <Grid.Column>
+          <Button.Group size='tiny'>
+            <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
+            <Button>{this.state.page+1} / {Math.ceil(this.state.filteredMonsters.length/this.state.limit)}</Button>
+            <Button icon='chevron right' onClick={() => { this.changePage(1) }} disabled={this.state.page + 1 >= this.state.filteredMonsters.length / this.state.limit } />
+          </Button.Group>
+        </Grid.Column>
+        <Grid.Column textAlign='center'>
+          <Input fluid icon='search' placeholder='Search...' value={this.state.searchQuery} onChange={this.search.bind(this)} />
+        </Grid.Column>
+        <Grid.Column textAlign='right'>
+          <Dropdown compact selection options={pageLimits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
+        </Grid.Column>
+      </Grid>
+
+      <Table color='purple' selectable sortable unstackable>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
+              CR
+            </Table.HeaderCell>
+            <Table.HeaderCell sorted={this.state.sortBy === 'name' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('name') }}>
+              Name
+            </Table.HeaderCell>
+            <Table.HeaderCell sorted={this.state.sortBy === 'hit_points' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('hit_points') }}>
+              HP
+            </Table.HeaderCell>
+            <Table.HeaderCell sorted={this.state.sortBy === 'armor_class' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('armor_class') }}>
+              AC
+            </Table.HeaderCell>
+            <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
+              Exp
+            </Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+
+        <Table.Body>
+          {
+            this.state.filteredMonsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => (
+              <Table.Row>
+                <Table.Cell>{this.formatCR(monster.challenge_rating)}</Table.Cell>
+                <Table.Cell>
+                  <Link to={'/monster/'+monster.name}>
+                    <Header sub>{monster.name}</Header>
+                  </Link>
+                  <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
+                </Table.Cell>
+                <Table.Cell>{monster.hit_points}</Table.Cell>
+                <Table.Cell>{monster.armor_class}</Table.Cell>
+                <Table.Cell>{this.convertExp(monster.challenge_rating)} XP</Table.Cell>
+              </Table.Row>
+            ))
+          }
+        </Table.Body>
+      </Table>
+    </div>
+  )
 
   formatCR(cr){
     return (cr === 0.125) ? '1/8' : (cr === 0.25) ? '1/4' : (cr === 0.5) ? '1/2' : cr
