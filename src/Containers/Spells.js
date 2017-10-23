@@ -4,6 +4,7 @@ import { pageLimits } from './../Lib/Common'
 import firebase from './../Lib/firebase'
 
 import Panel from './Panel'
+import SpellModal from './../Components/SpellModal'
 
 import { Button, Grid, Header, Input, Segment, Dropdown, Table } from 'semantic-ui-react'
 
@@ -55,7 +56,7 @@ export default class Spells extends Component {
 
   componentWillMount(){
     // Create reference to messages in firebase database
-    let spellsRef = firebase.database().ref('spells').orderByKey().limitToLast(20);
+    let spellsRef = firebase.database().ref('spells').orderByKey();
     spellsRef.on('child_added', snapshot => {
       // Update React state message is added to the firebase database
       let spell = snapshot.val()
@@ -129,7 +130,7 @@ export default class Spells extends Component {
             this.state.filteredSpells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
               <Table.Row>
                 <Table.Cell>
-                  <Header sub>{spell.name}</Header>
+                  <SpellModal spell={spell} />
                   <span style={{fontSize: '8pt'}}>{spell.school}</span>
                 </Table.Cell>
                 <Table.Cell>{spell.school}</Table.Cell>
