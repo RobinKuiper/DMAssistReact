@@ -7,13 +7,15 @@ export default class ChangeKeyToName extends React.Component {
   }
 
   changeMonsterKeys(){
+    alert('DO IT!')
     var monstersRef = firebase.database().ref('monsters')
     monstersRef.on('value', (snap) => {
       var monster = snap.val();
-      var update = {};
-      update[snap.key] = null;
-      update[monster.name] = monster;
-      monstersRef.update(update);
+
+      if(monster.name.toLowerCase() !== snap.key.toLowerCase()){
+        console.log(monster);
+
+      }
     })
   }
 }

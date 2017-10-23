@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { BrowserRouter as Router, Link } from 'react-router-dom'
 
 import firebase from './../Lib/firebase'
 
@@ -18,8 +19,8 @@ export default class Monsters extends Component {
       sortOrder: 'ascending',
       limit: 10,
       page: 0,
-      monsters: [],
-      loaded: false
+      monsters: [{name: 'blaat', challenge_rating: 9, hit_points: 10, armor_class: 21}],
+      loaded: true
     }
   }
 
@@ -57,21 +58,17 @@ export default class Monsters extends Component {
       // Update React state message is added to the firebase database
       let monster = snapshot.val()
       monster.id = snapshot.key
-      var monsters = [monster].concat(this.state.monsters);
-      this.setState({ monsters: monsters, filteredMonsters: monsters, loaded: true  })
+      console.log(snapshot.val());
+      if(monster !== null && monster !== undefined){
+        console.log(monster.name);
+        var monsters = [monster].concat(this.state.monsters);
+        this.setState({ monsters: monsters, filteredMonsters: monsters, loaded: true  })
+      }
     })
   }
 
   render() {
     const limits = [
-      {
-        text: '2',
-        value: 2
-      },
-      {
-        text: '4',
-        value: 4
-      },
       {
         text: '10',
         value: 10
@@ -118,7 +115,7 @@ export default class Monsters extends Component {
                   </Grid.Column>
                 </Grid>
 
-                <Table color='purple' sortable unstackable>
+                <Table color='purple' selectable sortable unstackable>
                   <Table.Header>
                     <Table.Row>
                       <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
@@ -145,7 +142,9 @@ export default class Monsters extends Component {
                         <Table.Row>
                           <Table.Cell>{this.formatCR(monster.challenge_rating)}</Table.Cell>
                           <Table.Cell>
-                            <Header sub>{monster.name}</Header>
+                            <Link to={'/monster/'+monster.name}>
+                              <Header sub>{monster.name}</Header>
+                            </Link>
                             <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
                           </Table.Cell>
                           <Table.Cell>{monster.hit_points}</Table.Cell>
@@ -158,7 +157,7 @@ export default class Monsters extends Component {
                 </Table>
               </Segment>
 
-              <Segment className='panel bottom' clearing>
+              <Segment className='panel bottom' clearing loading={!this.state.loaded}>
                 <Button.Group size='tiny'>
                   <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
                   <Button>{this.state.page+1} / {Math.ceil(this.state.filteredMonsters.length/this.state.limit)}</Button>
