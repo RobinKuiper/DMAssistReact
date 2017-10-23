@@ -12,8 +12,17 @@ export default class SeedMonsters extends React.Component {
     firebase.database().ref().update(update);
 
     for (var i = 0; i < newMonsters.length; i++) {
-      firebase.database().ref('/monsters/' + monsters[i].name).set( monsters[i] )
+      firebase.database().ref('/monsters/' + this.slugify(monsters[i].name)).set( monsters[i] )
     }
+  }
+
+  slugify(text){
+    return text.toString().toLowerCase()
+      .replace(/\s+/g, '-')           // Replace spaces with -
+      .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+      .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+      .replace(/^-+/, '')             // Trim - from start of text
+      .replace(/-+$/, '');            // Trim - from end of text
   }
 }
 
@@ -18275,6 +18284,15 @@ const monsters = [
       }
     ]
 
+  function slugify(text){
+    return text.toString().toLowerCase()
+      .replace(/\s+/g, '-')           // Replace spaces with -
+      .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+      .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+      .replace(/^-+/, '')             // Trim - from start of text
+      .replace(/-+$/, '');            // Trim - from end of text
+  }
+
 const newMonsters = [];
 for (var i = 0; i < monsters.length; i++) {
   var cr = monsters[i].challenge_rating;
@@ -18284,6 +18302,7 @@ for (var i = 0; i < monsters.length; i++) {
     monsters[i].challenge_rating = Number.parseInt(cr, 10)
   }
   monsters[i].public = true;
+  monsters[i].slug = slugify(monsters[i].name);
   newMonsters[i] = {}
   newMonsters[i][monsters[i].name] = monsters[i];
 }

@@ -12,8 +12,17 @@ export default class SeedSpells extends React.Component {
     firebase.database().ref().update(update);
 
     for (var i = 0; i < items.length; i++) {
-      firebase.database().ref('/spells/' + items[i].name).set( items[i] )
+      firebase.database().ref('/spells/' + this.slugify(items[i].name)).set( items[i] )
     }
+  }
+
+  slugify(text){
+    return text.toString().toLowerCase()
+      .replace(/\s+/g, '-')           // Replace spaces with -
+      .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+      .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+      .replace(/^-+/, '')             // Trim - from start of text
+      .replace(/-+$/, '');            // Trim - from end of text
   }
 }
 
@@ -8163,8 +8172,18 @@ An affected creature is aware of the spell and can thus avoid answering question
   }
 ];
 
+function slugify(text){
+  return text.toString().toLowerCase()
+    .replace(/\s+/g, '-')           // Replace spaces with -
+    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+    .replace(/^-+/, '')             // Trim - from start of text
+    .replace(/-+$/, '');            // Trim - from end of text
+}
+
 for (var i = 0; i < items.length; i++) {
   items[i].public = true;
+  items[i].slug = slugify(items[i].name)
 }
 
 console.log(items.length + ' items found')
