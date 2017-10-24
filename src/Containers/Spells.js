@@ -56,7 +56,7 @@ export default class Spells extends Component {
 
   componentWillMount(){
     // Create reference to messages in firebase database
-    let spellsRef = firebase.database().ref('spells').orderByKey();
+    let spellsRef = firebase.database().ref('spells').orderByKey().limitToLast(5);;
     spellsRef.on('child_added', snapshot => {
       // Update React state message is added to the firebase database
       let spell = snapshot.val()

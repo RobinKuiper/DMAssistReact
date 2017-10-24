@@ -2,14 +2,16 @@ import React, { Component } from 'react'
 import { Button, Form, Header, Segment } from 'semantic-ui-react'
 
 import firebase, { Auth } from './../../Lib/firebase'
+import { Slugify } from './../../Lib/Common'
 
 export default class AddCampaign extends Component {
   constructor(props){
     super(props)
 
     this.state = {
-      uid: Auth.currentUser.uid,
-      campaignName: '',
+      user: Auth.currentUser,
+      loaded: false,
+      name: '',
       players: [
         { name: '', level: '', hitPoints: '', armorClass: '' }
       ],
@@ -24,17 +26,16 @@ export default class AddCampaign extends Component {
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
   handleSubmit = (e) => {
     e.preventDefault();
-    const { campaignName, settings } = this.state
+    const { name, settings } = this.state
 
     var campaign = {
-      campaignName,
+      name,
       settings
     }
 
     // Send message to firebase
-    firebase.database().ref(this.state.uid).child('campaigns').push( campaign )
+    firebase.database().ref('userdata/'+this.state.user.uid+'/campaigns/'+Slugify(campaign.name)).set( campaign )
     this.setState({
-      uid: Auth.currentUser.uid,
       campaignName: '',
       players: [
         { name: '', level: '', hitPoints: '', armorClass: '' }
@@ -49,8 +50,8 @@ export default class AddCampaign extends Component {
 
   render(){
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <Form.Input label='Campaign Name' type='text' name='campaignName' value={this.state.campaignName} onChange={this.handleChange} />
+      <Form onSubmit={this.handleSubmit.bind(this)} loading={!this.state.loaded}>
+        <Form.Input label='Campaign Name' type='text' name='name' value={this.state.campaignName} onChange={this.handleChange} />
 
         {/*<Header dividing>Players</Header>
         <Segment basic>
@@ -92,5 +93,13 @@ export default class AddCampaign extends Component {
 
       </Form>
     )
+  }
+
+  componentDidMount() {
+    Auth.onAuthStateChanged((user) => {
+      if (user){
+        this.setState({ user, loaded: true })
+      }
+    })
   }
 }

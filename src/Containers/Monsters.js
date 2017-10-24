@@ -57,7 +57,7 @@ export default class Monsters extends Component {
 
   componentWillMount(){
     // Create reference to messages in firebase database
-    let monstersRef = firebase.database().ref('monsters').orderByKey();
+    let monstersRef = firebase.database().ref('monsters').orderByKey().limitToLast(5);;
     monstersRef.on('child_added', snapshot => {
       // Update React state message is added to the firebase database
       let monster = snapshot.val()

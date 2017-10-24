@@ -21,7 +21,7 @@ export const pageLimits = [
   },
 ]
 
-export const slugify = (text) => {
+export const Slugify = (text) => {
   return text.toString().toLowerCase()
     .replace(/\s+/g, '-')           // Replace spaces with -
     .replace(/[^\w\-]+/g, '')       // Remove all non-word chars

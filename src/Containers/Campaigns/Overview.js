@@ -2,19 +2,21 @@ import React, { Component } from 'react'
 
 import firebase, { Auth } from './../../Lib/firebase'
 
+import { Image, List } from 'semantic-ui-react'
+
 export default class Overview extends Component {
   constructor(props){
     super(props)
 
     this.state = {
       user: Auth.currentUser,
-      campaigns: []
+      campaigns: [{name: 'test'}]
     }
   }
 
   componentWillMount(){
     // Create reference to campaigns in firebase database
-    let campaignRef = firebase.database().ref(this.state.user.uid).child('campaigns').orderByKey().limitToLast(100);
+    let campaignRef = firebase.database().ref('userdata/'+this.state.user.uid).child('campaigns').orderByKey().limitToLast(100);
     campaignRef.on('child_added', snapshot => {
       let campaign = snapshot.val()
       campaign.id = snapshot.key
@@ -25,12 +27,19 @@ export default class Overview extends Component {
 
   render() {
     return (
-      <ul>
+      <List animated relaxed='very' size='large' divided>
         {
           // Render campaigns
-          this.state.campaigns.map( campaign => <li key={campaign.id}>{campaign.campaignName}</li>)
+          this.state.campaigns.map( campaign => (
+            <List.Item>
+              <Image size='mini' src={campaign.image ? campaign.image : './images/no-campaign-image.png'} />
+              <List.Content verticalAlign='middle'>
+                <List.Header as='a'>{campaign.name}</List.Header>
+              </List.Content>
+            </List.Item>
+          ))
         }
-      </ul>
+      </List>
     )
   }
 
