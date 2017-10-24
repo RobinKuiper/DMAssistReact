@@ -115,7 +115,7 @@ export default class Campaign extends Component {
     var campaign = this.state.campaign
     campaign.times.encounter = 0
     campaign.round = 0
-    campaign.turnorder = []
+    campaign.turnorder = (campaign.players) ? campaign.players : null
     this.state.campaignRef.set(campaign)
   }
 
