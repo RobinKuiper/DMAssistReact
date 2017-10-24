@@ -6,7 +6,7 @@ import firebase from './../Lib/firebase'
 import Panel from './Panel'
 import MonsterModal from './../Components/MonsterModal'
 
-import { Button, Grid, Input, Dropdown, Table } from 'semantic-ui-react'
+import { Button, Grid, Header, Input, Dropdown, Table } from 'semantic-ui-react'
 
 export default class Monsters extends Component {
   constructor(props){
@@ -138,7 +138,7 @@ export default class Monsters extends Component {
               <Table.Row>
                 <Table.Cell>{formatCR(monster.challenge_rating)}</Table.Cell>
                 <Table.Cell>
-                  <MonsterModal monster={monster} />
+                  <MonsterModal monster={monster} trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>} />
                   <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
                 </Table.Cell>
                 <Table.Cell>{monster.hit_points}</Table.Cell>

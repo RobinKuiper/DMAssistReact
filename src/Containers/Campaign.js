@@ -4,6 +4,7 @@ import { LIMIT, calculateMod, formatTime, toSeconds } from './../Lib/Common'
 import Dice from './../Lib/Dice'
 import { Button, Dropdown, Grid, Icon, Input, List, Segment, Table } from 'semantic-ui-react'
 import Panel from './Panel'
+import MonsterModal from './../Components/MonsterModal'
 
 export default class Campaign extends Component {
   constructor(props) {
@@ -101,6 +102,7 @@ export default class Campaign extends Component {
 
   addMonsterToTurnorder = (e, { searchQuery, value }) => {
     let monster = this.state.monsters.find((monster) => { return monster.slug === value })
+    monster.monster = true
     this.addToTurnorder(monster)
   }
 
@@ -165,14 +167,8 @@ export default class Campaign extends Component {
           { this.state.turnorder ? (
               this.state.turnorder.sort(this.compare).map((turnorder) => (
                 <Table.Row key={turnorder.id}>
-                  <Table.Cell>
-                  { turnorder.name ? (
-                    <span className={turnorder.done ? 'strikethrough' : ''}>{turnorder.name}</span>
-                  ) : (
-                    <div>
-                      <Input placeholder='Name' type='number' transparent />
-                    </div>
-                  )}
+                  <Table.Cell className={turnorder.done ? 'strikethrough' : ''}>
+                    {this.renderName(turnorder)}
                   </Table.Cell>
                   <Table.Cell>
                   { turnorder.initiative ? (
@@ -236,6 +232,18 @@ export default class Campaign extends Component {
       </Table>
     </div>
   )
+
+  renderName = (item) => {
+    if(item.name){
+      if(item.monster){
+        return <MonsterModal monster={item} trigger={<span style={{textDecoration: 'underline', cursor: 'pointer'}}>{item.name}</span>} />
+      }else{
+        return item.name
+      }
+    }else{
+      return <Input placeholder='Name' type='number' transparent />
+    }
+  }
 
   componentDidMount() {
     const slug = this.props.match.params.campaignSlug

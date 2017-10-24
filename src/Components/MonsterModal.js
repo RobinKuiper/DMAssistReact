@@ -8,7 +8,7 @@ export default class MonsterModal extends Component {
     const monster = this.props.monster
 
     return (
-      <Modal closeIcon trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>}>
+      <Modal closeIcon trigger={this.props.trigger}>
         <Modal.Content>
           { monster &&
             <Segment raised>
