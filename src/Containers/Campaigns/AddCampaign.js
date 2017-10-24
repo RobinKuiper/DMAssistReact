@@ -31,8 +31,12 @@ export default class AddCampaign extends Component {
     var campaign = {
       name,
       slug: Slugify(name),
-      turnorder: [],
-      players: [],
+      round: 0,
+      times: {
+        encounter: 0,
+        session: 0,
+        total: 0
+      },
       settings
     }
 
@@ -48,7 +52,7 @@ export default class AddCampaign extends Component {
       settings: {
         shortRest: '1H',
         longRest: '8H',
-        roundDuration: '6'
+        roundDuration: 6
       }
     })
   }

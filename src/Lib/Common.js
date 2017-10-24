@@ -23,6 +23,43 @@ export const pageLimits = [
   },
 ]
 
+export const calculateMod = (score) => {
+  return Math.floor((score-10)/2)
+}
+
+export const toSeconds = (time) => {
+  var format = time.slice(-1).toUpperCase()
+  time = time.slice(0, -1)
+  switch (format) {
+    case 'D':
+      return time * 86400
+      break;
+    case 'H':
+      return time * 3600
+      break;
+    case 'M':
+      return time * 60
+      break;
+    default:
+      return time
+
+  }
+}
+
+export const formatTime = (seconds) => {
+  var sec_num = parseInt(seconds, 10)
+  var days    = Math.floor(sec_num / 86400)
+  var hours   = Math.floor((sec_num - (days * 86400)) / 3600)
+  var minutes = Math.floor((sec_num - (days * 86400) - (hours * 3600)) / 60)
+  var seconds = sec_num - (days * 86400) - (hours * 3600) - (minutes * 60)
+
+  days = (days < 1) ? '' : days + 'D'
+  hours = (hours < 10) ? "0" + hours : hours
+  minutes = (minutes < 10) ? "0" + minutes : minutes
+  seconds = (seconds < 10) ? "0" + seconds : seconds
+  return days + " " + hours + ":" + minutes + ":" + seconds
+}
+
 export const Slugify = (text) => {
   return text.toString().toLowerCase()
     .replace(/\s+/g, '-')           // Replace spaces with -

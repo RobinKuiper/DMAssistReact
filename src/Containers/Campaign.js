@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import firebase, { Auth } from './../Lib/firebase'
-import { LIMIT } from './../Lib/Common'
+import { LIMIT, calculateMod, formatTime, toSeconds } from './../Lib/Common'
+import Dice from './../Lib/Dice'
 import { Button, Dropdown, Grid, Icon, Input, List, Segment, Table } from 'semantic-ui-react'
 import Panel from './Panel'
 
@@ -11,11 +12,17 @@ export default class Campaign extends Component {
     this.state = {
       user: null,
       campaign: null,
+      turnorder: null,
       loaded: false,
       dropdownLoaded: false,
       monsterOptions: [],
-      monsters: []
+      monsters: [],
+      campaignRef: null,
+      turnorderRef: null
     }
+
+    this.rollInitiative = this.rollInitiative.bind(this)
+    this.addTime = this.addTime.bind(this)
   }
 
   componentWillMount(){
@@ -55,12 +62,12 @@ export default class Campaign extends Component {
                   <Grid.Column width={6}>
                     <Button.Group size='massive' color='blue' floated='left'>
                       <Button icon='undo' />
-                      <Button>00:00</Button>
+                      <Button>{formatTime(campaign.times.total)}</Button>
                     </Button.Group>
 
                     <Button.Group size='mini' color='blue' floated='left' basic vertical>
-                      <Button icon='plus' content='Short Rest' />
-                      <Button icon='plus' content='Long Rest' />
+                      <Button icon='plus' content='Short Rest' onClick={() => { this.addTime(campaign.settings.shortRest) }} />
+                      <Button icon='plus' content='Long Rest' onClick={() => { this.addTime(campaign.settings.longRest) }} />
                     </Button.Group>
                   </Grid.Column>
 
@@ -79,21 +86,56 @@ export default class Campaign extends Component {
     return <div>Loading...</div>
   }
 
-  addToTurnorder = (e, { searchQuery, value }) => {
-    var turnorder = (this.state.campaign.turnorder) ? this.state.campaign.turnorder : [];
-    turnorder.push(this.state.monsters.find((monster) => { return monster.slug === value }))
-    firebase.database().ref('userdata/'+this.state.user.uid+'/campaigns/'+this.state.campaign.slug+'/turnorder').set(turnorder)
+  addTime = (time) => {
+    var time = toSeconds(time)
+    var campaign = this.state.campaign
+    campaign.times.total += time
+    campaign.times.session += time
+    this.state.campaignRef.set(campaign)
+  }
+
+  addToTurnorder = (item) => {
+    item = (item.name) ? item : { name: '' }
+    this.state.campaignRef.child('turnorder').push(item)
+  }
+
+  addMonsterToTurnorder = (e, { searchQuery, value }) => {
+    let monster = this.state.monsters.find((monster) => { return monster.slug === value })
+    this.addToTurnorder(monster)
+  }
+
+  rollInitiative = (item) => {
+    var dex = (item.dexterity) ? calculateMod(item.dexterity) : 0
+    var roll = Dice.roll(1, 20)
+
+    this.state.campaignRef.child('turnorder/'+item.id).update({ initiative: roll+dex })
+  }
+
+  resetTurnorder = () => {
+    var campaign = this.state.campaign
+    campaign.times.encounter = 0
+    campaign.round = 0
+    campaign.turnorder = []
+    this.state.campaignRef.set(campaign)
+  }
+
+  compare(a,b){
+    var x = a.done === b.done ? 0 : a.done ? 1 : -1
+    return x === 0 ? a.initiative < b.initiative : x
   }
 
   content = () => (
     <div>
       <Grid columns={3}>
         <Grid.Column width={10}>
-          <Dropdown placeholder='Add Monster' fluid search selection options={this.state.monsterOptions} onChange={this.addToTurnorder.bind(this)} />
+          <Dropdown placeholder='Add Monster' fluid search selection options={this.state.monsterOptions} onChange={this.addMonsterToTurnorder.bind(this)} />
         </Grid.Column>
 
         <Grid.Column width={2}>
-          Round Info
+          <List>
+            <List.Item>Round: {this.state.campaign.round}</List.Item>
+            <List.Item>Time: {formatTime(this.state.campaign.times.encounter)}</List.Item>
+          </List>
         </Grid.Column>
 
         <Grid.Column width={4}>
@@ -107,7 +149,7 @@ export default class Campaign extends Component {
             <Table.HeaderCell>Name</Table.HeaderCell>
             <Table.HeaderCell>
               Initiative
-              <Button size='mini' color='blue' icon='undo' inverted />
+              {/*<Button size='mini' color='blue' icon='undo' inverted />*/}
             </Table.HeaderCell>
             <Table.HeaderCell>Level</Table.HeaderCell>
             <Table.HeaderCell>HP</Table.HeaderCell>
@@ -120,40 +162,48 @@ export default class Campaign extends Component {
         </Table.Header>
 
         <Table.Body>
-          { this.state.campaign.turnorder ? (
-              this.state.campaign.turnorder.map((item, i) => (
-                <Table.Row key={i}>
-                  <Table.Cell>{item.name}</Table.Cell>
+          { this.state.turnorder ? (
+              this.state.turnorder.sort(this.compare).map((turnorder) => (
+                <Table.Row key={turnorder.id}>
                   <Table.Cell>
-                  { item.initiative ? (
-                    item.initiative
+                  { turnorder.name ? (
+                    <span className={turnorder.done ? 'strikethrough' : ''}>{turnorder.name}</span>
                   ) : (
                     <div>
-                      <Input placeholder='Initiative' type='number' transparent />
-                      <Button size='mini' color='blue' icon='undo' inverted />
+                      <Input placeholder='Name' type='number' transparent />
                     </div>
                   )}
                   </Table.Cell>
-                  <Table.Cell>{item.level}</Table.Cell>
                   <Table.Cell>
-                  { item.hit_points ? (
+                  { turnorder.initiative ? (
+                    turnorder.initiative
+                  ) : (
+                    <div>
+                      <Input placeholder='Initiative' type='number' transparent />
+                      <Button size='mini' color='blue' icon='undo' inverted onClick={() => {this.rollInitiative(turnorder) }} />
+                    </div>
+                  )}
+                  </Table.Cell>
+                  <Table.Cell>{turnorder.level}</Table.Cell>
+                  <Table.Cell>
+                  { turnorder.hit_points ? (
                     <Button.Group size='mini'>
-                      <Button color='red' icon='minus' />
-                      <Button content={item.hit_points} />
-                      <Button color='green' icon='plus' />
+                      <Button color='red' icon='minus' onClick={() => { this.state.campaignRef.child('turnorder/'+turnorder.id).update({ hit_points: turnorder.hit_points-1 }) }} />
+                      <Button content={turnorder.hit_points} />
+                      <Button color='green' icon='plus' onClick={() => { this.state.campaignRef.child('turnorder/'+turnorder.id).update({ hit_points: turnorder.hit_points+1 }) }} />
                     </Button.Group>
                   ) : (
                     <Input placeholder='Hit points' type='number' transparent />
                   )}
                   </Table.Cell>
-                  <Table.Cell>{item.armor_class}</Table.Cell>
+                  <Table.Cell>{turnorder.armor_class}</Table.Cell>
                   <Table.Cell></Table.Cell>
                   <Table.Cell></Table.Cell>
                   <Table.Cell></Table.Cell>
                   <Table.Cell>
                     <Button.Group size='mini'>
-                      <Button color='blue' icon='checkmark' />
-                      <Button color='red' icon='remove' />
+                      <Button color='blue' icon='checkmark' onClick={() => { this.state.campaignRef.child('turnorder/'+turnorder.id).update({ done: true }) }} />
+                      <Button color='red' icon='remove' onClick={() => { this.state.campaignRef.child('turnorder/'+turnorder.id).remove() }} />
                     </Button.Group>
                   </Table.Cell>
                 </Table.Row>
@@ -170,15 +220,15 @@ export default class Campaign extends Component {
           <Table.Row>
             <Table.HeaderCell colSpan={5}>
               <List horizontal>
-                <List.Item>Round: 0</List.Item>
-                <List.Item>Time: 00:00</List.Item>
+                <List.Item>Round: {this.state.campaign.round}</List.Item>
+                <List.Item>Time: {formatTime(this.state.campaign.times.encounter)}</List.Item>
               </List>
             </Table.HeaderCell>
 
             <Table.HeaderCell colSpan={4}>
               <Button.Group size='mini' floated='right'>
-                <Button color='green' icon='plus' />
-                <Button color='red' icon='undo' content='Reset' />
+                <Button color='green' icon='plus' onClick={this.addToTurnorder.bind(this)} />
+                <Button color='red' icon='undo' content='Reset' onClick={this.resetTurnorder.bind(this)} />
               </Button.Group>
             </Table.HeaderCell>
           </Table.Row>
@@ -192,11 +242,37 @@ export default class Campaign extends Component {
     Auth.onAuthStateChanged((user) => {
       if (user){
         this.setState({ user })
-        firebase.database().ref('userdata/'+user.uid+'/campaigns/'+slug)
-          .on('value', snapshot => {
-            // Update React state when campaign is added to the firebase database
-            this.setState({ campaign: snapshot.val(), loaded: true })
-          })
+        var campaignRef = firebase.database().ref('userdata/'+user.uid+'/campaigns/'+slug);
+        var turnorderRef = campaignRef.child('turnorder');
+        campaignRef.on('value', snapshot => {
+          var campaign = snapshot.val()
+
+          if(campaign.turnorder){
+            var turnorder = []
+            var done = true
+            Object.keys(campaign.turnorder).map(key => {
+              var t = campaign.turnorder[key]
+              t.id = key
+              turnorder.push(t)
+
+              if(!t.done){ done = false }
+            })
+
+            if(done){
+              for (var i = 0; i < turnorder.length; i++) {
+                turnorder[i].done = false
+              }
+              campaign.round = (campaign.round) ? campaign.round + 1 : 1
+              campaign.times.encounter += parseInt(campaign.settings.roundDuration)
+              campaign.times.session += parseInt(campaign.settings.roundDuration)
+              campaign.times.total += parseInt(campaign.settings.roundDuration)
+              campaign.turnorder = turnorder
+              campaignRef.set(campaign)
+            }
+          }
+          // Update React state when campaign is added to the firebase database
+          this.setState({ campaign, campaignRef, turnorder, turnorderRef, loaded: true })
+        });
       }
     })
   }
