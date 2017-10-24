@@ -61,8 +61,8 @@ export default class Campaign extends Component {
                 <Grid columns={2}>
                   <Grid.Column width={6}>
                     <Button.Group size='massive' color='blue' floated='left'>
-                      <Button icon='undo' />
-                      <Button>{formatTime(campaign.times.total)}</Button>
+                      <Button icon='undo' onClick={() => { this.state.campaignRef.child('/times/session').set(0) }}/>
+                      <Button>{formatTime(campaign.times.session)}</Button>
                     </Button.Group>
 
                     <Button.Group size='mini' color='blue' floated='left' basic vertical>
