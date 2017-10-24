@@ -6,9 +6,9 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 import Dashboard from './Containers/Dashboard'
 import Monsters from './Containers/Monsters'
-import Monster from './Containers/Monster'
 import Spells from './Containers/Spells'
 import Campaigns from './Containers/Campaigns'
+import Campaign from './Containers/Campaign'
 import TreasureGenerator from './Containers/TreasureGenerator'
 
 import './App.css';
@@ -108,9 +108,9 @@ class App extends Component {
 
               <Route exact path='/' component={Dashboard} />
               <Route path='/monsters' component={Monsters} />
-              <Route path='/monster/:monsterName' component={Monster} />
               <Route path='/spells' component={Spells} />
               <Route path='/campaigns' component={Campaigns} />
+              <Route path='/campaign/:campaignSlug' component={Campaign} />
               <Route path='/treasure-generator' component={TreasureGenerator} />
 
             </Sidebar.Pusher>

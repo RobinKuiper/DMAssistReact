@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 
-import { pageLimits } from './../Lib/Common'
+import { LIMIT, pageLimits } from './../Lib/Common'
 import firebase from './../Lib/firebase'
 
 import Panel from './Panel'
 import SpellModal from './../Components/SpellModal'
 
-import { Button, Grid, Header, Input, Segment, Dropdown, Table } from 'semantic-ui-react'
+import { Button, Grid, Input, Dropdown, Table } from 'semantic-ui-react'
 
 export default class Spells extends Component {
   constructor(props){
@@ -56,7 +56,7 @@ export default class Spells extends Component {
 
   componentWillMount(){
     // Create reference to messages in firebase database
-    let spellsRef = firebase.database().ref('spells').orderByKey().limitToLast(5);;
+    let spellsRef = firebase.database().ref('spells').orderByKey().limitToLast(LIMIT);
     spellsRef.on('child_added', snapshot => {
       // Update React state message is added to the firebase database
       let spell = snapshot.val()

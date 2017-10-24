@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import { Auth } from './../Lib/firebase'
 
-import { Button, Grid, Segment } from 'semantic-ui-react'
+import { Grid } from 'semantic-ui-react'
 
 import Panel from './Panel'
 

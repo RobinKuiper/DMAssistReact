@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Divider, Grid, Header, Icon, Image, Label, List, Modal, Segment, Table } from 'semantic-ui-react'
+import { Divider, Grid, Header, Icon, Image, Label, List, Modal, Segment } from 'semantic-ui-react'
 
 export default class SpellModal extends Component {
   render() {

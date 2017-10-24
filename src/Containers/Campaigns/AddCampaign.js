@@ -18,7 +18,7 @@ export default class AddCampaign extends Component {
       settings: {
         shortRest: '1H',
         longRest: '8H',
-        roundDuraction: '6'
+        roundDuration: '6'
       }
     }
   }
@@ -30,11 +30,16 @@ export default class AddCampaign extends Component {
 
     var campaign = {
       name,
+      slug: Slugify(name),
+      turnorder: [],
+      players: [],
       settings
     }
 
-    // Send message to firebase
+    // Send campaign to firebase
     firebase.database().ref('userdata/'+this.state.user.uid+'/campaigns/'+Slugify(campaign.name)).set( campaign )
+
+    // Empty form
     this.setState({
       campaignName: '',
       players: [
@@ -43,7 +48,7 @@ export default class AddCampaign extends Component {
       settings: {
         shortRest: '1H',
         longRest: '8H',
-        roundDuraction: '6'
+        roundDuration: '6'
       }
     })
   }
@@ -84,7 +89,7 @@ export default class AddCampaign extends Component {
         <Segment basic>
           <Form.Input label='Short Rest' type='text' placeholder='1H' name='shortRest' value={this.state.settings.shortRest} onChange={this.handleChange} />
           <Form.Input label='Long Rest' type='text' placeholder='8H' name='longRest' value={this.state.settings.longRest} onChange={this.handleChange} />
-          <Form.Input label='Round Duration' type='text' placeholder='6' name='roundDuraction' value={this.state.settings.roundDuraction} onChange={this.handleChange} />
+          <Form.Input label='Round Duration' type='text' placeholder='6' name='roundDuration' value={this.state.settings.roundDuration} onChange={this.handleChange} />
         </Segment>
 
         <Segment basic clearing>

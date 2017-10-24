@@ -1,13 +1,12 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Link } from 'react-router-dom'
 
-import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
+import { LIMIT, pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
 import firebase from './../Lib/firebase'
 
 import Panel from './Panel'
 import MonsterModal from './../Components/MonsterModal'
 
-import { Button, Grid, Header, Input, Segment, Dropdown, Table } from 'semantic-ui-react'
+import { Button, Grid, Input, Dropdown, Table } from 'semantic-ui-react'
 
 export default class Monsters extends Component {
   constructor(props){
@@ -57,7 +56,7 @@ export default class Monsters extends Component {
 
   componentWillMount(){
     // Create reference to messages in firebase database
-    let monstersRef = firebase.database().ref('monsters').orderByKey().limitToLast(5);;
+    let monstersRef = firebase.database().ref('monsters').orderByKey().limitToLast(LIMIT);;
     monstersRef.on('child_added', snapshot => {
       // Update React state message is added to the firebase database
       let monster = snapshot.val()

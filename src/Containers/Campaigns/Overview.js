@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-
+import { Link } from 'react-router-dom'
 import firebase, { Auth } from './../../Lib/firebase'
-
 import { Image, List } from 'semantic-ui-react'
 
 export default class Overview extends Component {
@@ -34,7 +33,9 @@ export default class Overview extends Component {
             <List.Item>
               <Image size='mini' src={campaign.image ? campaign.image : './images/no-campaign-image.png'} />
               <List.Content verticalAlign='middle'>
-                <List.Header as='a'>{campaign.name}</List.Header>
+                <List.Header as='a'>
+                  <Link to={'/campaign/'+campaign.slug}>{campaign.name}</Link>
+                </List.Header>
               </List.Content>
             </List.Item>
           ))
