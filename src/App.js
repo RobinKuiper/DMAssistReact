@@ -14,6 +14,7 @@ import About from './Containers/About'
 
 import './App.css';
 
+// TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {
   constructor(props){
     super(props)
@@ -34,6 +35,10 @@ class App extends Component {
     })
   }
 
+  /**
+   * Login with one of the login providers
+   * @param  {object} provider The login provider as per Firebase.js
+   */
   login(provider) {
     Auth.signInWithPopup(provider)
       .then((result) => {
@@ -42,6 +47,9 @@ class App extends Component {
       })
   }
 
+  /**
+   * User Sign Out
+   */
   logout() {
     Auth.signOut()
       .then(() => {
@@ -54,6 +62,7 @@ class App extends Component {
       <div id='outer-container'>
         <Router>
           <div>
+            {/* TODO: Sidebar to own component */}
             <Sidebar id='sidebar' animation='push' width='thin' visible={true} style={{color: '#fff', backgroundColor: '#1B1C1D'}}>
               <Menu fluid vertical inverted>
                 <Menu.Header textAlign={'left'} onClick={() => alert('blaat')} style={{fontSize: '14pt', textAlign: 'left', padding: 20}}>
@@ -78,6 +87,7 @@ class App extends Component {
                   </Dropdown>
                 }
                 <Menu.Item>&nbsp;</Menu.Item>
+                {/* TODO: Check if Link can be inline */}
                 <Link to='/'>
                   <Menu.Item name='dashboard'>
                     <Icon name='home' />
@@ -122,6 +132,7 @@ class App extends Component {
                   </Menu.Item>
                 </Link>
                 <Menu.Item>
+                  {/* TODO: Check paypal link */}
                   <form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_blank'>
                     <input type='hidden' name='cmd' value='_s-xclick' />
                     <input type='hidden' name='hosted_button_id' value='KHTW2FPB83NJJ' />
