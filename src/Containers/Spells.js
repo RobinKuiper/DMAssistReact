@@ -126,18 +126,23 @@ export default class Spells extends Component {
         </Table.Header>
 
         <Table.Body>
-          {
-            this.state.filteredSpells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
+          { this.state.filteredSpells.length > 0 ?
+              this.state.filteredSpells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
+                <Table.Row>
+                  <Table.Cell>
+                    <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
+                    <span style={{fontSize: '8pt'}}>{spell.school}</span>
+                  </Table.Cell>
+                  <Table.Cell>{spell.school}</Table.Cell>
+                  <Table.Cell>{spell.castingTime}</Table.Cell>
+                  <Table.Cell>{spell.duration}</Table.Cell>
+                </Table.Row>
+              ))
+            : (
               <Table.Row>
-                <Table.Cell>
-                  <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
-                  <span style={{fontSize: '8pt'}}>{spell.school}</span>
-                </Table.Cell>
-                <Table.Cell>{spell.school}</Table.Cell>
-                <Table.Cell>{spell.castingTime}</Table.Cell>
-                <Table.Cell>{spell.duration}</Table.Cell>
+                <Table.Cell colSpan={5}>No spells found.</Table.Cell>
               </Table.Row>
-            ))
+            )
           }
         </Table.Body>
       </Table>
