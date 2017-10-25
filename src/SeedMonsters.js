@@ -11,9 +11,12 @@ export default class SeedMonsters extends React.Component {
     update['/monsters/'] = null;
     firebase.database().ref().update(update);
 
+    var total = 0;
     for (var i = 0; i < newMonsters.length; i++) {
       firebase.database().ref('/monsters/' + this.slugify(monsters[i].name)).set( monsters[i] )
+      total++
     }
+    firebase.database().ref('/statistics/monsters_count').set(total)
   }
 
   slugify(text){

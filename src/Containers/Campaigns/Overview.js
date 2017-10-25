@@ -9,7 +9,7 @@ export default class Overview extends Component {
 
     this.state = {
       user: Auth.currentUser,
-      campaigns: [{name: 'test'}]
+      campaigns: []
     }
   }
 

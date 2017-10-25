@@ -13,5 +13,6 @@ import firebase from 'firebase'
 firebase.initializeApp(config)
 
 export const GoogleProvider = new firebase.auth.GoogleAuthProvider();
+export const FacebookProvider = new firebase.auth.FacebookAuthProvider();
 export const Auth = firebase.auth()
 export default firebase

@@ -6,7 +6,7 @@ import firebase from './../Lib/firebase'
 import Panel from './Panel'
 import SpellModal from './../Components/SpellModal'
 
-import { Button, Grid, Input, Dropdown, Table } from 'semantic-ui-react'
+import { Button, Grid, Header, Input, Dropdown, Table } from 'semantic-ui-react'
 
 export default class Spells extends Component {
   constructor(props){
@@ -130,7 +130,7 @@ export default class Spells extends Component {
             this.state.filteredSpells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
               <Table.Row>
                 <Table.Cell>
-                  <SpellModal spell={spell} />
+                  <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
                   <span style={{fontSize: '8pt'}}>{spell.school}</span>
                 </Table.Cell>
                 <Table.Cell>{spell.school}</Table.Cell>

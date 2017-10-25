@@ -6,7 +6,7 @@ export default class SpellModal extends Component {
     const spell = this.props.spell
 
     return (
-      <Modal closeIcon trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>}>
+      <Modal closeIcon trigger={this.props.trigger}>
         <Modal.Content>
           { spell &&
             <Segment raised>
