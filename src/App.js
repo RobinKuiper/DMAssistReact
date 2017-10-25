@@ -62,7 +62,6 @@ class App extends Component {
         <div id='outer-container'>
           <Router>
             <div>
-              {/* TODO: Sidebar to own component */}
               <MainSidebar />
 
               <Sidebar.Pusher>
