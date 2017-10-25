@@ -33,7 +33,7 @@ export default class About extends Component {
 
               <span>Online Users: 0</span>
 
-              <Header divided>Changelog:</Header>
+              <Header dividing>Changelog:</Header>
             </Segment>
           </Grid.Column>
         </Grid>

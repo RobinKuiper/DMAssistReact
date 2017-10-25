@@ -30,10 +30,10 @@ export default class Overview extends Component {
         {
           // Render campaigns
           this.state.campaigns.map( campaign => (
-            <List.Item>
+            <List.Item key={campaign.slug}>
               <Image size='mini' src={campaign.image ? campaign.image : './images/no-campaign-image.png'} />
               <List.Content verticalAlign='middle'>
-                <List.Header as='a'>
+                <List.Header>
                   <Link to={'/campaign/'+campaign.slug}>{campaign.name}</Link>
                 </List.Header>
               </List.Content>

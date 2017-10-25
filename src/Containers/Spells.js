@@ -71,7 +71,7 @@ export default class Spells extends Component {
       <main>
         <Grid columns={1}>
           <Grid.Column>
-            <Panel title={'Spells'} content={this.renderContent.bind(this)} footer={this.renderFooter} loaded={this.state.loaded} />
+            <Panel title={'Spells'} content={this.renderContent} footer={this.renderFooter} loaded={this.state.loaded} />
           </Grid.Column>
         </Grid>
       </main>
@@ -91,8 +91,9 @@ export default class Spells extends Component {
 
   renderContent = () => (
     <div>
-      <Grid columns={4}>
+      <Grid columns={3}>
         <Grid.Column>
+          {/* TODO: Paginator Component */}
           <Button.Group size='tiny'>
             <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
             <Button>{this.state.page+1} / {Math.ceil(this.state.filteredSpells.length/this.state.limit)}</Button>
@@ -107,19 +108,19 @@ export default class Spells extends Component {
         </Grid.Column>
       </Grid>
 
-      <Table color='purple' sortable unstackable>
+      <Table color='purple' selectable sortable unstackable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell sorted={this.state.sortBy === 'name' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('name') }}>
               Name
             </Table.HeaderCell>
-            <Table.HeaderCell sorted={this.state.sortBy === 'school' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('armor_class') }}>
+            <Table.HeaderCell sorted={this.state.sortBy === 'school' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('school') }}>
               School
             </Table.HeaderCell>
-            <Table.HeaderCell sorted={this.state.sortBy === 'castingTime' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
+            <Table.HeaderCell sorted={this.state.sortBy === 'castingTime' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('castingTime') }}>
               Casting Time
             </Table.HeaderCell>
-            <Table.HeaderCell sorted={this.state.sortBy === 'duration' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('hit_points') }}>
+            <Table.HeaderCell sorted={this.state.sortBy === 'duration' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('duration') }}>
               Duration
             </Table.HeaderCell>
           </Table.Row>
@@ -128,7 +129,7 @@ export default class Spells extends Component {
         <Table.Body>
           { this.state.filteredSpells.length > 0 ?
               this.state.filteredSpells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
-                <Table.Row>
+                <Table.Row key={spell.slug}>
                   <Table.Cell>
                     <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
                     <span style={{fontSize: '8pt'}}>{spell.school}</span>
@@ -153,22 +154,19 @@ export default class Spells extends Component {
   changeLimit = (e, { value }) => this.setState({ limit: value })
 
   search(e){
+    e.preventDefault()
+
     this.setState({ searchQuery: e.target.value })
 
     if(e.target.value === ''){
       this.setState({ filteredSpells: this.state.spells })
       return;
     }else{
-      var spells = [];
-
-      this.state.spells.find((spell) => {
-        if(spell.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          spell.school.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          spell.duration.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          spell.castingTime.toLowerCase().includes(e.target.value.toLowerCase())){
-          spells.push(spell);
-        }
-      })
+      var spells = this.state.spells.filter((spell) => spell.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        spell.school.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        spell.duration.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        spell.castingTime.toLowerCase().includes(e.target.value.toLowerCase())
+      )
 
       this.setState({ filteredSpells: spells })
     }

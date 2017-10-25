@@ -58,7 +58,7 @@ export default class Dashboard extends Component {
   renderCampaigns = () => (
     <List>
     { this.state.campaigns.map(item => {
-      return <List.Item><Link to={'/campaign/'+item.slug}>{item.name}</Link></List.Item>
+      return <List.Item key={item.slug}><Link to={'/campaign/'+item.slug}>{item.name}</Link></List.Item>
     })}
     </List>
   )
@@ -66,7 +66,7 @@ export default class Dashboard extends Component {
   renderMonsters = () => (
     <List>
     { this.state.monsters.map(item => {
-      return <MonsterModal monster={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
+      return <MonsterModal key={item.slug} monster={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
     })}
     </List>
   )
@@ -74,7 +74,7 @@ export default class Dashboard extends Component {
   renderSpells = () => (
     <List>
     { this.state.spells.map(item => {
-      return <SpellModal spell={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
+      return <SpellModal key={item.slug} spell={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
     })}
     </List>
   )

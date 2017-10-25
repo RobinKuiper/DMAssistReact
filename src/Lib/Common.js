@@ -31,18 +31,10 @@ export const toSeconds = (time) => {
   var format = time.slice(-1).toUpperCase()
   time = time.slice(0, -1)
   switch (format) {
-    case 'D':
-      return time * 86400
-      break;
-    case 'H':
-      return time * 3600
-      break;
-    case 'M':
-      return time * 60
-      break;
-    default:
-      return time
-
+    case 'D': return time * 86400
+    case 'H': return time * 3600
+    case 'M': return time * 60
+    default: return time
   }
 }
 
@@ -51,7 +43,7 @@ export const formatTime = (seconds) => {
   var days    = Math.floor(sec_num / 86400)
   var hours   = Math.floor((sec_num - (days * 86400)) / 3600)
   var minutes = Math.floor((sec_num - (days * 86400) - (hours * 3600)) / 60)
-  var seconds = sec_num - (days * 86400) - (hours * 3600) - (minutes * 60)
+  seconds = sec_num - (days * 86400) - (hours * 3600) - (minutes * 60)
 
   days = (days < 1) ? '' : days + 'D'
   hours = (hours < 10) ? "0" + hours : hours

@@ -61,12 +61,8 @@ export default class Monsters extends Component {
       // Update React state message is added to the firebase database
       let monster = snapshot.val()
       monster.id = snapshot.key
-      console.log(snapshot.val());
-      if(monster !== null && monster !== undefined){
-        console.log(monster.name);
-        var monsters = [monster].concat(this.state.monsters);
-        this.setState({ monsters: monsters, filteredMonsters: monsters, loaded: true  })
-      }
+      var monsters = [monster].concat(this.state.monsters);
+      this.setState({ monsters: monsters, filteredMonsters: monsters, loaded: true  })
     })
   }
 
@@ -135,7 +131,7 @@ export default class Monsters extends Component {
         <Table.Body>
           { this.state.filteredMonsters.length > 0 ?
               this.state.filteredMonsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => (
-                <Table.Row>
+                <Table.Row key={monster.slug}>
                   <Table.Cell>{formatCR(monster.challenge_rating)}</Table.Cell>
                   <Table.Cell>
                     <MonsterModal monster={monster} trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>} />
@@ -167,16 +163,11 @@ export default class Monsters extends Component {
       this.setState({ filteredMonsters: this.state.monsters })
       return;
     }else{
-      var monsters = [];
-
-      this.state.monsters.find((monster) => {
-        if(monster.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          monster.type.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          monster.alignment.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          monster.size.toLowerCase().includes(e.target.value.toLowerCase())){
-          monsters.push(monster);
-        }
-      })
+      var monsters = this.state.monsters.filter((monster) => monster.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        monster.type.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        monster.alignment.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        monster.size.toLowerCase().includes(e.target.value.toLowerCase())
+      )
 
       this.setState({ filteredMonsters: monsters })
     }

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import firebase, { Auth } from './../Lib/firebase'
 import { LIMIT, calculateMod, formatTime, toSeconds } from './../Lib/Common'
 import Dice from './../Lib/Dice'
-import { Button, Dropdown, Grid, Icon, Input, List, Segment, Table } from 'semantic-ui-react'
+import { Button, Dropdown, Grid, Input, List, Segment, Table } from 'semantic-ui-react'
 import Panel from './Panel'
 import MonsterModal from './../Components/MonsterModal'
 
@@ -88,7 +88,7 @@ export default class Campaign extends Component {
   }
 
   addTime = (time) => {
-    var time = toSeconds(time)
+    time = toSeconds(time)
     var campaign = this.state.campaign
     campaign.times.total += time
     campaign.times.session += time
@@ -264,6 +264,7 @@ export default class Campaign extends Component {
               turnorder.push(t)
 
               if(!t.done){ done = false }
+              return t;
             })
 
             if(done){
@@ -271,9 +272,9 @@ export default class Campaign extends Component {
                 turnorder[i].done = false
               }
               campaign.round = (campaign.round) ? campaign.round + 1 : 1
-              campaign.times.encounter += parseInt(campaign.settings.roundDuration)
-              campaign.times.session += parseInt(campaign.settings.roundDuration)
-              campaign.times.total += parseInt(campaign.settings.roundDuration)
+              campaign.times.encounter += parseInt(campaign.settings.roundDuration, 10)
+              campaign.times.session += parseInt(campaign.settings.roundDuration, 10)
+              campaign.times.total += parseInt(campaign.settings.roundDuration, 10)
               campaign.turnorder = turnorder
               campaignRef.set(campaign)
             }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Auth, GoogleProvider, FacebookProvider } from './Lib/firebase'
 
-import { Button, Dropdown, Sidebar, Menu, Icon, Header, Image } from 'semantic-ui-react'
+import { Button, Dropdown, Header, Icon, Menu, Sidebar } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 import Dashboard from './Containers/Dashboard'
@@ -65,7 +65,7 @@ class App extends Component {
             {/* TODO: Sidebar to own component */}
             <Sidebar id='sidebar' animation='push' width='thin' visible={true} style={{color: '#fff', backgroundColor: '#1B1C1D'}}>
               <Menu fluid vertical inverted>
-                <Menu.Header textAlign={'left'} onClick={() => alert('blaat')} style={{fontSize: '14pt', textAlign: 'left', padding: 20}}>
+                <Menu.Header onClick={() => alert('blaat')} style={{fontSize: '14pt', textAlign: 'left', padding: 20}}>
                   DM <span style={{color: 'purple'}}>Assist</span>
                   <Header.Subheader style={{fontSize: '7pt', fontWeight: 'lighter', marginLeft: 9}}>
                     Making life of evil easier.

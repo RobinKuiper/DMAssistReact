@@ -155,7 +155,7 @@ export default class MonsterModal extends Component {
                       <List>
                       {
                         monster.special_abilities.map((obj) => (
-                          <List.Item>
+                          <List.Item key={obj.name}>
                             <strong>{obj.name}</strong>
                             <span>{obj.desc}</span>
                           </List.Item>
@@ -173,7 +173,7 @@ export default class MonsterModal extends Component {
                       <List>
                       {
                         monster.actions.map((obj) => (
-                          <List.Item>
+                          <List.Item key={obj.name}>
                             <strong>{obj.name}</strong>
                             <span>{obj.desc}</span>
                           </List.Item>
@@ -191,7 +191,7 @@ export default class MonsterModal extends Component {
                       <List>
                       {
                         monster.reactions.map((obj) => (
-                          <List.Item>
+                          <List.Item key={obj.name}>
                             <strong>{obj.name}</strong>
                             <span>{obj.desc}</span>
                           </List.Item>
@@ -212,7 +212,7 @@ export default class MonsterModal extends Component {
                       <List>
                       {
                         monster.legendary_actions.map((obj) => (
-                          <List.Item>
+                          <List.Item key={obj.name}>
                             <strong>{obj.name}</strong>
                             <span>{obj.desc}</span>
                           </List.Item>

@@ -33,7 +33,7 @@ export default class SpellModal extends Component {
                       <List>
                       { spell.classes &&
                           spell.classes.map(c => (
-                            <List.Item>{c}</List.Item>
+                            <List.Item key={c}>{c}</List.Item>
                           ))
                       }
                       </List>
@@ -49,7 +49,7 @@ export default class SpellModal extends Component {
                   <List size='small' horizontal>
                   { spell.components &&
                       spell.components.map(component => (
-                        <List.Item>
+                        <List.Item key={component}>
                           <Image size='mini' src={'./images/'+component+'.png'} />
                           <div>{component}</div>
                         </List.Item>
