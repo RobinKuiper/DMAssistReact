@@ -133,19 +133,24 @@ export default class Monsters extends Component {
         </Table.Header>
 
         <Table.Body>
-          {
-            this.state.filteredMonsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => (
+          { this.state.filteredMonsters.length > 0 ?
+              this.state.filteredMonsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => (
+                <Table.Row>
+                  <Table.Cell>{formatCR(monster.challenge_rating)}</Table.Cell>
+                  <Table.Cell>
+                    <MonsterModal monster={monster} trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>} />
+                    <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
+                  </Table.Cell>
+                  <Table.Cell>{monster.hit_points}</Table.Cell>
+                  <Table.Cell>{monster.armor_class}</Table.Cell>
+                  <Table.Cell>{CRtoEXP(monster.challenge_rating)} XP</Table.Cell>
+                </Table.Row>
+              ))
+            : (
               <Table.Row>
-                <Table.Cell>{formatCR(monster.challenge_rating)}</Table.Cell>
-                <Table.Cell>
-                  <MonsterModal monster={monster} trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>} />
-                  <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
-                </Table.Cell>
-                <Table.Cell>{monster.hit_points}</Table.Cell>
-                <Table.Cell>{monster.armor_class}</Table.Cell>
-                <Table.Cell>{CRtoEXP(monster.challenge_rating)} XP</Table.Cell>
+                <Table.Cell colSpan={5}>No monsters found.</Table.Cell>
               </Table.Row>
-            ))
+            )
           }
         </Table.Body>
       </Table>

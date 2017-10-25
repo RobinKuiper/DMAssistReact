@@ -1,4 +1,4 @@
-export const LIMIT = 500;
+export const LIMIT = 5;
 
 export const pageLimits = [
   {
