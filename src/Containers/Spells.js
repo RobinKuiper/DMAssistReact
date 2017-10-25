@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 
-import { LIMIT, pageLimits } from './../Lib/Common'
-import firebase from './../Lib/firebase'
+import { pageLimits } from './../Lib/Common'
 
 import Panel from './Panel'
 import SpellModal from './../Components/SpellModal'
@@ -17,13 +16,13 @@ export default class Spells extends Component {
 
     this.state = {
       searchQuery: '',
-      filteredSpells: [],
+      filteredSpells: this.props.spells,
       sortBy: 'name',
       sortOrder: 'ascending',
       limit: 10,
       page: 0,
-      spells: [],
-      loaded: false
+      spells: this.props.spells,
+      loaded: true
     }
   }
 
@@ -52,18 +51,6 @@ export default class Spells extends Component {
     comparison *= (this.state.sortOrder === 'ascending') ? 1 : -1
 
     return comparison;
-  }
-
-  componentWillMount(){
-    // Create reference to messages in firebase database
-    let spellsRef = firebase.database().ref('spells').orderByKey().limitToLast(LIMIT);
-    spellsRef.on('child_added', snapshot => {
-      // Update React state message is added to the firebase database
-      let spell = snapshot.val()
-      spell.id = snapshot.key
-      var spells = [spell].concat(this.state.spells);
-      this.setState({ spells: spells, filteredSpells: spells, loaded: true  })
-    })
   }
 
   render() {

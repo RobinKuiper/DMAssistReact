@@ -1,5 +1,3 @@
-export const LIMIT = 5;
-
 export const pageLimits = [
   {
     text: '10',

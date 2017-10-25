@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import firebase, { Auth } from './../Lib/firebase'
-import { LIMIT, calculateMod, formatTime, toSeconds } from './../Lib/Common'
+import { calculateMod, formatTime, toSeconds } from './../Lib/Common'
 import Dice from './../Lib/Dice'
 import { Button, Dropdown, Grid, Input, List, Segment, Table } from 'semantic-ui-react'
 import Panel from './Panel'
@@ -10,37 +10,28 @@ export default class Campaign extends Component {
   constructor(props) {
     super(props)
 
+    var monsterOptions = this.props.monsters.map(monster => {
+      return {
+        key: monster.slug,
+        value: monster.slug,
+        text: monster.name
+      }
+    })
+
     this.state = {
       user: null,
       campaign: null,
       turnorder: null,
       loaded: false,
       dropdownLoaded: false,
-      monsterOptions: [],
-      monsters: [],
+      monsterOptions: monsterOptions,
+      monsters: this.props.monsers,
       campaignRef: null,
       turnorderRef: null
     }
 
     this.rollInitiative = this.rollInitiative.bind(this)
     this.addTime = this.addTime.bind(this)
-  }
-
-  componentWillMount(){
-    // Create reference to messages in firebase database
-    let monstersRef = firebase.database().ref('monsters').orderByKey().limitToLast(LIMIT);
-    monstersRef.on('child_added', snapshot => {
-      // Update React state message is added to the firebase database
-      let monster = snapshot.val()
-      let option = {
-        key: monster.slug,
-        value: monster.slug,
-        text: monster.name
-      }
-      var monsterOptions = [option].concat(this.state.monsterOptions);
-      var monsters = [monster].concat(this.state.monsters)
-      this.setState({ monsterOptions, monsters, dropdownLoaded: true  })
-    })
   }
 
   render() {

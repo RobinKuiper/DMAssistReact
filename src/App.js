@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { Auth, GoogleProvider, FacebookProvider } from './Lib/firebase'
+import firebase, { Auth } from './Lib/firebase'
 
-import { Button, Dropdown, Header, Icon, Menu, Sidebar } from 'semantic-ui-react'
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { Dimmer, Loader, Segment, Sidebar } from 'semantic-ui-react'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { PropsRoute, PrivateRoute } from './Lib/Router'
+
+import MainSidebar from './Components/Sidebar'
 
 import Dashboard from './Containers/Dashboard'
 import Monsters from './Containers/Monsters'
@@ -14,17 +17,75 @@ import About from './Containers/About'
 
 import './App.css';
 
+const __LIMIT__ = 1
+
 // TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {
   constructor(props){
     super(props)
 
     this.state = {
-      user: null
+      user: null,
+      monsters: [],
+      spells: [],
+      loaded: false,
+      loadStep: 0,
+      loadSteps: ['Loading Monsters...', 'Loading Spells...']
     }
+  }
 
-    this.login = this.login.bind(this)
-    this.logout = this.logout.bind(this)
+  setLoaded = (index) => {
+    var loadStep = this.state.loadStep + 1
+    this.setState({ loadStep })
+    return (this.state.loadStep >= this.state.loadSteps.length)
+  }
+
+  componentWillMount(){
+    let db = firebase.database()
+
+    let mRef = db.ref('monsters').limitToLast(__LIMIT__);
+    let sRef = db.ref('spells').limitToLast(__LIMIT__);
+
+    mRef.on('child_added', snapshot => {
+      snapshot.val().id = snapshot.key
+      this.setState({ monsters: [snapshot.val()].concat(this.state.monsters), loaded: this.setLoaded()  })
+    })
+
+    sRef.on('child_added', snapshot => {
+      snapshot.val().id = snapshot.key
+      this.setState({ spells: [snapshot.val()].concat(this.state.spells), loaded: this.setLoaded()  })
+    })
+  }
+
+  render() {
+      return (this.state.loaded) ? (
+        <div id='outer-container'>
+          <Router>
+            <div>
+              {/* TODO: Sidebar to own component */}
+              <MainSidebar />
+
+              <Sidebar.Pusher>
+
+                <Route exact path='/' component={Dashboard} />
+                <Route path='/about' component={About} />
+                <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} />
+                <PropsRoute path='/spells' component={Spells} spells={this.state.spells} />
+                <PrivateRoute path='/campaigns' component={Campaigns} redirectTo="/" />
+                <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} />
+                <Route path='/treasure-generator' component={TreasureGenerator} />
+
+              </Sidebar.Pusher>
+            </div>
+          </Router>
+        </div>
+      ) : (
+        <Segment style={{height: '100%'}}>
+          <Dimmer active>
+            <Loader size='massive'>{this.state.loadSteps[this.state.loadStep]}</Loader>
+          </Dimmer>
+        </Segment>
+      );
   }
 
   componentDidMount() {
@@ -33,131 +94,6 @@ class App extends Component {
         this.setState({ user })
       }
     })
-  }
-
-  /**
-   * Login with one of the login providers
-   * @param  {object} provider The login provider as per Firebase.js
-   */
-  login(provider) {
-    Auth.signInWithPopup(provider)
-      .then((result) => {
-        const user = result.user;
-        this.setState({ user });
-      })
-  }
-
-  /**
-   * User Sign Out
-   */
-  logout() {
-    Auth.signOut()
-      .then(() => {
-        this.setState({ user: null })
-      });
-  }
-
-  render() {
-    return (
-      <div id='outer-container'>
-        <Router>
-          <div>
-            {/* TODO: Sidebar to own component */}
-            <Sidebar id='sidebar' animation='push' width='thin' visible={true} style={{color: '#fff', backgroundColor: '#1B1C1D'}}>
-              <Menu fluid vertical inverted>
-                <Menu.Header onClick={() => alert('blaat')} style={{fontSize: '14pt', textAlign: 'left', padding: 20}}>
-                  DM <span style={{color: 'purple'}}>Assist</span>
-                  <Header.Subheader style={{fontSize: '7pt', fontWeight: 'lighter', marginLeft: 9}}>
-                    Making life of evil easier.
-                  </Header.Subheader>
-                </Menu.Header>
-                { this.state.user ?
-                  <Dropdown item text={this.state.user.displayName}>
-                    <Dropdown.Menu>
-                      <Dropdown.Item>Profile</Dropdown.Item>
-                      <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                  :
-                  <Dropdown item text='Sign In'>
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => {this.login(GoogleProvider)}}><Button fluid color='google plus' icon='google' content='Google Login' /></Dropdown.Item>
-                      <Dropdown.Item onClick={() => {this.login(FacebookProvider)}}><Button color='facebook' icon='facebook' content='Facebook Login' /></Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                }
-                <Menu.Item>&nbsp;</Menu.Item>
-                {/* TODO: Check if Link can be inline */}
-                <Link to='/'>
-                  <Menu.Item name='dashboard'>
-                    <Icon name='home' />
-                    Dashboard
-                  </Menu.Item>
-                </Link>
-                <Link to='/monsters'>
-                  <Menu.Item name='monsters'>
-                    <Icon name='spy' />
-                    Monsters
-                  </Menu.Item>
-                </Link>
-                <Link to='/spells'>
-                  <Menu.Item name='spells'>
-                    <Icon name='book' />
-                    Spells
-                  </Menu.Item>
-                </Link>
-                <Link to='/campaigns'>
-                  <Menu.Item name='campaigns'>
-                    <Icon name='newspaper' />
-                    Campaigns
-                  </Menu.Item>
-                </Link>
-                <Link to='/treasure-generator'>
-                  <Menu.Item name='treasure'>
-                    <Icon name='diamond' />
-                    Treasure Gen.
-                  </Menu.Item>
-                </Link>
-              </Menu>
-
-              <Menu vertical fluid inverted style={{position: 'fixed', bottom: 0, paddingBottom: 5}}>
-                <Menu.Item as='a' href='https://discord.gg/VDqHRdz' target='_blank' title='Join our Discord!'>
-                  Discord
-                  <Icon name='text telephone' />
-                </Menu.Item>
-                <Link to='/about'>
-                  <Menu.Item>
-                    About
-                    <Icon name='info' />
-                  </Menu.Item>
-                </Link>
-                <Menu.Item>
-                  {/* TODO: Check paypal link */}
-                  <form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_blank'>
-                    <input type='hidden' name='cmd' value='_s-xclick' />
-                    <input type='hidden' name='hosted_button_id' value='KHTW2FPB83NJJ' />
-                    <input type='image' src='https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!' />
-                    <img alt='' border='0' src='https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif' width='1' height='1' />
-                  </form>
-                </Menu.Item>
-              </Menu>
-            </Sidebar>
-
-            <Sidebar.Pusher>
-
-              <Route exact path='/' component={Dashboard} />
-              <Route path='/about' component={About} />
-              <Route path='/monsters' component={Monsters} />
-              <Route path='/spells' component={Spells} />
-              <Route path='/campaigns' component={Campaigns} />
-              <Route path='/campaign/:campaignSlug' component={Campaign} />
-              <Route path='/treasure-generator' component={TreasureGenerator} />
-
-            </Sidebar.Pusher>
-          </div>
-        </Router>
-      </div>
-    );
   }
 }
 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 
-import { LIMIT, pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
-import firebase from './../Lib/firebase'
+import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
 
 import Panel from './Panel'
 import MonsterModal from './../Components/MonsterModal'
@@ -17,13 +16,13 @@ export default class Monsters extends Component {
 
     this.state = {
       searchQuery: '',
-      filteredMonsters: [],
+      filteredMonsters: this.props.monsters,
       sortBy: 'name',
       sortOrder: 'ascending',
       limit: 10,
       page: 0,
-      monsters: [], //[{name: 'blaat', challenge_rating: 9, hit_points: 10, armor_class: 21}],
-      loaded: false
+      monsters: this.props.monsters, //[{name: 'blaat', challenge_rating: 9, hit_points: 10, armor_class: 21}],
+      loaded: true
     }
   }
 
@@ -52,18 +51,6 @@ export default class Monsters extends Component {
     comparison *= (this.state.sortOrder === 'ascending') ? 1 : -1
 
     return comparison;
-  }
-
-  componentWillMount(){
-    // Create reference to messages in firebase database
-    let monstersRef = firebase.database().ref('monsters').orderByKey().limitToLast(LIMIT);
-    monstersRef.on('child_added', snapshot => {
-      // Update React state message is added to the firebase database
-      let monster = snapshot.val()
-      monster.id = snapshot.key
-      var monsters = [monster].concat(this.state.monsters);
-      this.setState({ monsters: monsters, filteredMonsters: monsters, loaded: true  })
-    })
   }
 
   render() {
