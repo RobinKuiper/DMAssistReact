@@ -15,8 +15,8 @@ export default class Table_ extends Component {
       <Table color={this.props.color} selectable sortable unstackable>
         <Table.Header>
           <Table.Row>
-            { this.props.headerCells.map(cell => (
-              <Table.HeaderCell colSpan={cell.colSpan} sorted={this.state.sortBy === cell.sortName ? this.state.sortOrder : null} onClick={() => { this.changeSortBy(cell.sortName) }}>
+            { this.props.headerCells.map((cell, i) => (
+              <Table.HeaderCell key={i} colSpan={cell.colSpan} sorted={this.state.sortBy === cell.sortName ? this.state.sortOrder : null} onClick={() => { this.changeSortBy(cell.sortName) }}>
                 {cell.content}
               </Table.HeaderCell>
             ))}
@@ -27,8 +27,8 @@ export default class Table_ extends Component {
           { this.props.bodyRows.length > 0 ?
               this.props.bodyRows.map(row => (
                 <Table.Row key={row.key}>
-                  { row.cells.map(cell => (
-                    <Table.Cell>{cell.content}</Table.Cell>
+                  { row.cells.map((cell, i) => (
+                    <Table.Cell key={i}>{cell.content}</Table.Cell>
                   ))}
                 </Table.Row>
               ))
@@ -43,8 +43,8 @@ export default class Table_ extends Component {
         { this.props.footerCells && (
           <Table.Footer>
             <Table.Row>
-              { this.props.footerCells.map(cell => (
-                <Table.HeaderCell colSpan={cell.colSpan}>
+              { this.props.footerCells.map((cell, i) => (
+                <Table.HeaderCell colSpan={cell.colSpan} key={i}>
                   {cell.content}
                 </Table.HeaderCell>
               ))}

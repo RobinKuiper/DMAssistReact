@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import firebase, { Auth } from './../Lib/firebase'
-import { calculateMod, formatTime, toSeconds } from './../Lib/Common'
-import Dice from './../Lib/Dice'
-import { Button, Dropdown, Grid, Input, List, Segment, Table } from 'semantic-ui-react'
+import { formatTime, toSeconds } from './../Lib/Common'
+import { Button, Grid, Input, Segment } from 'semantic-ui-react'
 import Panel from './Panel'
-import Table_ from './../Components/Table'
+import TableFull from './../Components/Table'
 import Turnorder from './../Components/Turnorder'
 
 export default class Campaign extends Component {
@@ -97,8 +96,8 @@ export default class Campaign extends Component {
 
     var players = this.state.campaign.players
     if(players){
-      Object.keys(players).map(key => {
-        tableConfig.bodyRows.push({
+      tableConfig.bodyRows = Object.keys(players).map(key => {
+        return {
           key: players[key].name,
           cells: [
             { content: players[key].name },
@@ -106,12 +105,12 @@ export default class Campaign extends Component {
             { content: players[key].hit_points },
             { content: players[key].armor_class },
           ]
-        })
+        }
       });
     }
 
     return (
-      <Table_ color='black' headerCells={tableConfig.headerCells} bodyRows={tableConfig.bodyRows} footerCells={tableConfig.footerCells} />
+      <TableFull color='black' headerCells={tableConfig.headerCells} bodyRows={tableConfig.bodyRows} footerCells={tableConfig.footerCells} />
     )
   }
 

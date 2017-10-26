@@ -7,7 +7,7 @@ import SpellModal from './../Components/SpellModal'
 import { PaginatorButtons } from './../Components/Paginator'
 import Table from './../Components/Table'
 
-import { Button, Grid, Header, Input, Dropdown } from 'semantic-ui-react'
+import { Grid, Header, Input, Dropdown } from 'semantic-ui-react'
 
 export default class Spells extends Component {
   constructor(props){
@@ -51,8 +51,8 @@ export default class Spells extends Component {
       bodyRows: []
     }
 
-    spells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => {
-      tableConfig.bodyRows.push({
+    tableConfig.bodyRows = spells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => {
+      return {
         key: spell.slug,
         cells: [
           { content: (<div>
@@ -63,7 +63,7 @@ export default class Spells extends Component {
           { content: spell.castingTime },
           { content: spell.duration }
         ]
-      })
+      }
     })
 
     return (

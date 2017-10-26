@@ -5,7 +5,7 @@ import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
 import Panel from './Panel'
 import MonsterModal from './../Components/MonsterModal'
 
-import { Button, Grid, Header, Input, Dropdown } from 'semantic-ui-react'
+import { Grid, Header, Input, Dropdown } from 'semantic-ui-react'
 import Table from './../Components/Table'
 
 import { PaginatorButtons } from './../Components/Paginator'
@@ -53,8 +53,8 @@ export default class Monsters extends Component {
       bodyRows: []
     }
 
-    monsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => {
-      tableConfig.bodyRows.push({
+    tableConfig.bodyRows = monsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => {
+      return {
         key: monster.slug,
         cells: [
           { content: formatCR(monster.challenge_rating) },
@@ -66,7 +66,7 @@ export default class Monsters extends Component {
           { content: monster.armor_class },
           { content: CRtoEXP(monster.challenge_rating) + ' XP' }
         ]
-      })
+      }
     })
 
     return (

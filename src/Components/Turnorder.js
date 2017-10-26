@@ -119,9 +119,9 @@ export default class Turnorder extends Component {
                     <Table.Cell>
                     { turnorder.hit_points ? (
                       <Button.Group size='mini'>
-                        <Button color='red' icon='minus' onClick={() => { this.props.campaignRef.child('turnorder/'+turnorder.id).update({ hit_points: parseInt(turnorder.hit_points)-1 }) }} />
+                        <Button color='red' icon='minus' onClick={() => { this.props.campaignRef.child('turnorder/'+turnorder.id).update({ hit_points: parseInt(turnorder.hit_points, 10)-1 }) }} />
                         <Button content={turnorder.hit_points} />
-                        <Button color='green' icon='plus' onClick={() => { this.props.campaignRef.child('turnorder/'+turnorder.id).update({ hit_points: parseInt(turnorder.hit_points)+1 }) }} />
+                        <Button color='green' icon='plus' onClick={() => { this.props.campaignRef.child('turnorder/'+turnorder.id).update({ hit_points: parseInt(turnorder.hit_points, 10)+1 }) }} />
                       </Button.Group>
                     ) : (
                       <Input placeholder='Hit points' type='number' transparent />

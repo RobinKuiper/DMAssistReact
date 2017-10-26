@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Form, Header, Button, Divider, Dropdown, Message, Modal, Popup } from 'semantic-ui-react'
+import { Form, Header, Button, Divider, Message, Modal } from 'semantic-ui-react'
 import { Auth, FacebookProvider, GoogleProvider } from './../Lib/firebase'
 
 export default class LoginModal extends React.Component {
