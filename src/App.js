@@ -17,7 +17,7 @@ import About from './Containers/About'
 
 import './App.css';
 
-const __LIMIT__ = 1
+const __LIMIT__ = 10
 
 // TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {
@@ -30,7 +30,7 @@ class App extends Component {
       spells: [],
       loaded: false,
       loadStep: 0,
-      loadSteps: ['Loading Monsters...', 'Loading Spells...']
+      loadSteps: ['Loading Monsters...', 'Loading Spells...', 'Loading Campaigns...']
     }
   }
 
@@ -55,6 +55,15 @@ class App extends Component {
       snapshot.val().id = snapshot.key
       this.setState({ spells: [snapshot.val()].concat(this.state.spells), loaded: this.setLoaded()  })
     })
+
+    if(this.state.user){
+      let uDataRef = db.ref('userdata').child(this.state.user.uid);
+      let cRef = uDataRef.child('campaigns');
+      cRef.on('child_added', snapshot => {
+        snapshot.val().id = snapshot.key
+        this.setState({ campaigns: [snapshot.val()].concat(this.state.campaigns), loaded: this.setLoaded()  })
+      })
+    }
   }
 
   render() {
@@ -66,12 +75,12 @@ class App extends Component {
 
               <Sidebar.Pusher>
 
-                <Route exact path='/' component={Dashboard} />
+                <PropsRoute exact path='/' component={Dashboard} monsters={this.state.monsters} spells={this.state.spells} />
                 <Route path='/about' component={About} />
                 <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} />
                 <PropsRoute path='/spells' component={Spells} spells={this.state.spells} />
-                <PrivateRoute path='/campaigns' component={Campaigns} redirectTo="/" />
-                <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} />
+                <PrivateRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} />
+                <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} />
                 <Route path='/treasure-generator' component={TreasureGenerator} />
 
               </Sidebar.Pusher>

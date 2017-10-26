@@ -14,8 +14,7 @@ export default class Campaigns extends Component {
     super(props)
 
     this.state = {
-      user: Auth.currentUser,
-      loaded: false,
+      loaded: true,
       add: false
     }
   }
@@ -25,7 +24,7 @@ export default class Campaigns extends Component {
       <main>
         <Grid columns={2}>
           <Grid.Column width={10}>
-            <Panel title={'Campaigns'} content={this.renderContent.bind(this)} footer={false} loaded={this.state.loaded} />
+            <Panel title={'Campaigns'} content={Overview} footer={false} loaded={this.state.loaded} />
           </Grid.Column>
           <Grid.Column width={6}>
             <Panel title='Add New Campaign' content={Add} footer={false} loaded={this.state.loaded} />
@@ -33,17 +32,5 @@ export default class Campaigns extends Component {
         </Grid>
       </main>
     )
-  }
-
-  renderContent = () => {
-    return (this.state.user) ? (this.state.add) ? <Add /> : <Overview /> : <div>Login</div>
-  }
-
-  componentDidMount() {
-    Auth.onAuthStateChanged((user) => {
-      if (user){
-        this.setState({ user, loaded: true })
-      }
-    })
   }
 }

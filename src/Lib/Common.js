@@ -22,7 +22,9 @@ export const pageLimits = [
 ]
 
 export const calculateMod = (score) => {
-  return Math.floor((score-10)/2)
+  var mod = Math.floor((score-10)/2);
+  var formatted = (mod > 0) ? '+' + mod : mod
+  return { mod, formatted }
 }
 
 export const toSeconds = (time) => {

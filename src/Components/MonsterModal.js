@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Divider, Grid, Header, Label, List, Modal, Segment, Table } from 'semantic-ui-react'
 
-import { formatCR, CRtoEXP } from './../Lib/Common'
+import { formatCR, CRtoEXP, calculateMod } from './../Lib/Common'
 
 export default class MonsterModal extends Component {
   render() {
@@ -72,22 +72,22 @@ export default class MonsterModal extends Component {
                     <Table.Body>
                       <Table.Row>
                         <Table.Cell>
-                          {monster.strength} (+1)
+                          {monster.strength} ({calculateMod(monster.strength).formatted})
                         </Table.Cell>
                         <Table.Cell>
-                          {monster.dexterity} (+1)
+                          {monster.dexterity} ({calculateMod(monster.dexterity).formatted})
                         </Table.Cell>
                         <Table.Cell>
-                          {monster.constitution} (+1)
+                          {monster.constitution} ({calculateMod(monster.constitution).formatted})
                         </Table.Cell>
                         <Table.Cell>
-                          {monster.intelligence} (+1)
+                          {monster.intelligence} ({calculateMod(monster.intelligence).formatted})
                         </Table.Cell>
                         <Table.Cell>
-                          {monster.wisdom} (+1)
+                          {monster.wisdom} ({calculateMod(monster.wisdom).formatted})
                         </Table.Cell>
                         <Table.Cell>
-                          {monster.charisma} (+1)
+                          {monster.charisma} ({calculateMod(monster.charisma).formatted})
                         </Table.Cell>
                       </Table.Row>
                     </Table.Body>

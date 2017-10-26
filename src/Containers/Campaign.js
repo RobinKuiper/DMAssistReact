@@ -10,22 +10,19 @@ export default class Campaign extends Component {
   constructor(props) {
     super(props)
 
-    var monsterOptions = this.props.monsters.map(monster => {
-      return {
-        key: monster.slug,
-        value: monster.slug,
-        text: monster.name
-      }
-    })
-
     this.state = {
       user: null,
       campaign: null,
       turnorder: null,
       loaded: false,
       dropdownLoaded: false,
-      monsterOptions: monsterOptions,
-      monsters: this.props.monsers,
+      monsterOptions: this.props.monsters.map(monster => {
+        return {
+          key: monster.slug,
+          value: monster.slug,
+          text: monster.name
+        }
+      }),
       campaignRef: null,
       turnorderRef: null
     }
@@ -92,7 +89,7 @@ export default class Campaign extends Component {
   }
 
   addMonsterToTurnorder = (e, { searchQuery, value }) => {
-    let monster = this.state.monsters.find((monster) => { return monster.slug === value })
+    let monster = this.props.monsters.find((monster) => { return monster.slug === value })
     monster.monster = true
     this.addToTurnorder(monster)
   }

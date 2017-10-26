@@ -14,16 +14,7 @@ export default class Dashboard extends Component {
     this.state = {
       user: null,
       campaigns: [],
-      monsters: [],
-      spells: [],
-      statistics: null,
-      loaded: {
-        campaigns: false,
-        monsters: false,
-        spells: false,
-        general: false,
-        statistics: false
-      },
+      loaded: false
     }
   }
 
@@ -33,21 +24,21 @@ export default class Dashboard extends Component {
         <Grid columns={3}>
           <Grid.Row>
             <Grid.Column>
-              <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loaded={this.state.loaded.campaigns} />
+              <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loaded={this.state.loaded} />
             </Grid.Column>
 
             <Grid.Column>
-              <Panel title={'Latest Monsters'} content={this.renderMonsters.bind(this)} footer={false} loaded={this.state.loaded.monsters} />
+              <Panel title={'Latest Monsters'} content={this.renderMonsters.bind(this)} footer={false} loaded={true} />
             </Grid.Column>
 
             <Grid.Column>
-              <Panel title={'Latest Spells'} content={this.renderSpells.bind(this)} footer={false} loaded={this.state.loaded.spells} />
+              <Panel title={'Latest Spells'} content={this.renderSpells.bind(this)} footer={false} loaded={true} />
             </Grid.Column>
           </Grid.Row>
 
           <Grid.Row>
             <Grid.Column width={10}>
-              <Panel title={'Statistics'} content={this.renderStatistics.bind(this)} footer={false} loaded={this.state.loaded.statistics} />
+              <Panel title={'Statistics'} content={this.renderStatistics.bind(this)} footer={false} loaded={true} />
             </Grid.Column>
           </Grid.Row>
         </Grid>
@@ -57,7 +48,7 @@ export default class Dashboard extends Component {
 
   renderCampaigns = () => (
     <List>
-    { this.state.campaigns.map(item => {
+    { this.state.campaigns.slice(this.state.campaigns.length-5, this.state.campaigns.length).map(item => {
       return <List.Item key={item.slug}><Link to={'/campaign/'+item.slug}>{item.name}</Link></List.Item>
     })}
     </List>
@@ -65,7 +56,7 @@ export default class Dashboard extends Component {
 
   renderMonsters = () => (
     <List>
-    { this.state.monsters.map(item => {
+    { this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => {
       return <MonsterModal key={item.slug} monster={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
     })}
     </List>
@@ -73,7 +64,7 @@ export default class Dashboard extends Component {
 
   renderSpells = () => (
     <List>
-    { this.state.spells.map(item => {
+    { this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item => {
       return <SpellModal key={item.slug} spell={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
     })}
     </List>
@@ -81,11 +72,15 @@ export default class Dashboard extends Component {
 
   renderStatistics = () => (
     <div>
-    { this.state.loaded.statistics &&
       <Statistic.Group>
         <Statistic>
-          <Statistic.Value><Link to='/monsters'>{this.state.statistics.monsters_count}</Link></Statistic.Value>
+          <Statistic.Value><Link to='/monsters'>{this.props.monsters.length}</Link></Statistic.Value>
           <Statistic.Label><Link to='/monsters'>Monsters</Link></Statistic.Label>
+        </Statistic>
+
+        <Statistic>
+          <Statistic.Value><Link to='/spells'>{this.props.spells.length}</Link></Statistic.Value>
+          <Statistic.Label><Link to='/spells'>Spells</Link></Statistic.Label>
         </Statistic>
 
         <Statistic>
@@ -94,16 +89,15 @@ export default class Dashboard extends Component {
         </Statistic>
 
         <Statistic>
-          <Statistic.Value><Link to='/spells'>{this.state.statistics.spells_count}</Link></Statistic.Value>
-          <Statistic.Label><Link to='/spells'>Spells</Link></Statistic.Label>
-        </Statistic>
-
-        <Statistic>
           <Statistic.Value><Link to='/spells'>0</Link></Statistic.Value>
           <Statistic.Label><Link to='/spells'>My Spells</Link></Statistic.Label>
         </Statistic>
+
+        <Statistic>
+          <Statistic.Value><Link to='/campaigns'>{this.state.campaigns.length}</Link></Statistic.Value>
+          <Statistic.Label><Link to='/campaigns'>My Campaigns</Link></Statistic.Label>
+        </Statistic>
       </Statistic.Group>
-    }
     </div>
   )
 
@@ -120,22 +114,9 @@ export default class Dashboard extends Component {
         this.setState({ user })
 
         firebase.database().ref('userdata/'+user.uid+'/campaigns').on('child_added', (snapshot) => {
-          this.setState({ campaigns: [snapshot.val()].concat(this.state.campaigns), loaded: this.setLoaded('campaigns') })
+          this.setState({ campaigns: [snapshot.val()].concat(this.state.campaigns), loaded: true })
         });
 
-        firebase.database().ref('monsters').limitToLast(5).on('child_added', (snapshot) => {
-          this.setState({ monsters: [snapshot.val()].concat(this.state.monsters), loaded: this.setLoaded('monsters') })
-        });
-
-        firebase.database().ref('spells').limitToLast(5).on('child_added', (snapshot) => {
-          this.setState({ spells: [snapshot.val()].concat(this.state.spells), loaded: this.setLoaded('spells') })
-        });
-
-        firebase.database().ref('statistics').on('value', (snapshot) => {
-          this.setState({ statistics: snapshot.val(), loaded: this.setLoaded('statistics') })
-        });
-
-        this.setState({ loaded: this.setLoaded('general') })
       }
     })
   }
