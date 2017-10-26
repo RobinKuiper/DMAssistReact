@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Button, Dropdown, Header, Icon, Menu, Sidebar } from 'semantic-ui-react'
+import { Dropdown, Header, Icon, Menu, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-import { Auth, GoogleProvider, FacebookProvider } from './../Lib/firebase'
+import { Auth } from './../Lib/firebase'
+
+import LoginDropdownMenu from './LoginDropdownMenu'
 
 export default class MainSidebar extends Component {
   constructor(props){
@@ -30,12 +32,7 @@ export default class MainSidebar extends Component {
               </Dropdown.Menu>
             </Dropdown>
             :
-            <Dropdown item text='Sign In'>
-              <Dropdown.Menu>
-                <Dropdown.Item onClick={() => {Auth.signInWithPopup(GoogleProvider)}}><Button fluid color='google plus' icon='google' content='Google Login' /></Dropdown.Item>
-                <Dropdown.Item onClick={() => {Auth.signInWithPopup(FacebookProvider)}}><Button color='facebook' icon='facebook' content='Facebook Login' /></Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <LoginDropdownMenu text='Sign In' item />
           }
           <Menu.Item>&nbsp;</Menu.Item>
           {/* TODO: Check if Link can be inline */}

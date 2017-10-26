@@ -1,30 +1,22 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Grid, List, Statistic } from 'semantic-ui-react'
-import firebase, { Auth } from './../Lib/firebase'
+import { Auth } from './../Lib/firebase'
 import Panel from './Panel'
 
 import MonsterModal from './../Components/MonsterModal'
 import SpellModal from './../Components/SpellModal'
 
+import LoginDropdownMenu from './../Components/LoginDropdownMenu'
+
 export default class Dashboard extends Component {
-  constructor(props){
-    super(props)
-
-    this.state = {
-      user: null,
-      campaigns: [],
-      loaded: false
-    }
-  }
-
   render() {
     return (
       <main>
         <Grid columns={3}>
           <Grid.Row>
             <Grid.Column>
-              <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loaded={this.state.loaded} />
+              <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loaded={true} />
             </Grid.Column>
 
             <Grid.Column>
@@ -46,13 +38,21 @@ export default class Dashboard extends Component {
     )
   }
 
-  renderCampaigns = () => (
-    <List>
-    { this.state.campaigns.slice(this.state.campaigns.length-5, this.state.campaigns.length).map(item => {
-      return <List.Item key={item.slug}><Link to={'/campaign/'+item.slug}>{item.name}</Link></List.Item>
-    })}
-    </List>
-  )
+  renderCampaigns = () => {
+    if(Auth.currentUser){
+      return (
+        <List>
+        { this.props.campaigns.slice(this.props.campaigns.length-5, this.props.campaigns.length).map(item => {
+          return <List.Item key={item.slug}><Link to={'/campaign/'+item.slug}>{item.name}</Link></List.Item>
+        })}
+        </List>
+      )
+    }else{
+      return (
+        <p>Please <LoginDropdownMenu text='login' inline /> to see your campaigns</p>
+      )
+    }
+  }
 
   renderMonsters = () => (
     <List>
@@ -94,30 +94,10 @@ export default class Dashboard extends Component {
         </Statistic>
 
         <Statistic>
-          <Statistic.Value><Link to='/campaigns'>{this.state.campaigns.length}</Link></Statistic.Value>
+          <Statistic.Value><Link to='/campaigns'>{this.props.campaigns.length}</Link></Statistic.Value>
           <Statistic.Label><Link to='/campaigns'>My Campaigns</Link></Statistic.Label>
         </Statistic>
       </Statistic.Group>
     </div>
   )
-
-  setLoaded = (index) => {
-    var loaded = this.state.loaded
-    loaded[index] = true
-
-    return loaded
-  }
-
-  componentDidMount() {
-    Auth.onAuthStateChanged((user) => {
-      if (user){
-        this.setState({ user })
-
-        firebase.database().ref('userdata/'+user.uid+'/campaigns').on('child_added', (snapshot) => {
-          this.setState({ campaigns: [snapshot.val()].concat(this.state.campaigns), loaded: true })
-        });
-
-      }
-    })
-  }
 }

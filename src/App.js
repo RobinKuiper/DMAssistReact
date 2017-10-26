@@ -26,11 +26,12 @@ class App extends Component {
 
     this.state = {
       user: null,
+      campaigns: [],
       monsters: [],
       spells: [],
       loaded: false,
       loadStep: 0,
-      loadSteps: ['Loading Monsters...', 'Loading Spells...', 'Loading Campaigns...']
+      loadSteps: ['Loading Monsters...', 'Loading Spells...']
     }
   }
 
@@ -55,15 +56,6 @@ class App extends Component {
       snapshot.val().id = snapshot.key
       this.setState({ spells: [snapshot.val()].concat(this.state.spells), loaded: this.setLoaded()  })
     })
-
-    if(this.state.user){
-      let uDataRef = db.ref('userdata').child(this.state.user.uid);
-      let cRef = uDataRef.child('campaigns');
-      cRef.on('child_added', snapshot => {
-        snapshot.val().id = snapshot.key
-        this.setState({ campaigns: [snapshot.val()].concat(this.state.campaigns), loaded: this.setLoaded()  })
-      })
-    }
   }
 
   render() {
@@ -75,11 +67,11 @@ class App extends Component {
 
               <Sidebar.Pusher>
 
-                <PropsRoute exact path='/' component={Dashboard} monsters={this.state.monsters} spells={this.state.spells} />
+                <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} />
                 <Route path='/about' component={About} />
                 <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} />
                 <PropsRoute path='/spells' component={Spells} spells={this.state.spells} />
-                <PrivateRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} />
+                <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} />
                 <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} />
                 <Route path='/treasure-generator' component={TreasureGenerator} />
 
@@ -100,6 +92,15 @@ class App extends Component {
     Auth.onAuthStateChanged((user) => {
       if (user){
         this.setState({ user })
+
+        let uDataRef = firebase.database().ref('userdata').child(this.state.user.uid);
+        let cRef = uDataRef.child('campaigns');
+        cRef.on('child_added', snapshot => {
+          snapshot.val().id = snapshot.key
+          this.setState({ campaigns: [snapshot.val()].concat(this.state.campaigns) })
+        })
+      }else{
+        this.setState({ campaigns: [] })
       }
     })
   }

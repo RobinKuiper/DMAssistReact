@@ -82,7 +82,7 @@ export default class Monsters extends Component {
     var monsters = (this.state.filteredMonsters.length === 0) ? this.props.monsters : this.state.filteredMonsters
     return (
       <div>
-        <Grid columns={4}>
+        <Grid columns={3}>
           <Grid.Column>
             <Button.Group size='tiny'>
               <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
