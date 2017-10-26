@@ -4,7 +4,8 @@ import { calculateMod, formatTime, toSeconds } from './../Lib/Common'
 import Dice from './../Lib/Dice'
 import { Button, Dropdown, Grid, Input, List, Segment, Table } from 'semantic-ui-react'
 import Panel from './Panel'
-import MonsterModal from './../Components/MonsterModal'
+import Table_ from './../Components/Table'
+import Turnorder from './../Components/Turnorder'
 
 export default class Campaign extends Component {
   constructor(props) {
@@ -16,18 +17,15 @@ export default class Campaign extends Component {
       turnorder: null,
       loaded: false,
       dropdownLoaded: false,
-      monsterOptions: this.props.monsters.map(monster => {
-        return {
-          key: monster.slug,
-          value: monster.slug,
-          text: monster.name
-        }
-      }),
       campaignRef: null,
-      turnorderRef: null
+      turnorderRef: null,
+
+      newPlayerName: '',
+      newPlayerLevel: '',
+      newPlayerHP: '',
+      newPlayerAC: '',
     }
 
-    this.rollInitiative = this.rollInitiative.bind(this)
     this.addTime = this.addTime.bind(this)
   }
 
@@ -37,42 +35,84 @@ export default class Campaign extends Component {
     if(campaign){
       return (
         <main>
-          <Grid columns={1}>
-            <Grid.Row>
-              <Grid.Column>
-                <Panel title={campaign.name} content={this.content} loaded={this.state.loaded} loading={!this.state.loaded} />
+          <Turnorder campaign={this.state.campaign} monsters={this.props.monsters} campaignRef={this.state.campaignRef} />
+
+          <Segment raised>
+            <Grid columns={2}>
+              <Grid.Column width={6}>
+                <Button.Group size='massive' color='blue' floated='left'>
+                  <Button icon='undo' onClick={() => { this.state.campaignRef.child('/times/session').set(0) }}/>
+                  <Button>{formatTime(campaign.times.session)}</Button>
+                </Button.Group>
+
+                <Button.Group size='mini' color='blue' floated='left' basic vertical>
+                  <Button icon='plus' content='Short Rest' onClick={() => { this.addTime(campaign.settings.shortRest) }} />
+                  <Button icon='plus' content='Long Rest' onClick={() => { this.addTime(campaign.settings.longRest) }} />
+                </Button.Group>
               </Grid.Column>
-            </Grid.Row>
 
-            <Grid.Row>
-              <Grid.Column>
-              <Segment raised>
-                <Grid columns={2}>
-                  <Grid.Column width={6}>
-                    <Button.Group size='massive' color='blue' floated='left'>
-                      <Button icon='undo' onClick={() => { this.state.campaignRef.child('/times/session').set(0) }}/>
-                      <Button>{formatTime(campaign.times.session)}</Button>
-                    </Button.Group>
-
-                    <Button.Group size='mini' color='blue' floated='left' basic vertical>
-                      <Button icon='plus' content='Short Rest' onClick={() => { this.addTime(campaign.settings.shortRest) }} />
-                      <Button icon='plus' content='Long Rest' onClick={() => { this.addTime(campaign.settings.longRest) }} />
-                    </Button.Group>
-                  </Grid.Column>
-
-                  <Grid.Column width={10}>
-                    Public Link
-                  </Grid.Column>
-                </Grid>
-              </Segment>
+              <Grid.Column width={10}>
+                Public Link
               </Grid.Column>
-            </Grid.Row>
-          </Grid>
+            </Grid>
+          </Segment>
+
+          <Panel title='Players' content={this.playerContent.bind(this)} loaded={this.state.loaded} />
         </main>
       )
     }
 
     return <div>Loading...</div>
+  }
+
+  addPlayer() {
+    var player = {
+      name: this.state.newPlayerName,
+      level: this.state.newPlayerLevel,
+      hit_points: this.state.newPlayerHP,
+      armor_class: this.state.newPlayerAC
+    }
+
+    firebase.database().ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.state.campaign.slug).child('players').push(player)
+  }
+
+  playerContent() {
+    const tableConfig = {
+      headerCells: [
+        { content: 'Name', sortName: 'name' },
+        { content: 'Level', sortName: 'level' },
+        { content: 'HP', sortName: 'hit_points' },
+        { content: 'AC', sortName: 'armor_class' },
+        { content: '', colSpan: 2 },
+      ],
+      bodyRows: [],
+      footerCells: [
+        { content: (<Input placeholder='Name' type='text' transparent value={this.state.newPlayerName} onChange={(e) => this.setState({ newPlayerName: e.target.value }) } />) },
+        { content: (<Input placeholder='Level' type='number' transparent value={this.state.newPlayerLevel} onChange={(e) => this.setState({ newPlayerLevel: e.target.value }) } />) },
+        { content: (<Input placeholder='Hit Points' type='number' transparent value={this.state.newPlayerHP} onChange={(e) => this.setState({ newPlayerHP: e.target.value }) } />) },
+        { content: (<Input placeholder='Armor Class' type='number' transparent value={this.state.newPlayerAC} onChange={(e) => this.setState({ newPlayerAC: e.target.value }) } />) },
+        { content: (<Button icon='plus' content='Add' onClick={this.addPlayer.bind(this)} />) }
+      ]
+    }
+
+    var players = this.state.campaign.players
+    if(players){
+      Object.keys(players).map(key => {
+        tableConfig.bodyRows.push({
+          key: players[key].name,
+          cells: [
+            { content: players[key].name },
+            { content: players[key].level },
+            { content: players[key].hit_points },
+            { content: players[key].armor_class },
+          ]
+        })
+      });
+    }
+
+    return (
+      <Table_ color='black' headerCells={tableConfig.headerCells} bodyRows={tableConfig.bodyRows} footerCells={tableConfig.footerCells} />
+    )
   }
 
   addTime = (time) => {
@@ -81,156 +121,6 @@ export default class Campaign extends Component {
     campaign.times.total += time
     campaign.times.session += time
     this.state.campaignRef.set(campaign)
-  }
-
-  addToTurnorder = (item) => {
-    item = (item.name) ? item : { name: '' }
-    this.state.campaignRef.child('turnorder').push(item)
-  }
-
-  addMonsterToTurnorder = (e, { searchQuery, value }) => {
-    let monster = this.props.monsters.find((monster) => { return monster.slug === value })
-    monster.monster = true
-    this.addToTurnorder(monster)
-  }
-
-  rollInitiative = (item) => {
-    var dex = (item.dexterity) ? calculateMod(item.dexterity) : 0
-    var roll = Dice.roll(1, 20)
-
-    this.state.campaignRef.child('turnorder/'+item.id).update({ initiative: roll+dex })
-  }
-
-  resetTurnorder = () => {
-    var campaign = this.state.campaign
-    campaign.times.encounter = 0
-    campaign.round = 0
-    campaign.turnorder = (campaign.players) ? campaign.players : null
-    this.state.campaignRef.set(campaign)
-  }
-
-  compare(a,b){
-    var x = a.done === b.done ? 0 : a.done ? 1 : -1
-    return x === 0 ? a.initiative < b.initiative : x
-  }
-
-  content = () => (
-    <div>
-      <Grid columns={3}>
-        <Grid.Column width={10}>
-          <Dropdown placeholder='Add Monster' fluid search selection options={this.state.monsterOptions} onChange={this.addMonsterToTurnorder.bind(this)} />
-        </Grid.Column>
-
-        <Grid.Column width={2}>
-          <List>
-            <List.Item>Round: {this.state.campaign.round}</List.Item>
-            <List.Item>Time: {formatTime(this.state.campaign.times.encounter)}</List.Item>
-          </List>
-        </Grid.Column>
-
-        <Grid.Column width={4}>
-          EncounterDropdown
-        </Grid.Column>
-      </Grid>
-
-      <Table color='black' compact size='small'>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>
-              Initiative
-              {/*<Button size='mini' color='blue' icon='undo' inverted />*/}
-            </Table.HeaderCell>
-            <Table.HeaderCell>Level</Table.HeaderCell>
-            <Table.HeaderCell>HP</Table.HeaderCell>
-            <Table.HeaderCell>AC</Table.HeaderCell>
-            <Table.HeaderCell>Buffs</Table.HeaderCell>
-            <Table.HeaderCell>Conditions</Table.HeaderCell>
-            <Table.HeaderCell>Concentration</Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          { this.state.turnorder ? (
-              this.state.turnorder.sort(this.compare).map((turnorder) => (
-                <Table.Row key={turnorder.id}>
-                  <Table.Cell className={turnorder.done ? 'strikethrough' : ''}>
-                    {this.renderName(turnorder)}
-                  </Table.Cell>
-                  <Table.Cell>
-                  { turnorder.initiative ? (
-                    turnorder.initiative
-                  ) : (
-                    <div>
-                      <Input placeholder='Initiative' type='number' transparent />
-                      <Button size='mini' color='blue' icon='undo' inverted onClick={() => {this.rollInitiative(turnorder) }} />
-                    </div>
-                  )}
-                  </Table.Cell>
-                  <Table.Cell>{turnorder.level}</Table.Cell>
-                  <Table.Cell>
-                  { turnorder.hit_points ? (
-                    <Button.Group size='mini'>
-                      <Button color='red' icon='minus' onClick={() => { this.state.campaignRef.child('turnorder/'+turnorder.id).update({ hit_points: turnorder.hit_points-1 }) }} />
-                      <Button content={turnorder.hit_points} />
-                      <Button color='green' icon='plus' onClick={() => { this.state.campaignRef.child('turnorder/'+turnorder.id).update({ hit_points: turnorder.hit_points+1 }) }} />
-                    </Button.Group>
-                  ) : (
-                    <Input placeholder='Hit points' type='number' transparent />
-                  )}
-                  </Table.Cell>
-                  <Table.Cell>{turnorder.armor_class}</Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell></Table.Cell>
-                  <Table.Cell>
-                    <Button.Group size='mini'>
-                      <Button color='blue' icon='checkmark' onClick={() => { this.state.campaignRef.child('turnorder/'+turnorder.id).update({ done: true }) }} />
-                      <Button color='red' icon='remove' onClick={() => { this.state.campaignRef.child('turnorder/'+turnorder.id).remove() }} />
-                    </Button.Group>
-                  </Table.Cell>
-                </Table.Row>
-              ))
-            ) : (
-              <Table.Row>
-                <Table.Cell colSpan={9}>Add items to your turnorder.</Table.Cell>
-              </Table.Row>
-            )
-          }
-        </Table.Body>
-
-        <Table.Footer>
-          <Table.Row>
-            <Table.HeaderCell colSpan={5}>
-              <List horizontal>
-                <List.Item>Round: {this.state.campaign.round}</List.Item>
-                <List.Item>Time: {formatTime(this.state.campaign.times.encounter)}</List.Item>
-              </List>
-            </Table.HeaderCell>
-
-            <Table.HeaderCell colSpan={4}>
-              <Button.Group size='mini' floated='right'>
-                <Button color='green' icon='plus' onClick={this.addToTurnorder.bind(this)} />
-                <Button color='red' icon='undo' content='Reset' onClick={this.resetTurnorder.bind(this)} />
-              </Button.Group>
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Footer>
-      </Table>
-    </div>
-  )
-
-  renderName = (item) => {
-    if(item.name){
-      if(item.monster){
-        return <MonsterModal monster={item} trigger={<span style={{textDecoration: 'underline', cursor: 'pointer'}}>{item.name}</span>} />
-      }else{
-        return item.name
-      }
-    }else{
-      return <Input placeholder='Name' type='number' transparent />
-    }
   }
 
   componentDidMount() {

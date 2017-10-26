@@ -59,45 +59,27 @@ export default class AddCampaign extends Component {
 
   render(){
     return (
-      <Form onSubmit={this.handleSubmit.bind(this)} loading={!this.state.loaded}>
+      <Form loading={!this.state.loaded} size='tiny'>
         <Form.Input label='Campaign Name' type='text' name='name' value={this.state.campaignName} onChange={this.handleChange} />
 
         {/*<Header dividing>Players</Header>
-        <Segment basic>
-          {
-            this.state.players.map( player => (
-              <Form.Group widths='equal' inline>
-                <Form.Field>
-                  <Input placeholder='Name' value={player.name} onChange={this.handleChange} />
-                </Form.Field>
-                <Form.Field>
-                  <Input placeholder='Level' value={player.level} onChange={this.handleChange} />
-                </Form.Field>
-                <Form.Field>
-                  <Input placeholder='Hit Points' value={player.hitPoints} onChange={this.handleChange} />
-                </Form.Field>
-                <Form.Field>
-                  <Input placeholder='Armor Class' value={player.armorClass} onChange={this.handleChange} />
-                </Form.Field>
-              </Form.Group>
-            ))
-          }
 
-          <Button>
-            <Icon name='plus' />
-            Add Player
-          </Button>
-        </Segment>*/}
+        <Form.Group compact>
+          <Form.Input placeholder='Name' onChange={this.handleChange} />
+          <Form.Input placeholder='Level' onChange={this.handleChange} />
+          <Form.Input placeholder='Hit Points' onChange={this.handleChange} />
+          <Form.Input placeholder='Armor Class' onChange={this.handleChange} />
+        </Form.Group>
+
+        <Button icon='plus' content='Add Player' />*/}
 
         <Header dividing>Settings</Header>
-        <Segment basic>
-          <Form.Input label='Short Rest' type='text' placeholder='1H' name='shortRest' value={this.state.settings.shortRest} onChange={this.handleChange} />
-          <Form.Input label='Long Rest' type='text' placeholder='8H' name='longRest' value={this.state.settings.longRest} onChange={this.handleChange} />
-          <Form.Input label='Round Duration' type='text' placeholder='6' name='roundDuration' value={this.state.settings.roundDuration} onChange={this.handleChange} />
-        </Segment>
+        <Form.Input label='Short Rest' type='text' placeholder='1H' name='shortRest' value={this.state.settings.shortRest} onChange={this.handleChange} />
+        <Form.Input label='Long Rest' type='text' placeholder='8H' name='longRest' value={this.state.settings.longRest} onChange={this.handleChange} />
+        <Form.Input label='Round Duration' type='text' placeholder='6' name='roundDuration' value={this.state.settings.roundDuration} onChange={this.handleChange} />
 
         <Segment basic clearing>
-          <Button color={'green'} floated='right' type='submit'>Save Campaign</Button>
+          <Button color={'green'} floated='right' type='submit' onClick={this.handleSubmit.bind(this)}>Save Campaign</Button>
         </Segment>
 
       </Form>

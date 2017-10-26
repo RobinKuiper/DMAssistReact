@@ -3,7 +3,7 @@ import { Dropdown, Header, Icon, Menu, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { Auth } from './../Lib/firebase'
 
-import LoginDropdownMenu from './LoginDropdownMenu'
+import LoginModal from './../Components/LoginModal'
 
 export default class MainSidebar extends Component {
   constructor(props){
@@ -25,14 +25,14 @@ export default class MainSidebar extends Component {
             </Header.Subheader>
           </Menu.Header>
           { Auth.currentUser ?
-            <Dropdown item text={Auth.currentUser.displayName}>
+            <Dropdown item text={Auth.currentUser.displayName || Auth.currentUser.email}>
               <Dropdown.Menu>
                 <Dropdown.Item>Profile</Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
             :
-            <LoginDropdownMenu text='Sign In' item />
+            <LoginModal trigger={<Menu.Item name='Sign In'><Icon name='user' />Sign In</Menu.Item>} />
           }
           <Menu.Item>&nbsp;</Menu.Item>
           {/* TODO: Check if Link can be inline */}

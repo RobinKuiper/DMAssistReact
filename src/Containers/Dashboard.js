@@ -7,7 +7,7 @@ import Panel from './Panel'
 import MonsterModal from './../Components/MonsterModal'
 import SpellModal from './../Components/SpellModal'
 
-import LoginDropdownMenu from './../Components/LoginDropdownMenu'
+import LoginModal from './../Components/LoginModal'
 
 export default class Dashboard extends Component {
   render() {
@@ -42,14 +42,18 @@ export default class Dashboard extends Component {
     if(Auth.currentUser){
       return (
         <List>
-        { this.props.campaigns.slice(this.props.campaigns.length-5, this.props.campaigns.length).map(item => {
-          return <List.Item key={item.slug}><Link to={'/campaign/'+item.slug}>{item.name}</Link></List.Item>
-        })}
+        { this.props.campaigns.length !== 0 ?
+            this.props.campaigns.slice(this.props.campaigns.length-5, this.props.campaigns.length).map(item => {
+              return <List.Item key={item.slug}><Link to={'/campaign/'+item.slug}>{item.name}</Link></List.Item>
+            })
+          :
+            <List.Item>You don't have any campaigns yet.</List.Item>
+        }
         </List>
       )
     }else{
       return (
-        <p>Please <LoginDropdownMenu text='login' inline /> to see your campaigns</p>
+        <p>Please <LoginModal trigger={<span style={{textDecoration: 'underline', cursor: 'pointer'}}>Sign In</span>} /> to see your campaigns</p>
       )
     }
   }

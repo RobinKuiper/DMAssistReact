@@ -4,15 +4,16 @@ import { pageLimits } from './../Lib/Common'
 
 import Panel from './Panel'
 import SpellModal from './../Components/SpellModal'
+import { PaginatorButtons } from './../Components/Paginator'
+import Table from './../Components/Table'
 
-import { Button, Grid, Header, Input, Dropdown, Table } from 'semantic-ui-react'
+import { Button, Grid, Header, Input, Dropdown } from 'semantic-ui-react'
 
 export default class Spells extends Component {
   constructor(props){
     super(props)
 
     this.changeSortBy = this.changeSortBy.bind(this);
-    this.changePage = this.changePage.bind(this);
 
     this.state = {
       searchQuery: '',
@@ -21,10 +22,80 @@ export default class Spells extends Component {
       sortOrder: 'ascending',
       limit: 10,
       page: 0,
-      spells: this.props.spells,
       loaded: true
     }
   }
+
+  render() {
+    return (
+      <main>
+        <Grid columns={1}>
+          <Grid.Column>
+            <Panel title={'Spells'} content={this.renderContent} footer={this.renderFooter} loaded={this.state.loaded} />
+          </Grid.Column>
+        </Grid>
+      </main>
+    )
+  }
+
+  renderContent = () => {
+    var spells = (this.state.filteredSpells.length === 0) ? this.props.spells : this.state.filteredSpells
+
+    const tableConfig = {
+      headerCells: [
+        { content: 'Name', sortName: 'name' },
+        { content: 'School', sortName: 'school' },
+        { content: 'Casting Time', sortName: 'castingTime' },
+        { content: 'Duration', sortName: 'duration' },
+      ],
+      bodyRows: []
+    }
+
+    spells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => {
+      tableConfig.bodyRows.push({
+        key: spell.slug,
+        cells: [
+          { content: (<div>
+            <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
+            <span style={{fontSize: '8pt'}}>{spell.school}</span>
+          </div>) },
+          { content: spell.school },
+          { content: spell.castingTime },
+          { content: spell.duration }
+        ]
+      })
+    })
+
+    return (
+      <div>
+        <Grid columns={3}>
+          <Grid.Column>
+            <PaginatorButtons page={this.state.page} totalPages={Math.ceil(spells.length/this.state.limit)} handlePageChange={(page) => { this.setState({page}) }}/>
+          </Grid.Column>
+          <Grid.Column textAlign='center'>
+            <Input fluid icon='search' placeholder='Search...' value={this.state.searchQuery} onChange={this.search.bind(this)} />
+          </Grid.Column>
+          <Grid.Column textAlign='right'>
+            <Dropdown compact selection options={pageLimits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
+          </Grid.Column>
+        </Grid>
+
+        <Table color='purple' headerCells={tableConfig.headerCells} bodyRows={tableConfig.bodyRows} />
+      </div>
+    )
+  }
+
+  renderFooter = () => {
+    var spells = (this.state.filteredSpells.length === 0) ? this.props.spells : this.state.filteredSpells
+    return (
+      <div>
+        <PaginatorButtons page={this.state.page} totalPages={Math.ceil(spells.length/this.state.limit)} handlePageChange={(page) => { this.setState({page}) }}/>
+        <span style={{float: 'right'}}>Total Spells: {spells.length}</span>
+      </div>
+    )
+  }
+
+  changeLimit = (e, { value }) => this.setState({ page: 0, limit: value })
 
   changeSortBy(to){
     if(to === this.state.sortBy){
@@ -53,103 +124,16 @@ export default class Spells extends Component {
     return comparison;
   }
 
-  render() {
-    return (
-      <main>
-        <Grid columns={1}>
-          <Grid.Column>
-            <Panel title={'Spells'} content={this.renderContent} footer={this.renderFooter} loaded={this.state.loaded} />
-          </Grid.Column>
-        </Grid>
-      </main>
-    )
-  }
-
-  renderFooter = () => (
-    <div>
-      <Button.Group size='tiny'>
-        <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
-        <Button>{this.state.page+1} / {Math.ceil(this.state.filteredSpells.length/this.state.limit)}</Button>
-        <Button icon='chevron right' onClick={() => { this.changePage(1) }} disabled={this.state.page + 1 >= this.state.filteredSpells.length / this.state.limit } />
-      </Button.Group>
-      <span style={{float: 'right'}}>Total Spells: {this.state.filteredSpells.length}</span>
-    </div>
-  )
-
-  renderContent = () => (
-    <div>
-      <Grid columns={3}>
-        <Grid.Column>
-          {/* TODO: Paginator Component */}
-          <Button.Group size='tiny'>
-            <Button icon='chevron left' onClick={() => { this.changePage(-1) }} disabled={this.state.page === 0} />
-            <Button>{this.state.page+1} / {Math.ceil(this.state.filteredSpells.length/this.state.limit)}</Button>
-            <Button icon='chevron right' onClick={() => { this.changePage(1) }} disabled={this.state.page + 1 >= this.state.filteredSpells.length / this.state.limit } />
-          </Button.Group>
-        </Grid.Column>
-        <Grid.Column textAlign='center'>
-          <Input fluid icon='search' placeholder='Search...' value={this.state.searchQuery} onChange={this.search.bind(this)} />
-        </Grid.Column>
-        <Grid.Column textAlign='right'>
-          <Dropdown compact selection options={pageLimits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
-        </Grid.Column>
-      </Grid>
-
-      <Table color='purple' selectable sortable unstackable>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell sorted={this.state.sortBy === 'name' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('name') }}>
-              Name
-            </Table.HeaderCell>
-            <Table.HeaderCell sorted={this.state.sortBy === 'school' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('school') }}>
-              School
-            </Table.HeaderCell>
-            <Table.HeaderCell sorted={this.state.sortBy === 'castingTime' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('castingTime') }}>
-              Casting Time
-            </Table.HeaderCell>
-            <Table.HeaderCell sorted={this.state.sortBy === 'duration' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('duration') }}>
-              Duration
-            </Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          { this.state.filteredSpells.length > 0 ?
-              this.state.filteredSpells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
-                <Table.Row key={spell.slug}>
-                  <Table.Cell>
-                    <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
-                    <span style={{fontSize: '8pt'}}>{spell.school}</span>
-                  </Table.Cell>
-                  <Table.Cell>{spell.school}</Table.Cell>
-                  <Table.Cell>{spell.castingTime}</Table.Cell>
-                  <Table.Cell>{spell.duration}</Table.Cell>
-                </Table.Row>
-              ))
-            : (
-              <Table.Row>
-                <Table.Cell colSpan={5}>No spells found.</Table.Cell>
-              </Table.Row>
-            )
-          }
-        </Table.Body>
-      </Table>
-    </div>
-  )
-
-  changePage = (direction) => this.setState({ page: this.state.page + direction })
-  changeLimit = (e, { value }) => this.setState({ limit: value })
-
   search(e){
     e.preventDefault()
 
     this.setState({ searchQuery: e.target.value })
 
     if(e.target.value === ''){
-      this.setState({ filteredSpells: this.state.spells })
+      this.setState({ filteredSpells: this.props.spells })
       return;
     }else{
-      var spells = this.state.spells.filter((spell) => spell.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+      var spells = this.props.spells.filter((spell) => spell.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
         spell.school.toLowerCase().includes(e.target.value.toLowerCase()) ||
         spell.duration.toLowerCase().includes(e.target.value.toLowerCase()) ||
         spell.castingTime.toLowerCase().includes(e.target.value.toLowerCase())
