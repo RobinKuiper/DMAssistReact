@@ -42,19 +42,41 @@ class App extends Component {
   }
 
   componentWillMount(){
-    let db = firebase.database()
+    this.loadMonsters()
+  }
 
+  loadMonsters = () => {
+    let db = firebase.database()
     let mRef = db.ref('monsters').limitToLast(__LIMIT__);
-    let sRef = db.ref('spells').limitToLast(__LIMIT__);
 
     mRef.on('child_added', snapshot => {
       snapshot.val().id = snapshot.key
-      this.setState({ monsters: [snapshot.val()].concat(this.state.monsters), loaded: this.setLoaded()  })
+      this.setState({ monsters: [snapshot.val()].concat(this.state.monsters) })
+
+      if(!this.state.loaded){
+        var t;
+        clearTimeout(t)
+        t = setTimeout(() => {
+          this.setState({ loaded: this.setLoaded() })
+          this.loadSpells()
+        }, 1000)
+      }
     })
+  }
+
+  loadSpells = () => {
+    let db = firebase.database()
+    let sRef = db.ref('spells').limitToLast(__LIMIT__);
 
     sRef.on('child_added', snapshot => {
       snapshot.val().id = snapshot.key
-      this.setState({ spells: [snapshot.val()].concat(this.state.spells), loaded: this.setLoaded()  })
+      this.setState({ spells: [snapshot.val()].concat(this.state.spells)  })
+
+      if(!this.state.loaded){
+        var t
+        clearTimeout(t)
+        t = setTimeout(() => this.setState({ loaded: this.setLoaded() }), 1000)
+      }
     })
   }
 
