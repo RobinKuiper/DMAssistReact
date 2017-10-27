@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import firebase, { Auth } from './../Lib/firebase'
 import { formatTime, toSeconds } from './../Lib/Common'
-import { Button, Grid, Input, Segment } from 'semantic-ui-react'
+import { Button, Grid, Input, Popup, Segment } from 'semantic-ui-react'
 import Panel from './Panel'
 import TableFull from './../Components/Table'
 import Turnorder from './../Components/Turnorder'
@@ -40,13 +40,13 @@ export default class Campaign extends Component {
             <Grid columns={2}>
               <Grid.Column width={6}>
                 <Button.Group size='massive' color='blue' floated='left'>
-                  <Button icon='undo' onClick={() => { this.state.campaignRef.child('/times/session').set(0) }}/>
-                  <Button>{formatTime(campaign.times.session)}</Button>
+                  <Popup content='Reset Session Time' trigger={<Button icon='undo' onClick={() => { this.state.campaignRef.child('/times/session').set(0) }}/>} />
+                  <Button disabled>{formatTime(campaign.times.session)}</Button>
                 </Button.Group>
 
                 <Button.Group size='mini' color='blue' floated='left' basic vertical>
-                  <Button icon='plus' content='Short Rest' onClick={() => { this.addTime(campaign.settings.shortRest) }} />
-                  <Button icon='plus' content='Long Rest' onClick={() => { this.addTime(campaign.settings.longRest) }} />
+                  <Popup content={'Add ' + campaign.settings.shortRest + ' to your session time.'} trigger={<Button icon='plus' content='Short Rest' onClick={() => { this.addTime(campaign.settings.shortRest) }} />} />
+                  <Popup content={'Add ' + campaign.settings.longRest + ' to your session time.'} trigger={<Button icon='plus' content='Long Rest' onClick={() => { this.addTime(campaign.settings.longRest) }} />} />
                 </Button.Group>
               </Grid.Column>
 
@@ -56,7 +56,7 @@ export default class Campaign extends Component {
             </Grid>
           </Segment>
 
-          <Panel title='Players' content={this.playerContent.bind(this)} loaded={this.state.loaded} />
+          <Panel title='Players' content={this.playerContent} loaded={this.state.loaded} />
         </main>
       )
     }
@@ -75,7 +75,7 @@ export default class Campaign extends Component {
     firebase.database().ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.state.campaign.slug).child('players').push(player)
   }
 
-  playerContent() {
+  playerContent = () => {
     const tableConfig = {
       headerCells: [
         { content: 'Name', sortName: 'name' },
@@ -98,12 +98,18 @@ export default class Campaign extends Component {
     if(players){
       tableConfig.bodyRows = Object.keys(players).map(key => {
         return {
-          key: players[key].name,
+          key,
           cells: [
             { content: players[key].name },
             { content: players[key].level },
             { content: players[key].hit_points },
             { content: players[key].armor_class },
+            { content: (
+              <Button.Group size='mini'>
+                <Popup content={'Add ' + players[key].name + ' to the turnorder.'} trigger={<Button color='blue' icon='plus' onClick={() => this.state.campaignRef.child('turnorder').push(players[key]) } />} />
+                <Popup content={'Remove ' + players[key].name + ' from your campaign.'} trigger={<Button color='red' icon='remove' onClick={() => { this.state.campaignRef.child('players/'+key).remove() }} />} />
+              </Button.Group>
+            )}
           ]
         }
       });

@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { Button, Dropdown, Grid, Input, List, Table } from 'semantic-ui-react'
+import { Button, Dropdown, Grid, List, Popup, Table } from 'semantic-ui-react'
 
-import { formatTime, calculateMod } from './../Lib/Common'
-import Dice from './../Lib/Dice'
+import { formatTime } from './../Lib/Common'
 
 import Panel from './../Containers/Panel'
-import MonsterModal from './MonsterModal'
+import TurnorderItem from './TurnorderItem'
 
 export default class Turnorder extends Component {
   constructor(props) {
@@ -18,10 +17,8 @@ export default class Turnorder extends Component {
           value: monster.slug,
           text: monster.name
         }
-      })
+      }),
     }
-
-    this.rollInitiative = this.rollInitiative.bind(this)
   }
 
   render() {
@@ -101,43 +98,7 @@ export default class Turnorder extends Component {
           <Table.Body>
             { this.props.campaign.turnorder ? (
                 Object.keys(this.props.campaign.turnorder).map(key => this.props.campaign.turnorder[key]).sort(this.compare).map((turnorder) => (
-                  <Table.Row key={turnorder.id}>
-                    <Table.Cell className={turnorder.done ? 'strikethrough' : ''}>
-                      {this.renderName(turnorder)}
-                    </Table.Cell>
-                    <Table.Cell>
-                    { turnorder.initiative ? (
-                      turnorder.initiative
-                    ) : (
-                      <div>
-                        <Input placeholder='Initiative' type='number' transparent />
-                        <Button size='mini' color='blue' icon='undo' inverted onClick={() => {this.rollInitiative(turnorder) }} />
-                      </div>
-                    )}
-                    </Table.Cell>
-                    <Table.Cell>{turnorder.level}</Table.Cell>
-                    <Table.Cell>
-                    { turnorder.hit_points ? (
-                      <Button.Group size='mini'>
-                        <Button color='red' icon='minus' onClick={() => { this.props.campaignRef.child('turnorder/'+turnorder.id).update({ hit_points: parseInt(turnorder.hit_points, 10)-1 }) }} />
-                        <Button content={turnorder.hit_points} />
-                        <Button color='green' icon='plus' onClick={() => { this.props.campaignRef.child('turnorder/'+turnorder.id).update({ hit_points: parseInt(turnorder.hit_points, 10)+1 }) }} />
-                      </Button.Group>
-                    ) : (
-                      <Input placeholder='Hit points' type='number' transparent />
-                    )}
-                    </Table.Cell>
-                    <Table.Cell>{turnorder.armor_class}</Table.Cell>
-                    <Table.Cell></Table.Cell>
-                    <Table.Cell></Table.Cell>
-                    <Table.Cell></Table.Cell>
-                    <Table.Cell>
-                      <Button.Group size='mini'>
-                        <Button color='blue' icon='checkmark' onClick={() => { this.props.campaignRef.child('turnorder/'+turnorder.id).update({ done: true }) }} />
-                        <Button color='red' icon='remove' onClick={() => { this.props.campaignRef.child('turnorder/'+turnorder.id).remove() }} />
-                      </Button.Group>
-                    </Table.Cell>
-                  </Table.Row>
+                  <TurnorderItem key={turnorder.id} item={turnorder} campaignRef={this.props.campaignRef} />
                 ))
               ) : (
                 <Table.Row>
@@ -158,8 +119,8 @@ export default class Turnorder extends Component {
 
               <Table.HeaderCell colSpan={4}>
                 <Button.Group size='mini' floated='right'>
-                  <Button color='green' icon='plus' onClick={this.addToTurnorder.bind(this)} />
-                  <Button color='red' icon='undo' content='Reset' onClick={this.resetTurnorder.bind(this)} />
+                  <Popup content='Add empty item to the turnorder.' trigger={<Button color='green' icon='plus' onClick={this.addToTurnorder.bind(this)} />} />
+                  <Popup content='Reset the turnorder' trigger={<Button color='red' icon='undo' content='Reset' onClick={this.resetTurnorder.bind(this)} />} />
                 </Button.Group>
               </Table.HeaderCell>
             </Table.Row>
@@ -191,24 +152,5 @@ export default class Turnorder extends Component {
     campaign.round = 0
     campaign.turnorder = (campaign.players) ? campaign.players : null
     this.props.campaignRef.set(campaign)
-  }
-
-  renderName = (item) => {
-    if(item.name){
-      if(item.monster){
-        return <MonsterModal monster={item} trigger={<span style={{textDecoration: 'underline', cursor: 'pointer'}}>{item.name}</span>} />
-      }else{
-        return item.name
-      }
-    }else{
-      return <Input placeholder='Name' type='number' transparent />
-    }
-  }
-
-  rollInitiative = (item) => {
-    var dex = (item.dexterity) ? calculateMod(item.dexterity).mod : 0
-    var roll = Dice.roll(1, 20)
-
-    this.props.campaignRef.child('turnorder/'+item.id).update({ initiative: roll+dex })
   }
 }

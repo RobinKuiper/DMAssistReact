@@ -52,6 +52,7 @@ export const formatTime = (seconds) => {
   return days + " " + hours + ":" + minutes + ":" + seconds
 }
 
+/* eslint-disable */
 export const Slugify = (text) => {
   return text.toString().toLowerCase()
     .replace(/\s+/g, '-')           // Replace spaces with -
@@ -60,6 +61,7 @@ export const Slugify = (text) => {
     .replace(/^-+/, '')             // Trim - from start of text
     .replace(/-+$/, '');            // Trim - from end of text
 }
+/* eslint-enable */
 
 export const formatCR = (cr) => {
   return (cr === 0.125) ? '1/8' : (cr === 0.25) ? '1/4' : (cr === 0.5) ? '1/2' : cr

@@ -17,7 +17,7 @@ import About from './Containers/About'
 
 import './App.css';
 
-const __LIMIT__ = 10
+const __LIMIT__ = 1
 
 // TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {
