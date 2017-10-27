@@ -36,36 +36,26 @@ export default class MainSidebar extends Component {
           }
           <Menu.Item>&nbsp;</Menu.Item>
           {/* TODO: Check if Link can be inline */}
-          <Link to='/'>
-            <Menu.Item name='dashboard'>
-              <Icon name='home' />
-              Dashboard
-            </Menu.Item>
-          </Link>
-          <Link to='/monsters'>
-            <Menu.Item name='monsters'>
-              <Icon name='spy' />
-              Monsters
-            </Menu.Item>
-          </Link>
-          <Link to='/spells'>
-            <Menu.Item name='spells'>
-              <Icon name='book' />
-              Spells
-            </Menu.Item>
-          </Link>
-          <Link to='/campaigns'>
-            <Menu.Item name='campaigns'>
-              <Icon name='newspaper' />
-              Campaigns
-            </Menu.Item>
-          </Link>
-          <Link to='/treasure-generator'>
-            <Menu.Item name='treasure'>
-              <Icon name='diamond' />
-              Treasure Gen.
-            </Menu.Item>
-          </Link>
+          <Menu.Item as={Link} to='/' name='dashboard'>
+            <Icon name='home' />
+            Dashboard
+          </Menu.Item>
+          <Menu.Item as={Link} to='/monsters' name='monsters'>
+            <Icon name='spy' />
+            Monsters
+          </Menu.Item>
+          <Menu.Item as={Link} to='/spells' name='spells'>
+            <Icon name='book' />
+            Spells
+          </Menu.Item>
+          <Menu.Item as={Link} to='/campaigns' name='campaigns'>
+            <Icon name='newspaper' />
+            Campaigns
+          </Menu.Item>
+          <Menu.Item as={Link} to='/treasure-generator' name='treasure'>
+            <Icon name='diamond' />
+            Treasure Gen.
+          </Menu.Item>
         </Menu>
 
         <Menu vertical fluid inverted style={{position: 'fixed', bottom: 0, paddingBottom: 5}}>
@@ -73,12 +63,10 @@ export default class MainSidebar extends Component {
             Discord
             <Icon name='text telephone' />
           </Menu.Item>
-          <Link to='/about'>
-            <Menu.Item>
-              About
-              <Icon name='info' />
-            </Menu.Item>
-          </Link>
+          <Menu.Item as={Link} to='/about'>
+            About
+            <Icon name='info' />
+          </Menu.Item>
           <Menu.Item>
             {/* TODO: Check paypal link */}
             <form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_blank'>
