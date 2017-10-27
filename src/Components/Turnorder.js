@@ -22,7 +22,7 @@ export default class Turnorder extends Component {
   }
 
   render() {
-    return <Panel title={this.props.campaign.name} content={this.content} loaded={true} />
+    return <Panel title='Turn Order' content={this.content} loaded={true} />
   }
 
   content = () => {

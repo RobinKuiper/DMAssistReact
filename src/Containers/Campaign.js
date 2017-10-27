@@ -5,6 +5,7 @@ import { Button, Grid, Input, Popup, Segment } from 'semantic-ui-react'
 import Panel from './Panel'
 import TableFull from './../Components/Table'
 import Turnorder from './../Components/Turnorder'
+import FixedMenu from "./../Components/FixedMenu";
 
 export default class Campaign extends Component {
   constructor(props) {
@@ -33,31 +34,34 @@ export default class Campaign extends Component {
 
     if(campaign){
       return (
-        <main>
-          <Turnorder campaign={this.state.campaign} monsters={this.props.monsters} campaignRef={this.state.campaignRef} />
+        <div>
+          {/*<FixedMenu title={this.state.campaign.name} />*/}
+          <main>
+            <Turnorder campaign={this.state.campaign} monsters={this.props.monsters} campaignRef={this.state.campaignRef} />
 
-          <Segment raised>
-            <Grid columns={2}>
-              <Grid.Column width={6}>
-                <Button.Group size='massive' color='blue' floated='left'>
-                  <Popup content='Reset Session Time' trigger={<Button icon='undo' onClick={() => { this.state.campaignRef.child('/times/session').set(0) }}/>} />
-                  <Button disabled>{formatTime(campaign.times.session)}</Button>
-                </Button.Group>
+            <Segment raised>
+              <Grid columns={2}>
+                <Grid.Column width={6}>
+                  <Button.Group size='massive' color='blue' floated='left'>
+                    <Popup content='Reset Session Time' trigger={<Button icon='undo' onClick={() => { this.state.campaignRef.child('/times/session').set(0) }}/>} />
+                    <Button disabled>{formatTime(campaign.times.session)}</Button>
+                  </Button.Group>
 
-                <Button.Group size='mini' color='blue' floated='left' basic vertical>
-                  <Popup content={'Add ' + campaign.settings.shortRest + ' to your session time.'} trigger={<Button icon='plus' content='Short Rest' onClick={() => { this.addTime(campaign.settings.shortRest) }} />} />
-                  <Popup content={'Add ' + campaign.settings.longRest + ' to your session time.'} trigger={<Button icon='plus' content='Long Rest' onClick={() => { this.addTime(campaign.settings.longRest) }} />} />
-                </Button.Group>
-              </Grid.Column>
+                  <Button.Group size='mini' color='blue' floated='left' basic vertical>
+                    <Popup content={'Add ' + campaign.settings.shortRest + ' to your session time.'} trigger={<Button icon='plus' content='Short Rest' onClick={() => { this.addTime(campaign.settings.shortRest) }} />} />
+                    <Popup content={'Add ' + campaign.settings.longRest + ' to your session time.'} trigger={<Button icon='plus' content='Long Rest' onClick={() => { this.addTime(campaign.settings.longRest) }} />} />
+                  </Button.Group>
+                </Grid.Column>
 
-              <Grid.Column width={10}>
-                Public Link
-              </Grid.Column>
-            </Grid>
-          </Segment>
+                <Grid.Column width={10}>
+                  Public Link
+                </Grid.Column>
+              </Grid>
+            </Segment>
 
-          <Panel title='Players' content={this.playerContent} loaded={this.state.loaded} />
-        </main>
+            <Panel title='Players' content={this.playerContent} loaded={this.state.loaded} />
+          </main>
+        </div>
       )
     }
 
