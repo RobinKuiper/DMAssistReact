@@ -1,6 +1,20 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
+    "monsters": {
+      ".read": true,
+      ".write": true
+    },
+    "spells": {
+      ".read": true,
+      ".write": true
+    },
+    "userdata": {
+      "$uid": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid"
+      }
+    },
+    ".read": false,
+    ".write": false
   }
 }

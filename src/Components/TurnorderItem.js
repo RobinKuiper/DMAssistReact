@@ -63,7 +63,11 @@ export default class TurnorderItem extends Component {
         { item.hit_points ? (
           <Button.Group size='mini'>
             <Popup content='Decrease Hit Points' trigger={<Button color='red' icon='minus' onMouseDown={this.decreaseHP.bind(this)} onMouseUp={this.onMouseUp} />} />{/*onClick={() => { this.props.campaignRef.child('turnorder/'+item.id).update({ hit_points: parseInt(item.hit_points, 10)-1 }) }}*/}
-            <Button content={this.state.tempHP || item.hit_points} />
+            <Popup position='center top' trigger={<Button content={this.state.tempHP || item.hit_points} />} on='click' hoverable content={<Input placeholder='5, -6, etc' type='number' onKeyDown={(e) => {if(e.keyCode === 13) {
+              var newHP = parseInt(item.hit_points, 10)+parseInt(e.target.value, 10)
+              this.setState({ tempHP: newHP })
+              this.props.campaignRef.child('turnorder/'+item.id).update({ hit_points: newHP })
+            }} } />} />
             <Popup content='Increase Hit Points' trigger={<Button color='green' icon='plus' onMouseDown={this.increaseHP.bind(this)} onMouseUp={this.onMouseUp} />} />
           </Button.Group>
         ) : (

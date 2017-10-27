@@ -17,7 +17,7 @@ import About from './Containers/About'
 
 import './App.css';
 
-const __LIMIT__ = 1
+const __LIMIT__ = process.env.NODE_ENV === "development" ? 1 : 1000
 
 // TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {
