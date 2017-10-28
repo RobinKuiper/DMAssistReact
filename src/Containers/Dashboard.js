@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Grid, List, Statistic } from 'semantic-ui-react'
+import { Button, Grid, List, Statistic } from 'semantic-ui-react'
 import { Auth } from './../Lib/firebase'
 import AdSense from 'react-adsense'
 import Panel from './Panel'
@@ -14,6 +14,17 @@ export default class Dashboard extends Component {
   render() {
     return (
       <main>
+        <Button content='Send Mail' onClick={() =>{
+          Auth.currentUser.sendEmailVerification()
+          .then(data => {
+            console.log(data)
+            console.log('Mail Send')
+          })
+          .catch(error => {
+            console.log(error)
+            console.log('Mail Not Send')
+          })
+        }} />
         <Grid columns={3}>
           <Grid.Row>
             <Grid.Column>
