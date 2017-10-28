@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 
 import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
+import { Auth } from './../Lib/firebase'
 
 import Panel from './Panel'
 import MonsterModal from './../Components/MonsterModal'
+import Encounters from './../Components/Encounters'
 
-import { Grid, Header, Input, Dropdown } from 'semantic-ui-react'
+import { Button, Dropdown, Grid, Header, Input, Popup } from 'semantic-ui-react'
 import Table from './../Components/Table'
 
 import { PaginatorButtons } from './../Components/Paginator'
@@ -23,16 +25,21 @@ export default class Monsters extends Component {
       sortOrder: 'ascending',
       limit: 10,
       page: 0,
-      loaded: true
+      loaded: true,
+      toEncounterMonster: null
     }
   }
 
   render() {
     return (
       <main>
-        <Grid columns={1}>
-          <Grid.Column>
+        <Grid columns={2}>
+          <Grid.Column width={11}>
             <Panel title={'Monsters'} content={this.renderContent} footer={this.renderFooter} loaded={this.state.loaded} />
+          </Grid.Column>
+
+          <Grid.Column width={5}>
+            <Encounters ref={instance => { this.encounters = instance }} />
           </Grid.Column>
         </Grid>
       </main>
@@ -49,6 +56,7 @@ export default class Monsters extends Component {
         { content: 'HP', sortName: 'hit_points' },
         { content: 'AC', sortName: 'armor_class' },
         { content: 'Exp', sortName: 'challenge_rating' },
+        { content: '' }
       ],
       bodyRows: []
     }
@@ -64,7 +72,8 @@ export default class Monsters extends Component {
           </div>) },
           { content: monster.hit_points },
           { content: monster.armor_class },
-          { content: CRtoEXP(monster.challenge_rating) + ' XP' }
+          { content: CRtoEXP(monster.challenge_rating) + ' XP' },
+          { content: Auth.currentUser && (<Popup content='Add to encounter' trigger={<Button icon='plus' onClick={() => this.encounters.addMonster(monster) } />} />) }
         ]
       }
     })

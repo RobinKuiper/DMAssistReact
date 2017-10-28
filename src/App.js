@@ -17,7 +17,9 @@ import About from './Containers/About'
 
 import './App.css';
 
-const __LIMIT__ = process.env.NODE_ENV === "development" ? 1 : 1000
+const __LIMIT__ = process.env.NODE_ENV === "development" ? 10 : 1000
+const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 5000 : 1000
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? true : true
 
 // TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {
@@ -42,7 +44,11 @@ class App extends Component {
   }
 
   componentWillMount(){
-    this.loadMonsters()
+    if(__LOAD_SHIT__){
+      this.loadMonsters()
+    }else{
+      this.setState({ loaded: true })
+    }
   }
 
   loadMonsters = () => {
@@ -59,7 +65,7 @@ class App extends Component {
         t = setTimeout(() => {
           this.setState({ loaded: this.setLoaded() })
           this.loadSpells()
-        }, 1000)
+        }, __LOAD_TIMEOUT__)
       }
     })
   }
@@ -75,7 +81,7 @@ class App extends Component {
       if(!this.state.loaded){
         var t
         clearTimeout(t)
-        t = setTimeout(() => this.setState({ loaded: this.setLoaded() }), 1000)
+        t = setTimeout(() => this.setState({ loaded: this.setLoaded() }), __LOAD_TIMEOUT__)
       }
     })
   }
