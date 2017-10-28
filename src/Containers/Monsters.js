@@ -73,7 +73,7 @@ export default class Monsters extends Component {
           { content: monster.hit_points },
           { content: monster.armor_class },
           { content: CRtoEXP(monster.challenge_rating) + ' XP' },
-          { content: Auth.currentUser && (<Popup content='Add to encounter' trigger={<Button icon='plus' onClick={() => this.encounters.addMonster(monster) } />} />) }
+          { content: Auth.currentUser && (<Popup content='Add to encounter' trigger={<Button icon='plus' size='mini' onClick={() => this.encounters.addMonster(monster) } />} />) }
         ]
       }
     })
