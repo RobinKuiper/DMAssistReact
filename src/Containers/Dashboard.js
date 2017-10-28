@@ -44,7 +44,7 @@ export default class Dashboard extends Component {
         <List>
         { this.props.campaigns.length !== 0 ?
             this.props.campaigns.slice(this.props.campaigns.length-5, this.props.campaigns.length).map(item => {
-              return <List.Item key={item.slug}><Link to={'/campaign/'+item.slug}>{item.name}</Link></List.Item>
+              return <List.Item as={Link} to={'/campaign/'+item.slug} key={item.slug}>{item.name}</List.Item>
             })
           :
             <List.Item>You don't have any campaigns yet.</List.Item>
@@ -77,29 +77,29 @@ export default class Dashboard extends Component {
   renderStatistics = () => (
     <div>
       <Statistic.Group>
-        <Statistic>
-          <Statistic.Value><Link to='/monsters'>{this.props.monsters.length}</Link></Statistic.Value>
-          <Statistic.Label><Link to='/monsters'>Monsters</Link></Statistic.Label>
+        <Statistic as={Link} to='/monsters'>
+          <Statistic.Value>{this.props.monsters.length}</Statistic.Value>
+          <Statistic.Label>Monsters</Statistic.Label>
         </Statistic>
 
-        <Statistic>
-          <Statistic.Value><Link to='/spells'>{this.props.spells.length}</Link></Statistic.Value>
-          <Statistic.Label><Link to='/spells'>Spells</Link></Statistic.Label>
+        <Statistic as={Link} to='/spells'>
+          <Statistic.Value>{this.props.spells.length}</Statistic.Value>
+          <Statistic.Label>Spells</Statistic.Label>
         </Statistic>
 
-        <Statistic>
-          <Statistic.Value><Link to='/monsters'>0</Link></Statistic.Value>
-          <Statistic.Label><Link to='/monsters'>My Monsters</Link></Statistic.Label>
+        <Statistic as={Link} to='/monsters'>
+          <Statistic.Value>0</Statistic.Value>
+          <Statistic.Label>My Monsters</Statistic.Label>
         </Statistic>
 
-        <Statistic>
-          <Statistic.Value><Link to='/spells'>0</Link></Statistic.Value>
-          <Statistic.Label><Link to='/spells'>My Spells</Link></Statistic.Label>
+        <Statistic as={Link} to='/spells'>
+          <Statistic.Value>0</Statistic.Value>
+          <Statistic.Label>My Spells</Statistic.Label>
         </Statistic>
 
-        <Statistic>
-          <Statistic.Value><Link to='/campaigns'>{this.props.campaigns.length}</Link></Statistic.Value>
-          <Statistic.Label><Link to='/campaigns'>My Campaigns</Link></Statistic.Label>
+        <Statistic as={Link} to='/campaigns'>
+          <Statistic.Value>{this.props.campaigns.length}</Statistic.Value>
+          <Statistic.Label>My Campaigns</Statistic.Label>
         </Statistic>
       </Statistic.Group>
     </div>

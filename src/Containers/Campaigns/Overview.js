@@ -7,11 +7,11 @@ const Overview = ({ campaigns }) => (
     { campaigns.length !== 0 ?
         // Render campaigns
         campaigns.map( campaign => (
-          <List.Item key={campaign.slug}>
+          <List.Item as={Link} to={'/campaign/'+campaign.slug} key={campaign.slug}>
             <Image size='mini' src={campaign.image ? campaign.image : './images/no-campaign-image.png'} />
             <List.Content verticalAlign='middle'>
               <List.Header>
-                <Link to={'/campaign/'+campaign.slug}>{campaign.name}</Link>
+                {campaign.name}
               </List.Header>
             </List.Content>
           </List.Item>
