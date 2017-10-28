@@ -13,18 +13,14 @@ import Login from './../Components/Login.js'
 
 const Campaigns = ({campaigns}) => (
   <main>
-    { Auth.currentUser ? (
-      <Grid columns={2}>
-        <Grid.Column width={10}>
-          <Panel title={'Campaigns'} content={() => ( <Overview campaigns={campaigns} /> )} footer={false} loaded={true} />
-        </Grid.Column>
-        <Grid.Column width={6}>
-          <Panel title='Add New Campaign' content={Add} footer={false} loaded={true} />
-        </Grid.Column>
-      </Grid>
-    ) : (
-      <Login subHeader='to see your campaigns' />
-    )}
+    <Grid columns={2}>
+      <Grid.Column width={10}>
+        <Panel title={'Campaigns'} content={() => ( <Overview campaigns={campaigns} /> )} footer={false} loaded={true} />
+      </Grid.Column>
+      <Grid.Column width={6}>
+        <Panel title='Add New Campaign' content={Add} footer={false} loaded={true} />
+      </Grid.Column>
+    </Grid>
   </main>
 )
 
