@@ -19,7 +19,7 @@ import './App.css';
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? 10 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 5000 : 1000
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? true : true
 
 // TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {
@@ -56,12 +56,12 @@ class App extends Component {
     let db = firebase.database()
     let mRef = db.ref('monsters').limitToLast(__LIMIT__);
 
+    var t;
     mRef.on('child_added', snapshot => {
       snapshot.val().id = snapshot.key
       this.setState({ monsters: [snapshot.val()].concat(this.state.monsters) })
 
       if(!this.state.loaded){
-        var t;
         clearTimeout(t)
         t = setTimeout(() => {
           this.setState({ loaded: this.setLoaded() })
@@ -75,12 +75,12 @@ class App extends Component {
     let db = firebase.database()
     let sRef = db.ref('spells').limitToLast(__LIMIT__);
 
+    var t
     sRef.on('child_added', snapshot => {
       snapshot.val().id = snapshot.key
       this.setState({ spells: [snapshot.val()].concat(this.state.spells)  })
 
       if(!this.state.loaded){
-        var t
         clearTimeout(t)
         t = setTimeout(() => this.setState({ loaded: this.setLoaded() }), __LOAD_TIMEOUT__)
       }
