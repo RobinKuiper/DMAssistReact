@@ -27,7 +27,7 @@ export default class MainSidebar extends Component {
           { Auth.currentUser ?
             <Dropdown item text={Auth.currentUser.displayName || Auth.currentUser.email}>
               <Dropdown.Menu>
-                <Dropdown.Item>Profile</Dropdown.Item>
+                <Dropdown.Item as={Link} to='/profile'>Profile</Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>

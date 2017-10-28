@@ -1,6 +1,6 @@
 import React from 'react'
 import { Form, Header, Button, Divider, Message, Modal } from 'semantic-ui-react'
-import { Auth, FacebookProvider, GoogleProvider } from './../Lib/firebase'
+import { Auth, Providers, FacebookProvider, GoogleProvider } from './../Lib/firebase'
 
 export default class LoginModal extends React.Component {
   constructor(props){
@@ -34,11 +34,12 @@ export default class LoginModal extends React.Component {
 
           <Divider />
 
-          <Button.Group>
-            <Button fluid color='google plus' icon='google' content='Google Login' onClick={() => { this.signInWithProvider(GoogleProvider) }} loading={this.state.loading} />
-            <Button.Or />
-            <Button fluid color='facebook' icon='facebook' content='Facebook Login' onClick={() => { this.signInWithProvider(FacebookProvider) }} loading={this.state.loading} />
-          </Button.Group>
+
+            <Button color='google plus' icon='google' content='Google Login' onClick={() => { this.signInWithProvider(GoogleProvider) }} loading={this.state.loading} />
+            <Button color='facebook' icon='facebook' content='Facebook Login' onClick={() => { this.signInWithProvider(FacebookProvider) }} loading={this.state.loading} />
+            <Button color='twitter' icon='twitter' content='Twitter Login' onClick={() => { this.signInWithProvider(Providers.Twitter) }} loading={this.state.loading} />
+            <Button icon='github' content='Github Login' onClick={() => { this.signInWithProvider(Providers.Github) }} loading={this.state.loading} />
+
         </div>
       </Modal>
     )

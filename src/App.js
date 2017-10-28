@@ -15,12 +15,13 @@ import Campaigns from './Containers/Campaigns'
 import Campaign from './Containers/Campaign'
 import TreasureGenerator from './Containers/TreasureGenerator'
 import About from './Containers/About'
+import Profile from './Containers/Profile'
 
 import './App.css';
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? 10 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? true : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
 
 // TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {
@@ -105,6 +106,7 @@ class App extends Component {
                 <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} />
                 <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} />
                 <Route path='/treasure-generator' component={TreasureGenerator} />
+                <Route path='/profile' component={Profile} />
 
               </Sidebar.Pusher>
             </div>
