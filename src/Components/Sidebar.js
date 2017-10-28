@@ -27,7 +27,7 @@ export default class MainSidebar extends Component {
           { Auth.currentUser ?
             <Dropdown item text={Auth.currentUser.displayName || Auth.currentUser.email}>
               <Dropdown.Menu>
-                <Dropdown.Item>Profile</Dropdown.Item>
+                <Dropdown.Item disabled>Profile</Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
@@ -52,7 +52,7 @@ export default class MainSidebar extends Component {
             <Icon name='newspaper' />
             Campaigns
           </Menu.Item>
-          <Menu.Item as={Link} to='/treasure-generator' name='treasure'>
+          <Menu.Item as={Link} to='/treasure-generator' name='treasure' disabled>
             <Icon name='diamond' />
             Treasure Gen.
           </Menu.Item>

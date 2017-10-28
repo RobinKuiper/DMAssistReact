@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import firebase, { Auth } from './../Lib/firebase'
+import { Database, Auth } from './../Lib/firebase'
 import { formatTime, toSeconds } from './../Lib/Common'
 import { Button, Grid, Input, Popup, Segment } from 'semantic-ui-react'
 import Panel from './Panel'
@@ -76,7 +76,7 @@ export default class Campaign extends Component {
       armor_class: this.state.newPlayerAC
     }
 
-    firebase.database().ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.state.campaign.slug).child('players').push(player)
+    Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.state.campaign.slug).child('players').push(player)
   }
 
   playerContent = () => {
@@ -137,7 +137,7 @@ export default class Campaign extends Component {
     Auth.onAuthStateChanged((user) => {
       if (user){
         this.setState({ user })
-        var campaignRef = firebase.database().ref('userdata/'+user.uid+'/campaigns/'+slug);
+        var campaignRef = Database.ref('userdata/'+user.uid+'/campaigns/'+slug);
         var turnorderRef = campaignRef.child('turnorder');
         campaignRef.on('value', snapshot => {
           var campaign = snapshot.val()

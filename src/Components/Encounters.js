@@ -71,12 +71,14 @@ export default class Encounters extends Component {
 
             return (
                 <div>
-                    <Button.Group>
-                        <Button icon='plus' content='Create Encounter' positive onClick={this.createEncounter.bind(this)} />
-                        <Button.Or />
-                        {/*TODO: Dropdown not refreshing */}
-                        <Dropdown button scrolling text="Select Encounter" options={options} disabled={options.length === 0} onChange={this.selectEncounter.bind(this)} />
-                    </Button.Group>
+                    <div style={{textAlign: 'center'}}>
+                        <Button.Group>
+                            <Button icon='plus' content='Create' positive onClick={this.createEncounter.bind(this)} />
+                            <Button.Or />
+                            {/*TODO: Dropdown not refreshing */}
+                            <Dropdown button scrolling text="Select" options={options} disabled={options.length === 0} onChange={this.selectEncounter.bind(this)} />
+                        </Button.Group>
+                    </div>
 
                     { this.state.encounter && (
                         <div>
@@ -102,7 +104,7 @@ export default class Encounters extends Component {
 
                                     <Divider />
 
-                                    <Button fluid negative content='Remove Encounter' icon='remove' onClick={() => this.state.seRef.remove()} />
+                                    <Button fluid negative content='Remove Encounter' icon='remove' onClick={this.removeEncounter} />
                                 </div>
                             )}
                         </div>
@@ -124,6 +126,11 @@ export default class Encounters extends Component {
         this.setEncounter(r.key)
     }
 
+    removeEncounter = () => {
+        this.state.seRef.remove()
+        this.props.setEcounter(false)
+    }
+
     handleNameChange = (e) => {
         if(e.keyCode === 13) {
             this.state.eRef.child(this.state.encounter.id).update({ name: this.state.encounterName })
@@ -143,6 +150,7 @@ export default class Encounters extends Component {
             this.setState({ encounter })
         })
         this.setState({ seRef })
+        this.props.setEcounter(true)
     }
 
     selectEncounter = (e, {q, value}) => {

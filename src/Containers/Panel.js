@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Login from './../Components/Login'
 
 import { Segment } from 'semantic-ui-react'
 

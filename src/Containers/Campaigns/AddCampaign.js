@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Form, Header, Segment } from 'semantic-ui-react'
 
-import firebase, { Database, Auth } from './../../Lib/firebase'
+import { Database, Auth } from './../../Lib/firebase'
 import { Slugify } from './../../Lib/Common'
 import LoginModal from './../../Components/LoginModal'
 
