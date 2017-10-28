@@ -5,7 +5,7 @@ import { Button, Grid, Input, Popup, Segment } from 'semantic-ui-react'
 import Panel from './Panel'
 import TableFull from './../Components/Table'
 import Turnorder from './../Components/Turnorder'
-import FixedMenu from "./../Components/FixedMenu";
+//import FixedMenu from "./../Components/FixedMenu";
 
 export default class Campaign extends Component {
   constructor(props) {

@@ -39,14 +39,14 @@ export default class Encounters extends Component {
             }
         })
 
+        var monsterInfo = { monsters: (<List.Item>No monsters found.</List.Item>), total: 0, exp: 0, aexp: 0 }
         if(this.state.encounter && this.state.encounter.monsters){
-            var monsterInfo = { total: 0, exp: 0 }
             monsterInfo.monsters = Object.keys(this.state.encounter.monsters).map(key => {
                 var monster = this.state.encounter.monsters[key]
                 monsterInfo.total++
                 monsterInfo.exp += CRtoEXP(monster.challenge_rating)
                 return (
-                    <List.Item>
+                    <List.Item key={key}>
                         <List.Content floated='right'><Button size='mini' negative icon='remove' onClick={() => this.state.seRef.child('monsters').child(key).remove()} /></List.Content>
                         <List.Content>
                             <List.Header as='a'>
@@ -64,13 +64,6 @@ export default class Encounters extends Component {
                 case 7: case 8: case 9: case 10: monsterInfo.aexp = monsterInfo.exp * 2.5; break;
                 case 11: case 12: case 13: case 14: monsterInfo.aexp = monsterInfo.exp * 3; break;
                 default: monsterInfo.aexp = monsterInfo.exp * 4;
-            }
-        }else{
-            var monsterInfo = {
-                monsters: (<List.Item>No monsters found.</List.Item>),
-                total: 0,
-                exp: 0,
-                aexp: 0
             }
         }
 
