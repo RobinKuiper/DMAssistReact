@@ -3,6 +3,8 @@ import React, { Component } from 'react'
 import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
 import { Auth } from './../Lib/firebase'
 
+import AdSense from 'react-adsense'
+
 import Panel from './Panel'
 import MonsterModal from './../Components/MonsterModal'
 import Encounters from './../Components/Encounters'
@@ -26,7 +28,8 @@ export default class Monsters extends Component {
       limit: 10,
       page: 0,
       loaded: true,
-      toEncounterMonster: null
+      toEncounterMonster: null,
+      encounterActive: false
     }
   }
 
@@ -39,7 +42,7 @@ export default class Monsters extends Component {
           </Grid.Column>
 
           <Grid.Column width={5}>
-            <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} />
+            <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} setEcounter={(encounterActive) => this.setState({ encounterActive }) } />
           </Grid.Column>
         </Grid>
       </main>
@@ -73,7 +76,7 @@ export default class Monsters extends Component {
           { content: monster.hit_points },
           { content: monster.armor_class },
           { content: CRtoEXP(monster.challenge_rating) + ' XP' },
-          { content: Auth.currentUser && (<Popup content='Add to encounter' trigger={<Button icon='plus' size='mini' onClick={() => this.encounters.addMonster(monster) } />} />) }
+          { content: Auth.currentUser && this.state.encounterActive && (<Popup content='Add to encounter' trigger={<Button icon='plus' size='mini' onClick={() => this.encounters.addMonster(monster) } />} />) }
         ]
       }
     })
@@ -93,6 +96,10 @@ export default class Monsters extends Component {
         </Grid>
 
         <Table color='purple' headerCells={tableConfig.headerCells} bodyRows={tableConfig.bodyRows} />
+
+        { process.env.NODE_ENV !== "development" &&
+          <AdSense.Google client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
+        }
       </div>
     )
   }

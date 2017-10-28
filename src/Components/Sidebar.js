@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Dropdown, Header, Icon, Menu, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { Auth } from './../Lib/firebase'
+import AdSense from 'react-adsense'
 
 import LoginModal from './../Components/LoginModal'
 
@@ -27,7 +28,7 @@ export default class MainSidebar extends Component {
           { Auth.currentUser ?
             <Dropdown item text={Auth.currentUser.displayName || Auth.currentUser.email}>
               <Dropdown.Menu>
-                <Dropdown.Item>Profile</Dropdown.Item>
+                <Dropdown.Item disabled>Profile</Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
@@ -52,11 +53,17 @@ export default class MainSidebar extends Component {
             <Icon name='newspaper' />
             Campaigns
           </Menu.Item>
-          <Menu.Item as={Link} to='/treasure-generator' name='treasure'>
+          <Menu.Item as={Link} to='/treasure-generator' name='treasure' disabled>
             <Icon name='diamond' />
             Treasure Gen.
           </Menu.Item>
         </Menu>
+
+        <div id='sideBarAdsense'>
+        { process.env.NODE_ENV !== "development" &&
+          <AdSense.Google client='ca-pub-2044382203546332' slot='5925054492' style={{marginTop: 40, width: 728, height: 90}} />
+        }
+        </div>
 
         <Menu vertical fluid inverted style={{position: 'fixed', bottom: 0, paddingBottom: 5}}>
           <Menu.Item as='a' href='https://discord.gg/VDqHRdz' target='_blank' title='Join our Discord!'>

@@ -20,7 +20,7 @@ import './App.css';
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? 10 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? true : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
 
 // TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {

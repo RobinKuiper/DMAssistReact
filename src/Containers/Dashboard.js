@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Grid, List, Statistic } from 'semantic-ui-react'
 import { Auth } from './../Lib/firebase'
+import AdSense from 'react-adsense'
 import Panel from './Panel'
 
 import MonsterModal from './../Components/MonsterModal'
@@ -34,6 +35,10 @@ export default class Dashboard extends Component {
             </Grid.Column>
           </Grid.Row>
         </Grid>
+
+        { process.env.NODE_ENV !== "development" &&
+          <AdSense.Google client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
+        }
       </main>
     )
   }
