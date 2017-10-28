@@ -36,7 +36,7 @@ const items = [
     school: 'Conjuration',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Sorcerer',
@@ -58,7 +58,7 @@ const items = [
     school: 'Evocation',
     castingTime: '1 Action',
     range: 90,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'Powdered rhubarb leaf and an adder\'s stomach',
     classes: [
@@ -279,7 +279,7 @@ const items = [
     school: 'Necromancy',
     castingTime: '1 Minute',
     range: 10,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a drop of blood, a piece of flesh, and a pinch of bone dust',
     classes: [
@@ -476,7 +476,7 @@ The spell might also end early for you or one of your companions. A successful d
     school: 'Divination',
     castingTime: '1 Minute',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'specially marked sticks, bones, or similar tokens w orth at least 25 gp',
     classes: [
@@ -504,7 +504,7 @@ The spell doesn\'t take into account any possible circumstances that might chang
     school: 'Transmutation',
     castingTime: '8 Hours',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'an agate worth at least 1,000 gp, which the spell consumes',
     classes: [
@@ -688,7 +688,7 @@ If the spell ends before 1 minute has passed, the target reappears in the space 
     school: 'Necromancy',
     castingTime: '1 Action',
     range: 30,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Sorcerer',
@@ -781,7 +781,7 @@ If you target a nonmagical plant that isn\'t a creature, such as a tree or shrub
     school: 'Evocation',
     castingTime: '1 Action',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Sorcerer',
@@ -866,7 +866,7 @@ If you target a nonmagical plant that isn\'t a creature, such as a tree or shrub
     school: 'Evocation',
     castingTime: '1 Action',
     range: 150,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a bit of fur, a piece of amber, glass, or crystal rod, and three silver pins',
     classes: [
@@ -937,7 +937,7 @@ If you target a nonmagical plant that isn\'t a creature, such as a tree or shrub
     school: 'Necromancy',
     castingTime: '1 Action',
     range: 150,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'the powder of a crushed black pearl worth at least 500 gp',
     classes: [
@@ -1005,7 +1005,7 @@ If you target a nonmagical plant that isn\'t a creature, such as a tree or shrub
     school: 'Necromancy',
     castingTime: '1 Hour',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: '(a diamond worth at least 1,000 gp and at least 1 cubic inch of flesh of the creature that is to be cloned which the spell consumes, and a vessel worth at least 2,000 gp that has a sealable lid and is large enough to hold a Medium creature, such as a huge urn, coffin, mud-filled cyst in the ground, or crystal container filled with salt water',
     classes: [
@@ -1117,7 +1117,7 @@ At any time after the clone matures, if the original creature dies, its soul tra
     school: 'Divination',
     castingTime: '1 Minute',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Druid',
@@ -1182,7 +1182,7 @@ At any time after the clone matures, if the original creature dies, its soul tra
     school: 'Evocation',
     castingTime: '1 Action',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a small crystal or glass cone',
     classes: [
@@ -1498,7 +1498,7 @@ At any time after the clone matures, if the original creature dies, its soul tra
     school: 'Abjuration',
     castingTime: 'Special',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Sorcerer',
@@ -1521,7 +1521,7 @@ At any time after the clone matures, if the original creature dies, its soul tra
     school: 'Conjuration',
     castingTime: '1 Action',
     range: 30,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Cleric',
@@ -1542,7 +1542,7 @@ At any time after the clone matures, if the original creature dies, its soul tra
     school: 'Transmutation',
     castingTime: '1 Action',
     range: 30,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a drop of water if creating water or a few grains of sand if destroying it',
     classes: [
@@ -1565,7 +1565,7 @@ At any time after the clone matures, if the original creature dies, its soul tra
     school: 'Necromancy',
     castingTime: '1 Minute',
     range: 10,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'one clay pot filled with grave dirt, one clay pot filled with brackish water, and one 150 gp black onyx stone for each corpse',
     classes: [
@@ -1612,7 +1612,7 @@ At any time after the clone matures, if the original creature dies, its soul tra
     school: 'Evocation',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Bard',
@@ -1894,7 +1894,7 @@ For the duration, that creature has darkvision out to a range of 60 feet.`
     school: 'Conjuration',
     castingTime: '1 Action',
     range: 500,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Bard',
@@ -1943,7 +1943,7 @@ To discern that you are disguised, a creature can use its action to inspect your
     school: 'Transmutation',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a lodestone and a pinch of dust',
     classes: [
@@ -1988,7 +1988,7 @@ To discern that you are disguised, a creature can use its action to inspect your
     school: 'Abjuration',
     castingTime: '1 Action',
     range: 120,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Bard',
@@ -2015,7 +2015,7 @@ To discern that you are disguised, a creature can use its action to inspect your
     school: 'Divination',
     castingTime: '1 Action',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'incense and a sacrificial offering appropriate to your religion, together worth at least 25 gp, which the spell consumes',
     classes: [
@@ -2056,7 +2056,7 @@ To discern that you are disguised, a creature can use its action to inspect your
     school: 'Evocation',
     castingTime: '1 Bonus Action',
     range: 30,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Cleric'
@@ -2168,7 +2168,7 @@ To discern that you are disguised, a creature can use its action to inspect your
     school: 'Transmutation',
     castingTime: '1 Action',
     range: 30,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Druid'
@@ -2211,7 +2211,7 @@ To discern that you are disguised, a creature can use its action to inspect your
     school: 'Evocation',
     castingTime: '1 Action',
     range: 120,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Warlock'
@@ -2424,7 +2424,7 @@ To discern that you are disguised, a creature can use its action to inspect your
     school: 'Transmutation',
     castingTime: '10 Minutes',
     range: 120,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Wizard'
@@ -2512,7 +2512,7 @@ To discern that you are disguised, a creature can use its action to inspect your
     school: 'Enchantment',
     castingTime: '1 Action',
     range: 150,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a handful of clay, crystal, glass, or mineral spheres',
     classes: [
@@ -2536,7 +2536,7 @@ To discern that you are disguised, a creature can use its action to inspect your
     school: 'Conjuration',
     castingTime: '1 Hour',
     range: 10,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: '10 gp worth of charcoal, incense, and herbs that must be consumed by fire in a brass brazier',
     classes: [
@@ -2557,7 +2557,7 @@ To discern that you are disguised, a creature can use its action to inspect your
     school: 'Conjuration',
     castingTime: '10 Minutes',
     range: 30,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Paladin'
@@ -2606,7 +2606,7 @@ You can\'t have more than one steed bonded by this spell at a time. As an action
     school: 'Divination',
     castingTime: '1 Action',
     range: 120,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Cleric',
@@ -2628,7 +2628,7 @@ You can\'t have more than one steed bonded by this spell at a time. As an action
     school: 'Necromancy',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Sorcerer',
@@ -2650,7 +2650,7 @@ You can\'t have more than one steed bonded by this spell at a time. As an action
     school: 'Evocation',
     castingTime: '1 Action',
     range: 120,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Sorcerer',
@@ -2693,7 +2693,7 @@ You can\'t have more than one steed bonded by this spell at a time. As an action
     school: 'Evocation',
     castingTime: '1 Action',
     range: 150,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Cleric',
@@ -2715,7 +2715,7 @@ You can\'t have more than one steed bonded by this spell at a time. As an action
     school: 'Evocation',
     castingTime: '1 Action',
     range: 150,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a tiny ball of bat guana and sulfur',
     classes: [
@@ -2760,7 +2760,7 @@ You can\'t have more than one steed bonded by this spell at a time. As an action
     school: 'Evocation',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'pinch of sulfur',
     classes: [
@@ -3168,7 +3168,7 @@ You can store a prepared spell of 3rd level or lower in the glyph by casting it 
     school: 'Transmutation',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a sprig of mistletoe',
     classes: [
@@ -3233,7 +3233,7 @@ You can store a prepared spell of 3rd level or lower in the glyph by casting it 
     school: 'Abjuration',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'diamond dust worth 100 gp, which the spell consumes',
     classes: [
@@ -3411,7 +3411,7 @@ You can store a prepared spell of 3rd level or lower in the glyph by casting it 
     school: 'Necromancy',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Cleric'
@@ -3453,7 +3453,7 @@ You can store a prepared spell of 3rd level or lower in the glyph by casting it 
     school: 'Evocation',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Cleric',
@@ -3475,7 +3475,7 @@ You can store a prepared spell of 3rd level or lower in the glyph by casting it 
     school: 'Evocation',
     castingTime: '1 Bonus Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Bard',
@@ -3522,7 +3522,7 @@ This spell has no effect on undead or constructs.`,
     school: 'Evocation',
     castingTime: 'Special',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Warlock'
@@ -3543,7 +3543,7 @@ This spell has no effect on undead or constructs.`,
     school: 'Conjuration',
     castingTime: '10 Minutes',
     range: 30,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a gem-encrusted bowl worth at least 1,000 gp, which the spell consumes',
     classes: [
@@ -3705,7 +3705,7 @@ This spell has no effect on undead or constructs.`,
     school: 'Evocation',
     castingTime: '1 Action',
     range: 300,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a pinch of dust and a few drops of water',
     classes: [
@@ -3729,7 +3729,7 @@ This spell has no effect on undead or constructs.`,
     school: 'Divination',
     castingTime: '1 Minute',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a pearl worth at least 100 gp and an owl feather',
     classes: [
@@ -3774,7 +3774,7 @@ This spell has no effect on undead or constructs.`,
     school: 'Abjuration',
     castingTime: '1 Minute',
     range: 30,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a vellum depiction or a carved statuette in the likeness of the target, and a special component that varies according to the version of the spell you choose, worth at least 500 gp per Hit Die of the target ',
     classes: [
@@ -3840,7 +3840,7 @@ You can use a particular special component to create only one prison at a time. 
     school: 'Necromancy',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Cleric'
@@ -3939,7 +3939,7 @@ You can use a particular special component to create only one prison at a time. 
     school: 'Transmutation',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Bard',
@@ -3961,7 +3961,7 @@ You can use a particular special component to create only one prison at a time. 
     school: 'Divination',
     castingTime: '10 Minutes',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'incense worth at least 250 gp, which teh spell consumes, and four ivory strips worth at least 50 gp each',
     classes: [
@@ -3984,7 +3984,7 @@ You can use a particular special component to create only one prison at a time. 
     school: 'Conjuration',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'an exquisite chest, 3 feet by 2 feet by 2 feet, constructed from rare materials worth at least 5,000 gp, and a Tiny replica made from the same materials worth at least 50 gp',
     classes: [
@@ -4027,7 +4027,7 @@ You can use a particular special component to create only one prison at a time. 
     school: 'Abjuration',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Bard',
@@ -4097,7 +4097,7 @@ You can use a particular special component to create only one prison at a time. 
     school: 'Evocation',
     castingTime: '1 Action',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a bit of fur and a rod of amber, crystal, or glass',
     classes: [
@@ -4120,7 +4120,7 @@ You can use a particular special component to create only one prison at a time. 
     school: 'Divination',
     castingTime: '1 Action',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a bit of fur from a bloodhound',
     classes: [
@@ -4718,7 +4718,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Conjuration',
     castingTime: '1 Bonus Action',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Sorcerer',
@@ -4894,7 +4894,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Evocation',
     castingTime: '1 Action',
     range: 300,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a small crystal sphere',
     classes: [
@@ -5021,7 +5021,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Conjuration',
     castingTime: '10 Minutes',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Cleric'
@@ -5066,7 +5066,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Conjuration',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a forked, metal rod worth at least 250 gp, atttuned to a particular plane of existence',
     classes: [
@@ -5091,7 +5091,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Transmutation',
     castingTime: 'Special',
     range: 150,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Bard',
@@ -5113,7 +5113,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Conjuration',
     castingTime: '1 Action',
     range: 10,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Druid',
@@ -5161,7 +5161,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Enchantment',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Bard',
@@ -5184,7 +5184,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Enchantment',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Bard',
@@ -5207,7 +5207,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Evocation',
     castingTime: '10 Minutes',
     range: 30,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Cleric'
@@ -5257,7 +5257,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Evocation',
     castingTime: '1 Action',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Sorcerer',
@@ -5434,7 +5434,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Transmutation',
     castingTime: '1 Action',
     range: 10,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Cleric',
@@ -5456,7 +5456,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Necromancy',
     castingTime: '1 Hour',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a diamond worth at least 500 gp, which the spell consumes',
     classes: [
@@ -5521,7 +5521,7 @@ The hand can\'t attack, activate magical items, or carry more than 10 pounds. `
     school: 'Evocation',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Sorcerer',
@@ -5567,7 +5567,7 @@ A frigid beam of blue-white light streaks toward a creature within range. Make a
     school: 'Transmutation',
     castingTime: '1 Hour',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'rare oils and unguents worth at least 1,000 gp, which the spell consumes',
     classes: [
@@ -5588,7 +5588,7 @@ A frigid beam of blue-white light streaks toward a creature within range. Make a
     school: 'Abjuration',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Cleric',
@@ -5633,7 +5633,7 @@ A frigid beam of blue-white light streaks toward a creature within range. Make a
     school: 'Necromancy',
     castingTime: '1 Hour',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a diamond worth at least 1,000 gp, which the spell consumes',
     classes: [
@@ -5678,7 +5678,7 @@ A frigid beam of blue-white light streaks toward a creature within range. Make a
     school: 'Necromancy',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'diamonds worth 300 gp, which the spell consumes',
     classes: [
@@ -5721,7 +5721,7 @@ A frigid beam of blue-white light streaks toward a creature within range. Make a
     school: 'Evocation',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Cleric'
@@ -5763,7 +5763,7 @@ A frigid beam of blue-white light streaks toward a creature within range. Make a
     school: 'Evocation',
     castingTime: '1 Action',
     range: 120,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Sorcerer',
@@ -5921,7 +5921,7 @@ A frigid beam of blue-white light streaks toward a creature within range. Make a
     school: 'Evocation',
     castingTime: '1 Action',
     range: 60,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'a chip of mica',
     classes: [
@@ -6010,7 +6010,7 @@ A frigid beam of blue-white light streaks toward a creature within range. Make a
     school: 'Evocation',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Sorcerer',
@@ -6077,7 +6077,7 @@ A frigid beam of blue-white light streaks toward a creature within range. Make a
     school: 'Illusion',
     castingTime: '12 Hours',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'snow or ice in quantities sufficient to made a life-size copy of the duplicated creature; some hair, fingernail clippings, or other piece of that creature\'s body placed inside the snow or ice; and powdered ruby worth 1,500 gp, sprinkled over the duplicate and consumed by the spell',
     classes: [
@@ -6351,7 +6351,7 @@ If you cast this spell again, any currently active duplicates you created with t
     school: 'Transmutation',
     castingTime: '1 Action',
     range: 5,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'soft clay, which must be worked into roughly the desired shape of the stone object',
     classes: [
@@ -6465,7 +6465,7 @@ If you cast this spell again, any currently active duplicates you created with t
     school: 'Evocation',
     castingTime: '1 Action',
     range: 150,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic', 'Material'],
     material: 'fire and a piece of sunstone',
     classes: [
@@ -6576,7 +6576,7 @@ At the end of each of its turns, and each time it takes damage, the target can m
     school: 'Conjuration',
     castingTime: '1 Action',
     range: 10,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Bard',
@@ -6683,7 +6683,7 @@ At the end of each of its turns, and each time it takes damage, the target can m
     school: 'Evocation',
     castingTime: '1 Action',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal', 'Somatic'],
     classes: [
       'Bard',
@@ -6707,7 +6707,7 @@ At the end of each of its turns, and each time it takes damage, the target can m
     school: 'Transmutation',
     castingTime: '1 Action',
     range: 0,
-    duration: 'Instanteneous',
+    duration: 'instantaneous',
     components: ['Verbal'],
     classes: [
       'Sorcerer',
