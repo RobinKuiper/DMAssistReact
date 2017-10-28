@@ -29,9 +29,12 @@ export default class About extends Component {
                 </List.Item>
               </List>
 
+              <p><strong>Special thanks to:</strong><br />
+              Jordy Kuiper & Dennis Siemons - Helped with all the monsters and spells.</p>
+
               <Divider />
 
-              <span>Online Users: 0</span>
+              {/*<span>Online Users: 0</span>*/}
 
               <Header dividing>Changelog:</Header>
             </Segment>

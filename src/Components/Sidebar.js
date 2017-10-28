@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Dropdown, Header, Icon, Image, Menu, Sidebar } from 'semantic-ui-react'
+import { Dropdown, Icon, Image, Menu, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { Auth } from './../Lib/firebase'
 import AdSense from 'react-adsense'
