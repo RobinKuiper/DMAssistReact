@@ -5,6 +5,7 @@ import { Button, Grid, Input, Popup, Segment } from 'semantic-ui-react'
 import Panel from './Panel'
 import TableFull from './../Components/Table'
 import Turnorder from './../Components/Turnorder'
+import AdSense from 'react-adsense'
 //import FixedMenu from "./../Components/FixedMenu";
 
 export default class Campaign extends Component {
@@ -60,6 +61,10 @@ export default class Campaign extends Component {
             </Segment>
 
             <Panel title='Players' content={this.playerContent} loaded={this.state.loaded} />
+
+            { process.env.NODE_ENV !== "development" &&
+              <AdSense.Google client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
+            }
           </main>
         </div>
       )

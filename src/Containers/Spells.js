@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import { pageLimits } from './../Lib/Common'
 
+import AdSense from 'react-adsense'
+
 import Panel from './Panel'
 import SpellModal from './../Components/SpellModal'
 import { PaginatorButtons } from './../Components/Paginator'
@@ -81,6 +83,10 @@ export default class Spells extends Component {
         </Grid>
 
         <Table color='purple' headerCells={tableConfig.headerCells} bodyRows={tableConfig.bodyRows} />
+
+        { process.env.NODE_ENV !== "development" &&
+          <AdSense.Google client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
+        }
       </div>
     )
   }

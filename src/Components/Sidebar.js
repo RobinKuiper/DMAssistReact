@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Dropdown, Header, Icon, Menu, Sidebar } from 'semantic-ui-react'
+import { Dropdown, Header, Icon, Image, Menu, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { Auth } from './../Lib/firebase'
+import AdSense from 'react-adsense'
 
 import LoginModal from './../Components/LoginModal'
 
@@ -18,12 +19,15 @@ export default class MainSidebar extends Component {
     return (
       <Sidebar id='sidebar' animation='push' width='thin' visible={true} style={{color: '#fff', backgroundColor: '#1B1C1D'}}>
         <Menu fluid vertical inverted>
-          <Menu.Header onClick={() => alert('blaat')} style={{fontSize: '14pt', textAlign: 'left', padding: 20}}>
+          {/*<Menu.Header onClick={() => alert('blaat')} style={{fontSize: '14pt', textAlign: 'left', padding: 20}}>
             DM <span style={{color: 'purple'}}>Assist</span>
             <Header.Subheader style={{fontSize: '7pt', fontWeight: 'lighter', marginLeft: 9}}>
               Making life of evil easier.
             </Header.Subheader>
-          </Menu.Header>
+            </Menu.Header>*/}
+            <Menu.Header style={{textAlign: 'center'}}>
+              <Image src={require('./../Images/Logo.png')} />
+            </Menu.Header>
           { Auth.currentUser ?
             <Dropdown item text={Auth.currentUser.displayName || Auth.currentUser.email}>
               <Dropdown.Menu>
@@ -58,6 +62,12 @@ export default class MainSidebar extends Component {
           </Menu.Item>
         </Menu>
 
+        <div id='sideBarAdsense'>
+        { process.env.NODE_ENV !== "development" &&
+          <AdSense.Google client='ca-pub-2044382203546332' slot='5925054492' style={{marginTop: 40, width: 728, height: 90}} />
+        }
+        </div>
+
         <Menu vertical fluid inverted style={{position: 'fixed', bottom: 0, paddingBottom: 5}}>
           <Menu.Item as='a' href='https://discord.gg/VDqHRdz' target='_blank' title='Join our Discord!'>
             Discord
@@ -67,14 +77,14 @@ export default class MainSidebar extends Component {
             About
             <Icon name='info' />
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item style={{textAlign: 'center'}}>
             {/* TODO: Check paypal link */}
-            <form action='https://www.paypal.com/cgi-bin/webscr' method='post' target='_blank'>
-              <input type='hidden' name='cmd' value='_s-xclick' />
-              <input type='hidden' name='hosted_button_id' value='KHTW2FPB83NJJ' />
-              <input type='image' src='https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif' border='0' name='submit' alt='PayPal - The safer, easier way to pay online!' />
-              <img alt='' border='0' src='https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif' width='1' height='1' />
-            </form>
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+              <input type="hidden" name="cmd" value="_s-xclick" />
+              <input type="hidden" name="hosted_button_id" value="R2U39H94QXGSY" />
+              <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt='PayPal - The safer, easier way to pay online!' />
+              <img alt="" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1" />
+            </form>               
           </Menu.Item>
         </Menu>
       </Sidebar>
