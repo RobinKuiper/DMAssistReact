@@ -19,7 +19,7 @@ import './App.css';
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? 10 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 5000 : 1000
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? true : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
 
 // TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {
@@ -29,6 +29,7 @@ class App extends Component {
     this.state = {
       user: null,
       campaigns: [],
+      encounters: [],
       monsters: [],
       spells: [],
       loaded: false,
@@ -97,10 +98,10 @@ class App extends Component {
 
                 <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} />
                 <Route path='/about' component={About} />
-                <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} />
+                <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} encounters={this.state.encounters} />
                 <PropsRoute path='/spells' component={Spells} spells={this.state.spells} />
                 <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} />
-                <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} />
+                <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} />
                 <Route path='/treasure-generator' component={TreasureGenerator} />
 
               </Sidebar.Pusher>
@@ -121,11 +122,24 @@ class App extends Component {
       if (user){
         this.setState({ user })
 
+        // Get the userdata reference
         let uDataRef = firebase.database().ref('userdata').child(this.state.user.uid);
+
+        // Get the campaigns reference in userdata
         let cRef = uDataRef.child('campaigns');
+        // Do shit on new campaign added
         cRef.on('child_added', snapshot => {
-          snapshot.val().id = snapshot.key
-          this.setState({ campaigns: [snapshot.val()].concat(this.state.campaigns) })
+          var campaign = snapshot.val()
+          campaign.id = snapshot.key
+          this.setState({ campaigns: [campaign].concat(this.state.campaigns) })
+        })
+        // Get the encounters reference in userdata
+        let eRef = uDataRef.child('encounters')
+        // Do shit on new encounter added
+        eRef.on('child_added', snapshot => {
+          var encounter = snapshot.val()
+          encounter.id = snapshot.key
+          this.setState({ encounters: [encounter].concat(this.state.encounters) })
         })
       }else{
         this.setState({ campaigns: [] })

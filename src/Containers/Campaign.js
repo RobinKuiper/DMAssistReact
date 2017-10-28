@@ -37,7 +37,7 @@ export default class Campaign extends Component {
         <div>
           {/*<FixedMenu title={this.state.campaign.name} />*/}
           <main>
-            <Turnorder campaign={this.state.campaign} monsters={this.props.monsters} campaignRef={this.state.campaignRef} />
+            <Turnorder campaign={this.state.campaign} monsters={this.props.monsters} encounters={this.props.encounters} campaignRef={this.state.campaignRef} />
 
             <Segment raised>
               <Grid columns={2}>

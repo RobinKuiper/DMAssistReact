@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { Button, Divider, Dropdown, Header, Input, List } from 'semantic-ui-react'
+import { Button, Divider, Dropdown, Header, Input, List, Popup } from 'semantic-ui-react'
 import { Auth, Database } from './../Lib/firebase'
 import Panel from './../Containers/Panel'
+import MonsterModal from './MonsterModal'
+import { CRtoEXP, formatNumber } from './../Lib/Common'
 
 export default class Encounters extends Component {
     constructor(props) {
@@ -9,7 +11,6 @@ export default class Encounters extends Component {
 
         this.state = {
             encounter: null,
-            encounters: [],
             encounterName: ''
         }
     }
@@ -19,11 +20,6 @@ export default class Encounters extends Component {
             if (user){
                 var eRef = Database.ref('userdata').child(user.uid).child('encounters')
                 this.setState({ eRef })
-                eRef.on('child_added', snapshot => {
-                    var encounter = snapshot.val()
-                    encounter.id = snapshot.key
-                    this.setState({ encounter: encounter, encounters: [encounter].concat(this.state.encounters) })
-                })
             }
         })
     }
@@ -35,7 +31,7 @@ export default class Encounters extends Component {
     }
 
     content = () => {
-        var options = this.state.encounters.map(encounter => {
+        var options = this.props.encounters.map(encounter => {
             return {
                 key: encounter.id,
                 value: encounter.id,
@@ -43,12 +39,48 @@ export default class Encounters extends Component {
             }
         })
 
+        if(this.state.encounter && this.state.encounter.monsters){
+            var monsterInfo = { total: 0, exp: 0 }
+            monsterInfo.monsters = Object.keys(this.state.encounter.monsters).map(key => {
+                var monster = this.state.encounter.monsters[key]
+                monsterInfo.total++
+                monsterInfo.exp += CRtoEXP(monster.challenge_rating)
+                return (
+                    <List.Item>
+                        <List.Content floated='right'><Button size='mini' negative icon='remove' onClick={() => this.state.seRef.child('monsters').child(key).remove()} /></List.Content>
+                        <List.Content>
+                            <List.Header as='a'>
+                                <MonsterModal monster={monster} trigger={<span>{monster.name}</span>} />
+                                <Header.Subheader style={{fontWeight: 0, fontSize: '9pt'}}>{monster.size} {monster.type}</Header.Subheader>
+                            </List.Header>
+                        </List.Content>
+                    </List.Item>
+                )
+            })
+            switch(monsterInfo.total){
+                case 1: monsterInfo.aexp = monsterInfo.exp * 1; break;
+                case 2: monsterInfo.aexp = monsterInfo.exp * 1.5; break;
+                case 3: case 4: case 5: case 6: monsterInfo.aexp = monsterInfo.exp * 2; break;
+                case 7: case 8: case 9: case 10: monsterInfo.aexp = monsterInfo.exp * 2.5; break;
+                case 11: case 12: case 13: case 14: monsterInfo.aexp = monsterInfo.exp * 3; break;
+                default: monsterInfo.aexp = monsterInfo.exp * 4;
+            }
+        }else{
+            var monsterInfo = {
+                monsters: (<List.Item>No monsters found.</List.Item>),
+                total: 0,
+                exp: 0,
+                aexp: 0
+            }
+        }
+
         return (
             <div>
                 <Button.Group>
                     <Button icon='plus' content='Create Encounter' positive onClick={this.createEncounter.bind(this)} />
                     <Button.Or />
-                    <Dropdown button scrolling text="Select Encounter" options={options} disabled={options.length === 0 || options[0].text === ""} onChange={this.selectEncounter.bind(this)} />
+                    {/*TODO: Dropdown not refreshing */}
+                    <Dropdown button scrolling text="Select Encounter" options={options} disabled={options.length === 0} onChange={this.selectEncounter.bind(this)} />
                 </Button.Group>
 
                 { this.state.encounter && (
@@ -60,14 +92,22 @@ export default class Encounters extends Component {
                         ) : (
                             <div>
                                 <Header>{this.state.encounter.name}</Header>
+
                                 <List>
-                                    { this.state.encounter.monsters ?
-                                        Object.keys(this.state.encounter.monsters).map(key => (
-                                            <List.Item>{this.state.encounter.monsters[key].name}</List.Item>
-                                        ))
-                                        : (<List.Item>Add some monsters.</List.Item>)
-                                    }
+                                    <List.Item>Monsters: {formatNumber(monsterInfo.total)}</List.Item>
+                                    <List.Item>Total XP: {formatNumber(monsterInfo.exp)}</List.Item>
+                                    <List.Item><Popup content='The amount of monsters makes an encounter harder' trigger={<span>Adjusted XP</span>} />: {formatNumber(monsterInfo.aexp)}</List.Item>
                                 </List>
+
+                                <Divider />
+
+                                <List>
+                                    {monsterInfo.monsters}
+                                </List>
+
+                                <Divider />
+
+                                <Button fluid negative content='Remove Encounter' icon='remove' onClick={() => this.state.seRef.remove()} />
                             </div>
                         )}
                     </div>
@@ -81,7 +121,9 @@ export default class Encounters extends Component {
     }
 
     createEncounter = () => {
-        this.state.eRef.push({ name: '' })
+        var r = this.state.eRef.push()
+        r.set({ name: '' })
+        this.setEncounter(r.key)
     }
 
     handleNameChange = (e) => {
@@ -94,11 +136,18 @@ export default class Encounters extends Component {
         }
     }
 
-    selectEncounter = (e, {q, value}) => {
-        var seRef = Database.ref('userdata').child(Auth.currentUser.uid).child('encounters').child(value)
+    setEncounter = (id) => {
+        if(this.state.seRef) this.state.seRef.off()
+        var seRef = Database.ref('userdata').child(Auth.currentUser.uid).child('encounters').child(id)
         seRef.on('value', snapshot => {
-            this.setState({ encounter: snapshot.val() })
+            var encounter = snapshot.val()
+            if(encounter !== null) encounter.id = snapshot.key
+            this.setState({ encounter })
         })
         this.setState({ seRef })
+    }
+
+    selectEncounter = (e, {q, value}) => {
+        this.setEncounter(value)
     }
 }

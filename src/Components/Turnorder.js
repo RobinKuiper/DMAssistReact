@@ -17,7 +17,7 @@ export default class Turnorder extends Component {
           value: monster.slug,
           text: monster.name
         }
-      }),
+      })
     }
   }
 
@@ -58,6 +58,14 @@ export default class Turnorder extends Component {
       })
     });*/
 
+    var encounterOptions = this.props.encounters.map(encounter => {
+      return {
+        key: encounter.id,
+        value: encounter.id,
+        text: encounter.name
+      }
+    })
+
     return (
       <div>
         <Grid columns={3}>
@@ -72,8 +80,8 @@ export default class Turnorder extends Component {
             </List>
           </Grid.Column>
 
-          <Grid.Column width={4}>
-            EncounterDropdown
+          <Grid.Column width={4} textAlign='right'>
+            <Dropdown button color='green' text='Add Encounter' options={encounterOptions} onChange={this.addEncounterToTurnorder.bind(this)} />
           </Grid.Column>
         </Grid>
 
@@ -144,6 +152,16 @@ export default class Turnorder extends Component {
     let monster = this.props.monsters.find((monster) => { return monster.slug === value })
     monster.monster = true
     this.addToTurnorder(monster)
+  }
+
+  addEncounterToTurnorder = (e, {q, value}) => {
+    let encounter = this.props.encounters.find(encounter => encounter.id === value)
+    if(encounter.monsters){
+      for(var key in encounter.monsters){
+        encounter.monsters[key].monster = true
+        this.addToTurnorder(encounter.monsters[key])
+      }
+    }else alert('There are no monsters in this encounter.')
   }
 
   resetTurnorder = () => {

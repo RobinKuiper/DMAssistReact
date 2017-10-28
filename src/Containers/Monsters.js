@@ -39,7 +39,7 @@ export default class Monsters extends Component {
           </Grid.Column>
 
           <Grid.Column width={5}>
-            <Encounters ref={instance => { this.encounters = instance }} />
+            <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} />
           </Grid.Column>
         </Grid>
       </main>
