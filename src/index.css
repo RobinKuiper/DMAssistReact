@@ -67,3 +67,10 @@ h1 {
 .strikethrough{
   text-decoration: line-through;
 }
+#skypeBtn{
+  opacity: .2;
+  z-index: 9999;
+}
+#skypeBtn:hover{
+  opacity: 1
+}

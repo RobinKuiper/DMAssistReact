@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { PropsRoute, PrivateRoute } from './Lib/Router'
 
 import MainSidebar from './Components/Sidebar'
+import Skype from './Components/Skype'
 
 import Dashboard from './Containers/Dashboard'
 import Monsters from './Containers/Monsters'
@@ -90,6 +91,7 @@ class App extends Component {
   render() {
       return (this.state.loaded) ? (
         <div id='outer-container'>
+          <Skype />
           <Router>
             <div>
               <MainSidebar />

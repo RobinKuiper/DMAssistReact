@@ -19,9 +19,9 @@ export default class About extends Component {
                   <Icon name='cloud' />
                   rgjkuiper.nl
                 </List.Item>
-                <List.Item as='a' href='mailto:robingjkuiper@gmail.com'>
-                  <Icon name='mail' />
-                  info@rgjkuiper.nl
+                <List.Item as='a' href='skype:robinkuiper.eu?chat'>
+                  <Icon name='skype' />
+                  Skype Me!
                 </List.Item>
                 <List.Item as='a' href='https://discord.gg/VDqHRdz' target='_blank' title='Join our Discord!'>
                   <Icon name='text telephone' />
