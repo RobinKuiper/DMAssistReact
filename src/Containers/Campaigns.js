@@ -1,15 +1,11 @@
 import React from 'react'
 
-import { Auth } from './../Lib/firebase'
-
 import { Grid } from 'semantic-ui-react'
 
 import Panel from './Panel'
 
 import Add from './Campaigns/AddCampaign'
 import Overview from './Campaigns/Overview'
-
-import Login from './../Components/Login.js'
 
 const Campaigns = ({campaigns}) => (
   <main>

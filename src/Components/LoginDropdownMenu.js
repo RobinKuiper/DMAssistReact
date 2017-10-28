@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Form, Header, Button, Divider, Dropdown, Modal, Popup } from 'semantic-ui-react'
+import { Form, Button, Dropdown } from 'semantic-ui-react'
 import { Auth, FacebookProvider, GoogleProvider } from './../Lib/firebase'
 
 const LoginDropdownMenu = ({text, inline, item}) => (

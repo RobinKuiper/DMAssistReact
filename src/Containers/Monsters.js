@@ -26,7 +26,8 @@ export default class Monsters extends Component {
       limit: 10,
       page: 0,
       loaded: true,
-      toEncounterMonster: null
+      toEncounterMonster: null,
+      encounterActive: false
     }
   }
 
@@ -39,7 +40,7 @@ export default class Monsters extends Component {
           </Grid.Column>
 
           <Grid.Column width={5}>
-            <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} />
+            <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} setEcounter={(encounterActive) => this.setState({ encounterActive }) } />
           </Grid.Column>
         </Grid>
       </main>
@@ -73,7 +74,7 @@ export default class Monsters extends Component {
           { content: monster.hit_points },
           { content: monster.armor_class },
           { content: CRtoEXP(monster.challenge_rating) + ' XP' },
-          { content: Auth.currentUser && (<Popup content='Add to encounter' trigger={<Button icon='plus' size='mini' onClick={() => this.encounters.addMonster(monster) } />} />) }
+          { content: Auth.currentUser && this.state.encounterActive && (<Popup content='Add to encounter' trigger={<Button icon='plus' size='mini' onClick={() => this.encounters.addMonster(monster) } />} />) }
         ]
       }
     })
