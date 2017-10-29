@@ -8,7 +8,6 @@ export default class Skype extends Component {
         node.async = true
         node.charset = 'utf-8'
         node.id ='skypeSDK'
-        console.log(node)
         document.getElementsByTagName('head')[0].appendChild(node)
     }
 

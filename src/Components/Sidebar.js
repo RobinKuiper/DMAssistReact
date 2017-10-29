@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Dropdown, Icon, Image, Menu, Sidebar } from 'semantic-ui-react'
+import { Button, Dropdown, Icon, Image, Menu, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { Auth } from './../Lib/firebase'
 import AdSense from 'react-adsense'
@@ -17,7 +17,7 @@ export default class MainSidebar extends Component {
 
   render() {
     return (
-      <Sidebar id='sidebar' animation='push' width='thin' visible={true} style={{color: '#fff', backgroundColor: '#1B1C1D'}}>
+      <Sidebar id='sidebar' animation={this.props.mobile ? 'overlay' : 'push'} width={!this.props.mobile && 'thin'} visible={this.props.visible} style={{color: '#fff', backgroundColor: '#1B1C1D'}}>
         <Menu fluid vertical inverted>
           {/*<Menu.Header onClick={() => alert('blaat')} style={{fontSize: '14pt', textAlign: 'left', padding: 20}}>
             DM <span style={{color: 'purple'}}>Assist</span>
@@ -26,6 +26,7 @@ export default class MainSidebar extends Component {
             </Header.Subheader>
             </Menu.Header>*/}
             <Menu.Header style={{textAlign: 'center'}}>
+              { this.props.mobile && <Button floated='right' icon='sidebar' color='black' onClick={this.props.hideSidebar} />}
               <Image src={require('./../Images/Logo.png')} />
             </Menu.Header>
           { Auth.currentUser ?
@@ -40,23 +41,23 @@ export default class MainSidebar extends Component {
           }
           <Menu.Item>&nbsp;</Menu.Item>
           {/* TODO: Check if Link can be inline */}
-          <Menu.Item as={Link} to='/' name='dashboard'>
+          <Menu.Item as={Link} onClick={this.props.hideSidebar} to='/' name='dashboard'>
             <Icon name='home' />
             Dashboard
           </Menu.Item>
-          <Menu.Item as={Link} to='/monsters' name='monsters'>
+          <Menu.Item as={Link} onClick={this.props.hideSidebar} to='/monsters' name='monsters'>
             <Icon name='spy' />
             Monsters
           </Menu.Item>
-          <Menu.Item as={Link} to='/spells' name='spells'>
+          <Menu.Item as={Link} onClick={this.props.hideSidebar} to='/spells' name='spells'>
             <Icon name='book' />
             Spells
           </Menu.Item>
-          <Menu.Item as={Link} to='/campaigns' name='campaigns'>
+          <Menu.Item as={Link} onClick={this.props.hideSidebar} to='/campaigns' name='campaigns'>
             <Icon name='newspaper' />
             Campaigns
           </Menu.Item>
-          <Menu.Item as={Link} to='/treasure-generator' name='treasure' disabled>
+          <Menu.Item as={Link} onClick={this.props.hideSidebar} to='/treasure-generator' name='treasure' disabled>
             <Icon name='diamond' />
             Treasure Gen.
           </Menu.Item>
@@ -73,7 +74,7 @@ export default class MainSidebar extends Component {
             Discord
             <Icon name='text telephone' />
           </Menu.Item>
-          <Menu.Item as={Link} to='/about'>
+          <Menu.Item as={Link} onClick={this.props.hideSidebar} to='/about'>
             About
             <Icon name='info' />
           </Menu.Item>

@@ -68,7 +68,7 @@ export default class Turnorder extends Component {
 
     return (
       <div>
-        <Grid columns={3}>
+        <Grid columns={3} stackable>
           <Grid.Column width={10}>
             <Dropdown placeholder='Add Monster' fluid search selection options={this.state.monsterOptions} onChange={this.addMonsterToTurnorder.bind(this)} />
           </Grid.Column>
