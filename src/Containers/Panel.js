@@ -3,12 +3,20 @@ import React, { Component } from 'react'
 import { Segment } from 'semantic-ui-react'
 
 export default class Panel extends Component {
+  constructor(props){
+    super(props)
+
+    this.state = { display: 'block' }
+  }
+
   render() {
+    var style = this.props.closeable ? {cursor: 'pointer'} : {}
+
     return (
       <Segment.Group raised>
-        <Segment id="panelHeader" className='header' textAlign='center' inverted clearing>{this.props.title}</Segment>
+        <Segment id="panelHeader" className='header' textAlign='center' inverted clearing style={style} onClick={this.props.closeable && this.toggleContent}>{this.props.title}</Segment>
 
-        <Segment className='panel content' loading={!this.props.loaded}>
+        <Segment className='panel content' loading={!this.props.loaded} style={{display: this.state.display}}>
           <this.props.content />
         </Segment>
 
@@ -20,4 +28,16 @@ export default class Panel extends Component {
       </Segment.Group>
     )
   }
+
+  toggleContent = () => {
+    this.setState({
+      display: this.state.display === 'none' ? 'block' : 'none'
+    })
+  }
 }
+
+Panel.defaultProps = {
+  loaded: true,
+  title: '',
+  closeable: false
+};

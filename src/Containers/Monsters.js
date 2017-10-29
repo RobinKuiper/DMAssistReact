@@ -36,13 +36,13 @@ export default class Monsters extends Component {
   render() {
     return (
       <main>
-        <Grid columns={2}>
+        <Grid columns={2} stackable>
           <Grid.Column width={11}>
             <Panel title={'Monsters'} content={this.renderContent} footer={this.renderFooter} loaded={this.state.loaded} />
           </Grid.Column>
 
           <Grid.Column width={5}>
-            <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} setEcounter={(encounterActive) => this.setState({ encounterActive }) } />
+            <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} setEncounter={(encounterActive) => this.setState({ encounterActive }) } />
           </Grid.Column>
         </Grid>
       </main>
@@ -91,6 +91,7 @@ export default class Monsters extends Component {
             <Input fluid icon='search' placeholder='Search...' value={this.state.searchQuery} onChange={this.search.bind(this)} />
           </Grid.Column>
           <Grid.Column textAlign='right'>
+            <Popup content='Coming Soon' trigger={<Button disabled icon='plus' content='Create Monster' onClick={() => this.setState({ isCreatingMonster: true })} />} />
             <Dropdown compact selection options={pageLimits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
           </Grid.Column>
         </Grid>

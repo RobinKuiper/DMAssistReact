@@ -15,12 +15,14 @@ import Campaigns from './Containers/Campaigns'
 import Campaign from './Containers/Campaign'
 import TreasureGenerator from './Containers/TreasureGenerator'
 import About from './Containers/About'
+import { Default, Mobile } from './Lib/Responsive'
+import FixedMenu from './Components/FixedMenu'
 
 import './App.css';
 
-const __LIMIT__ = process.env.NODE_ENV === "development" ? 10 : 1000
+const __LIMIT__ = process.env.NODE_ENV === "development" ? 1 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? true : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
 
 class App extends Component {
   constructor(props){
@@ -45,11 +47,8 @@ class App extends Component {
   }
 
   componentWillMount(){
-    if(__LOAD_SHIT__){
-      this.loadMonsters()
-    }else{
-      this.setState({ loaded: true })
-    }
+    if(__LOAD_SHIT__) this.loadMonsters()
+    else this.setState({ loaded: true })
   }
 
   loadMonsters = () => {
@@ -94,13 +93,19 @@ class App extends Component {
           <Loader size='massive'>{this.state.loadSteps[this.state.loadStep]}</Loader>
         </Dimmer>
 
-        <Skype />
+        <Default><Skype /></Default>
         <Router>
           <div>
-            <MainSidebar />
-
-            <Sidebar.Pusher>
-
+            <Default>
+              <MainSidebar mobile={false} visible={true} />
+            </Default>
+            <Mobile>
+              <FixedMenu showSidebar={() => this.setState({ sidebarVisible: true })} />
+              <MainSidebar mobile={true} visible={this.state.sidebarVisible} hideSidebar={() => this.setState({ sidebarVisible: false })} />
+            </Mobile>
+            
+            <Sidebar.Pusher onClick={() => this.setState({ sidebarVisible: false })}>
+              
               <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} />
               <Route path='/about' component={About} />
               <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} encounters={this.state.encounters} />

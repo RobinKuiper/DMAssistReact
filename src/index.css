@@ -49,6 +49,7 @@ h1 {
 @media screen and (max-width: 40em) {
   main {
     font-size: 80%;
+    margin: 0px;
   }
   h1 {
     padding-top: 1em;
