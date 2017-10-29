@@ -36,13 +36,13 @@ export default class Monsters extends Component {
   render() {
     return (
       <main>
-        <Grid columns={2}>
+        <Grid columns={2} stackable>
           <Grid.Column width={11}>
             <Panel title={'Monsters'} content={this.renderContent} footer={this.renderFooter} loaded={this.state.loaded} />
           </Grid.Column>
 
           <Grid.Column width={5}>
-            <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} setEcounter={(encounterActive) => this.setState({ encounterActive }) } />
+            <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} setEncounter={(encounterActive) => this.setState({ encounterActive }) } />
           </Grid.Column>
         </Grid>
       </main>

@@ -9,7 +9,7 @@ import Overview from './Campaigns/Overview'
 
 const Campaigns = ({campaigns}) => (
   <main>
-    <Grid columns={2}>
+    <Grid columns={2} stackable>
       <Grid.Column width={10}>
         <Panel title={'Campaigns'} content={() => ( <Overview campaigns={campaigns} /> )} footer={false} loaded={true} />
       </Grid.Column>

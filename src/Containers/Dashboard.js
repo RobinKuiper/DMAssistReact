@@ -14,7 +14,8 @@ export default class Dashboard extends Component {
   render() {
     return (
       <main>
-        <Grid columns={3}>
+
+        <Grid columns={3} stackable>
           <Grid.Row>
             <Grid.Column>
               <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loaded={true} />
