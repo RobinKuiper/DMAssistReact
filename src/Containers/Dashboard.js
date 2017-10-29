@@ -14,7 +14,8 @@ export default class Dashboard extends Component {
   render() {
     return (
       <main>
-        <Grid columns={3}>
+
+        <Grid columns={3} stackable>
           <Grid.Row>
             <Grid.Column>
               <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loaded={true} />
@@ -30,7 +31,7 @@ export default class Dashboard extends Component {
           </Grid.Row>
 
           <Grid.Row>
-            <Grid.Column width={10}>
+            <Grid.Column width={8}>
               <Panel title={'Statistics'} content={this.renderStatistics.bind(this)} footer={false} loaded={true} />
             </Grid.Column>
           </Grid.Row>

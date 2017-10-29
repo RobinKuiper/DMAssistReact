@@ -128,7 +128,7 @@ export default class Encounters extends Component {
 
     removeEncounter = () => {
         this.state.seRef.remove()
-        this.props.setEcounter(false)
+        this.props.setEncounter(false)
     }
 
     handleNameChange = (e) => {
