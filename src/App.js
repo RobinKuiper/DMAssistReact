@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import firebase, { Auth } from './Lib/firebase'
 
-import { Dimmer, Loader, Segment, Sidebar } from 'semantic-ui-react'
+import { Dimmer, Loader, Sidebar } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { PropsRoute, PrivateRoute } from './Lib/Router'
 
@@ -20,9 +20,8 @@ import './App.css';
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? 10 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? true : true
 
-// TODO: Maybe get all the items (monsters, spells, etc) from the database here, and pass them through
 class App extends Component {
   constructor(props){
     super(props)
@@ -89,34 +88,32 @@ class App extends Component {
   }
 
   render() {
-      return (this.state.loaded) ? (
-        <div id='outer-container'>
-          <Skype />
-          <Router>
-            <div>
-              <MainSidebar />
+    return (
+      <div id='outer-container'>
+        <Dimmer active={!this.state.loaded}>
+          <Loader size='massive'>{this.state.loadSteps[this.state.loadStep]}</Loader>
+        </Dimmer>
 
-              <Sidebar.Pusher>
+        <Skype />
+        <Router>
+          <div>
+            <MainSidebar />
 
-                <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} />
-                <Route path='/about' component={About} />
-                <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} encounters={this.state.encounters} />
-                <PropsRoute path='/spells' component={Spells} spells={this.state.spells} />
-                <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} />
-                <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} />
-                <Route path='/treasure-generator' component={TreasureGenerator} />
+            <Sidebar.Pusher>
 
-              </Sidebar.Pusher>
-            </div>
-          </Router>
-        </div>
-      ) : (
-        <Segment style={{height: '100%'}}>
-          <Dimmer active>
-            <Loader size='massive'>{this.state.loadSteps[this.state.loadStep]}</Loader>
-          </Dimmer>
-        </Segment>
-      );
+              <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} />
+              <Route path='/about' component={About} />
+              <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} encounters={this.state.encounters} />
+              <PropsRoute path='/spells' component={Spells} spells={this.state.spells} />
+              <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} />
+              <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} />
+              <Route path='/treasure-generator' component={TreasureGenerator} />
+
+            </Sidebar.Pusher>
+          </div>
+        </Router>
+      </div>
+    )
   }
 
   componentDidMount() {
