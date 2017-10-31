@@ -163,7 +163,7 @@ export default class MonsterModal extends Component {
                       }
                       </List>
 
-                      <Divider />
+                      <Divider /> 
                     </div>
                   }
 
