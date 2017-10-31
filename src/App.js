@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import firebase, { Auth } from './Lib/firebase'
 
-import { Dimmer, Loader, Sidebar } from 'semantic-ui-react'
+import { Dimmer, Loader, Message, Sidebar } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { PropsRoute, PrivateRoute } from './Lib/Router'
 
@@ -17,7 +17,7 @@ import Campaign from './Containers/Campaign'
 import TreasureGenerator from './Containers/TreasureGenerator'
 import About from './Containers/About'
 import { Default, Mobile } from './Lib/Responsive'
-import AuthFunctionality from './Components/AuthFunctionality'
+import AuthFunctionality from './Components/Auth/AuthFunctionality'
 
 import './App.css';
 
@@ -106,6 +106,8 @@ class App extends Component {
             </Mobile>
             
             <Sidebar.Pusher onClick={() => this.setState({ sidebarVisible: false })}>
+
+              { this.state.user && !this.state.user.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
               
               <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} />
               <Route path='/about' component={About} />
@@ -122,6 +124,11 @@ class App extends Component {
         </Router>
       </div>
     )
+  }
+
+  sendVerification = () => {
+    this.setState({ verification_mail_send: true })
+    Auth.currentUser.sendEmailVerification()
   }
 
   componentDidMount() {

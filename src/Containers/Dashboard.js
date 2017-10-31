@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Button, Grid, List, Statistic } from 'semantic-ui-react'
+import { Grid, Icon, List, Message, Statistic } from 'semantic-ui-react'
 import { Auth } from './../Lib/firebase'
 import AdSense from 'react-adsense'
 import Panel from './../Components/UI/Panel'
@@ -11,6 +11,14 @@ import SpellModal from './../Components/SpellModal'
 import LoginModal from './../Components/Auth/LoginModal'
 
 export default class Dashboard extends Component {
+  constructor(props){
+    super(props)
+
+    this.state = {
+      showMessage: localStorage.getItem('showMessage') === 'false' ? false : true
+    }
+  }
+
   render() {
     return (
       <main>
@@ -36,6 +44,21 @@ export default class Dashboard extends Component {
             </Grid.Column>
           </Grid.Row>
         </Grid>
+
+        { this.state.showMessage && (
+          <Message info icon onDismiss={() => { 
+            this.setState({ showMessage: false })
+            localStorage.setItem('showMessage', false);
+          }}>
+            <Icon name='info' />
+            <Message.Content>
+              <Message.Header>Why were some monsters/spells removed?</Message.Header>
+              <p>I have decided to remove all none SRD (System Reference Document) monsters/spells from this tool. This is to prevent getting into copyright trouble with Wizards of the Coast.</p>
+              <p>Custom monster will be added soon, this way you can make every monster from every source without putting this tool at risk.</p>
+              <p>Thank you for your understanding.</p>
+            </Message.Content>
+          </Message>
+        )}
 
         { process.env.NODE_ENV !== "development" &&
           <AdSense.Google client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />

@@ -146,11 +146,14 @@ export default class Campaign extends Component {
         var turnorderRef = campaignRef.child('turnorder');
         campaignRef.on('value', snapshot => {
           var campaign = snapshot.val()
+          var turnorder = []
 
-          if(campaign.turnorder){
+          /*if(campaign.turnorder){
             var turnorder = []
             var done = true
+            console.log(campaign.turnorder)
             Object.keys(campaign.turnorder).map(key => {
+              console.log(campaign.turnorder[key])
               var t = campaign.turnorder[key]
               t.id = key
               turnorder.push(t)
@@ -163,14 +166,15 @@ export default class Campaign extends Component {
               for (var i = 0; i < turnorder.length; i++) {
                 turnorder[i].done = false
               }
+              const roundDuration = parseInt(campaign.settings.roundDuration, 10)
               campaign.round = (campaign.round) ? campaign.round + 1 : 1
-              campaign.times.encounter += parseInt(campaign.settings.roundDuration, 10)
-              campaign.times.session += parseInt(campaign.settings.roundDuration, 10)
-              campaign.times.total += parseInt(campaign.settings.roundDuration, 10)
+              campaign.times.encounter += 
+              campaign.times.session += roundDuration
+              campaign.times.total += roundDuration
               campaign.turnorder = turnorder
               campaignRef.set(campaign)
             }
-          }
+          }*/
           // Update React state when campaign is added to the firebase database
           this.setState({ campaign, campaignRef, turnorder, turnorderRef, loaded: true })
         });

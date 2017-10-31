@@ -40,6 +40,14 @@ export default class TurnorderItem extends Component {
       this.props.campaignRef.child('turnorder/'+this.props.item.id).update({ hit_points: parseInt(this.state.tempHP, 10) })
   }
 
+  handleInput = (e) => {
+    var { name, value } = e.target
+
+    if(e.keyCode === 13 || e.type === 'blur'){
+      if(value !== null || value !== '') this.props.campaignRef.child('turnorder/'+this.props.item.id).update({ [name]: value })
+    }
+  }
+
   render() {
     var item = this.props.item
 
@@ -53,7 +61,7 @@ export default class TurnorderItem extends Component {
           item.initiative
         ) : (
           <div>
-            <Input placeholder='Initiative' type='number' transparent />
+            <Input placeholder='Initiative' type='number' name='initiative' transparent onBlur={this.handleInput} onKeyDown={this.handleInput} />
             <Popup content={'Roll initiative for ' + item.name} trigger={<Button size='mini' color='blue' icon='undo' inverted onClick={() => {this.rollInitiative(item) }} />} />
           </div>
         )}
@@ -71,16 +79,19 @@ export default class TurnorderItem extends Component {
             <Popup content='Increase Hit Points' trigger={<Button color='green' icon='plus' onMouseDown={this.increaseHP.bind(this)} onMouseUp={this.onMouseUp} />} />
           </Button.Group>
         ) : (
-          <Input placeholder='Hit points' type='number' transparent />
+          <Input placeholder='Hit points' type='number' name='hit_points' onBlur={this.handleInput} onKeyDown={this.handleInput} transparent />
         )}
         </Table.Cell>
-        <Table.Cell>{item.armor_class}</Table.Cell>
+        <Table.Cell>
+        { item.armor_class ? item.armor_class
+          : <Input placeholder='Armor Class' type='number' name='armor_class' transparent onBlur={this.handleInput} onKeyDown={this.handleInput} /> }
+        </Table.Cell>
         <Table.Cell></Table.Cell>
         <Table.Cell></Table.Cell>
         <Table.Cell></Table.Cell>
         <Table.Cell>
           <Button.Group size='mini'>
-            <Popup content={'Done, ' + item.name + '\'s turn is over.'} trigger={<Button color='blue' icon='checkmark' onClick={() => { this.props.campaignRef.child('turnorder/'+item.id).update({ done: true }) }} />} />
+            <Popup content={'Done, ' + item.name + '\'s turn is over.'} trigger={<Button color='blue' icon='checkmark' onClick={this.props.setDone} />} />
             <Popup content={'Remove ' + item.name + ' from the item.'} trigger={<Button color='red' icon='remove' onClick={() => { this.props.campaignRef.child('turnorder/'+item.id).remove() }} />} />
           </Button.Group>
         </Table.Cell>
@@ -96,7 +107,7 @@ export default class TurnorderItem extends Component {
         return item.name
       }
     }else{
-      return <Input placeholder='Name' type='number' transparent />
+      return <Input placeholder='Name' type='text' name='name' onBlur={this.handleInput} onKeyDown={this.handleInput} transparent />
     }
   }
 

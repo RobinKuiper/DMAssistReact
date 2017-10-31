@@ -5,7 +5,6 @@ var config = {}
 
 // TODO: CHANGE TO .ENV FILES
 if(window && window.location && window.location.hostname === 'dmassist5e.firebaseapp.com'){
-  console.log('In Production')
   config = {
     apiKey: "AIzaSyA_4Vn12xMBhQCCGFfBB12mNPwOulLq9wU",
     authDomain: "dmassist5e.firebaseapp.com",
@@ -15,7 +14,6 @@ if(window && window.location && window.location.hostname === 'dmassist5e.firebas
     messagingSenderId: "647735221488"
   }
 } else {
-  console.log('Not in Production')
   config = {
     apiKey: "AIzaSyDr2iBwOXrZ4Ec1sykHI47Zmx3tUdi7LpU",
     authDomain: "dndassist-2870c.firebaseapp.com",

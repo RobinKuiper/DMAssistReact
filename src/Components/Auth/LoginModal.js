@@ -63,6 +63,18 @@ export default class LoginModal extends React.Component {
     }
 
     Auth.createUserWithEmailAndPassword(this.state.email, this.state.password)
+      .then(user => {
+        console.log(user)
+        user.sendEmailVerification()
+          .then(data => {
+            console.log(data)
+            console.log('Mail Send')
+          })
+          .catch(error => {
+            console.log(error)
+            console.log('Mail Not Send')
+          })
+      })
       .catch(error => self.setState({ error: error.message, loading: false }))
   }
 

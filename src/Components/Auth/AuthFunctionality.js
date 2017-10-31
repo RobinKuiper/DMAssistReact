@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Auth } from './../Lib/firebase'
+import { Auth } from './../../Lib/firebase'
+import LoginModal from './LoginModal'
 import { Button, Icon, Message } from 'semantic-ui-react'
 
 export default class AuthFunctionality extends Component {
@@ -18,15 +19,7 @@ export default class AuthFunctionality extends Component {
         switch(this.state.mode){
             case 'resetPassword': this.handleResetPassword; break;
             case 'recoverEmail': this.handleRecoverEmail; break;
-            case 'verifyEmail':
-                Auth.applyActionCode(this.state.actionCode)
-                    .then(resp => {
-                        this.setState({ success: true })
-                    })  
-                    .catch(error => {
-                        this.setState({ error })
-                    })    
-            break;
+            case 'verifyEmail': this.verifyEmail(); break;
             default: () => alert('Failure');
         }
     }
@@ -38,8 +31,11 @@ export default class AuthFunctionality extends Component {
                     <Message icon positive>
                         <Icon name='checkmark' />
                         <Message.Content>
-                            <Message.Header>Email Verified</Message.Header>
-                            <p>You have verified your email adres, thank you!</p>
+                        { this.state.mode === 'verifyEmail' && (<div>
+                                <Message.Header>Email Verified</Message.Header>
+                                <p>You have verified your email adres, thank you!</p>
+                                { !this.state.user && <LoginModal trigger={<Button positive icon='user' content='Login!' />} />}
+                        </div>)}
                         </Message.Content>
                     </Message>
                 </main>
@@ -50,14 +46,27 @@ export default class AuthFunctionality extends Component {
                     <Message icon error>
                         <Icon name='warning' />
                         <Message.Content>
+                        { this.state.mode === 'verifyEmail' && (<div>
                             <Message.Header>Something went wrong</Message.Header>
                             <p>There went something wrong with your verification.</p>
-                            <Button content='Send me a new verification code' icon='mail' onClick={() => Auth.currentUser.sendEmailVerification()} />
+                            { this.state.user ? <Button content='Send me a new verification code' icon='mail' onClick={() => this.state.user.sendEmailVerification()} />
+                            : <LoginModal trigger={<Button icon='user' content='Login' />} /> }
+                        </div>)}
                         </Message.Content>
                     </Message>
                 </main>
             )
         }
+    }
+
+    verifyEmail = () => {
+        Auth.applyActionCode(this.state.actionCode)
+            .then(resp => {
+                this.setState({ success: true })
+            })  
+            .catch(error => {
+                this.setState({ error })
+            })    
     }
 
     getParameterByName(name, url) {
@@ -73,7 +82,9 @@ export default class AuthFunctionality extends Component {
     componentDidMount() {
         Auth.onAuthStateChanged((user) => {
           if (user){
+              this.setState({ user })
               if(user.emailVerified) this.setState({ success: true })
+              else this.verifyEmail()
           }
         })
     }

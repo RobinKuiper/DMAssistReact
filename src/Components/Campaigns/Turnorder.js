@@ -81,7 +81,7 @@ export default class Turnorder extends Component {
           </Grid.Column>
 
           <Grid.Column width={4} textAlign='right'>
-            <Dropdown button color='green' text='Add Encounter' options={encounterOptions} onChange={this.addEncounterToTurnorder.bind(this)} />
+            <Dropdown button color='green' text='Add Encounter' options={encounterOptions} onChange={this.addEncounterToTurnorder.bind(this)} disabled={encounterOptions.length === 0} />
           </Grid.Column>
         </Grid>
 
@@ -105,8 +105,8 @@ export default class Turnorder extends Component {
 
           <Table.Body>
             { this.props.campaign.turnorder ? (
-                Object.keys(this.props.campaign.turnorder).map(key => this.props.campaign.turnorder[key]).sort(this.compare).map((turnorder) => (
-                  <TurnorderItem key={turnorder.id} item={turnorder} campaignRef={this.props.campaignRef} />
+                Object.keys(this.props.campaign.turnorder).map(key => {this.props.campaign.turnorder[key].id = key; return this.props.campaign.turnorder[key]}).sort(this.compare).map((turnorder) => (
+                  <TurnorderItem key={turnorder.id} item={turnorder} campaignRef={this.props.campaignRef} setDone={() => this.setDone(turnorder.id)} />
                 ))
               ) : (
                 <Table.Row>
@@ -138,14 +138,59 @@ export default class Turnorder extends Component {
     )
   }
 
+  setDone = (id) => {
+    const campaign = this.props.campaign
+    const turnorder = campaign.turnorder
+
+    let done = true
+    for(var key in turnorder){
+      if(key === id) turnorder[key].done = true
+      if(turnorder[key].done === false) done = false
+    }
+
+    if(!done) this.props.campaignRef.child('turnorder/'+id).update({ done: true })
+    else this.nextRound(turnorder)
+  }
+
+  nextRound = (turnorder) => {
+    const campaign = this.props.campaign
+
+    for(var key in turnorder) turnorder[key].done = false
+    
+    const roundDuration = parseInt(campaign.settings.roundDuration, 10)
+    const update = {
+      round: campaign.round ? campaign.round + 1 : 1,
+      times: {
+        encounter: campaign.times.encounter + roundDuration,
+        session: campaign.times.session + roundDuration,
+        total: campaign.times.total + roundDuration
+      },
+      turnorder
+    }
+    this.props.campaignRef.update(update)
+  }
+
   compare(a,b){
     var x = a.done === b.done ? 0 : a.done ? 1 : -1
     return x === 0 ? a.initiative < b.initiative : x
   }
 
-  addToTurnorder = (item) => {
-    item = (item.name) ? item : { name: '' }
-    this.props.campaignRef.child('turnorder').push(item)
+  addToTurnorder = (item, monster=false) => {
+    if(item === null) this.props.campaignRef.child('turnorder').push({ done: false })
+    else if(item.name){ 
+      item.done = false
+      item.monster = monster
+      this.props.campaignRef.child('turnorder').push(item)
+    }else if(Array.isArray(item)){
+      for(var i = 0; i < item.length; i++){
+
+        item[i] = (item[i].name) ? item[i] : { name: '' }
+        item[i].done = false
+        item[i].monster = monster
+
+        this.props.campaignRef.child('turnorder').push(item[i])
+      }
+    }
   }
 
   addMonsterToTurnorder = (e, { searchQuery, value }) => {
@@ -168,7 +213,9 @@ export default class Turnorder extends Component {
     var campaign = this.props.campaign
     campaign.times.encounter = 0
     campaign.round = 0
-    campaign.turnorder = (campaign.players) ? campaign.players : null
+    campaign.turnorder = null
     this.props.campaignRef.set(campaign)
+
+    this.addToTurnorder(Object.keys(campaign.players).map(key => campaign.players[key]))
   }
 }
