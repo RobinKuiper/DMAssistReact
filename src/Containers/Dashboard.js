@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Grid, List, Statistic } from 'semantic-ui-react'
+import { Button, Grid, List, Statistic } from 'semantic-ui-react'
 import { Auth } from './../Lib/firebase'
 import AdSense from 'react-adsense'
 import Panel from './../Components/UI/Panel'

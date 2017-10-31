@@ -17,6 +17,7 @@ import Campaign from './Containers/Campaign'
 import TreasureGenerator from './Containers/TreasureGenerator'
 import About from './Containers/About'
 import { Default, Mobile } from './Lib/Responsive'
+import AuthFunctionality from './Components/AuthFunctionality'
 
 import './App.css';
 
@@ -113,6 +114,8 @@ class App extends Component {
               <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} />
               <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} />
               <Route path='/treasure-generator' component={TreasureGenerator} />
+
+              <Route path='/auth' component={AuthFunctionality} />              
 
             </Sidebar.Pusher>
           </div>
