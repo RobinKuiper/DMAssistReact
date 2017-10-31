@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
-import { Auth } from './../Lib/firebase'
+import { Auth, Database } from './../Lib/firebase'
 
 import AdSense from 'react-adsense'
 
@@ -12,7 +12,10 @@ import Encounters from './../Components/Encounters'
 import { Button, Dropdown, Grid, Header, Input, Popup } from 'semantic-ui-react'
 import Table from './../Components/UI/Table'
 
+
 import { PaginatorButtons } from './../Components/Paginator'
+
+import CreateMonster from './../Components/CreateMonster'
 
 export default class Monsters extends Component {
   constructor(props){
@@ -23,30 +26,40 @@ export default class Monsters extends Component {
     this.state = {
       searchQuery: '',
       filteredMonsters: [],
+      custom_monsters: [],
       sortBy: 'name',
       sortOrder: 'ascending',
       limit: 10,
       page: 0,
-      loaded: true,
       toEncounterMonster: null,
-      encounterActive: false
+      encounterActive: false,
+      isCreatingMonster: false //false
     }
   }
 
   render() {
     return (
       <main>
+      { !this.state.isCreatingMonster ? (
         <Grid columns={2} stackable>
           <Grid.Column width={11}>
-            <Panel title={'Monsters'} content={this.renderContent} footer={this.renderFooter} loaded={this.state.loaded} />
+            <Panel title={'Monsters'} content={this.renderContent} footer={this.renderFooter} />
           </Grid.Column>
 
           <Grid.Column width={5}>
             <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} setEncounter={(encounterActive) => this.setState({ encounterActive }) } />
           </Grid.Column>
         </Grid>
+      ) : <CreateMonster /> }
       </main>
     )
+  }
+
+  toggleCustom = () => {
+    //this.setState({ custom: checked, filteredMonsters: (checked) ? this.state.custom_monsters : this.props.monsters })
+    const custom = !this.state.custom
+    const filteredMonsters = (custom) ? this.state.custom_monsters : this.props.monsters
+    this.setState({ custom, filteredMonsters })
   }
 
   renderContent = () => {
@@ -83,15 +96,21 @@ export default class Monsters extends Component {
 
     return (
       <div>
-        <Grid columns={3}>
-          <Grid.Column>
+        <Grid columns={5}>
+          <Grid.Column width={3}>
             <PaginatorButtons page={this.state.page} totalPages={Math.ceil(monsters.length/this.state.limit)} handlePageChange={(page) => { this.setState({page}) }}/>
+            {/*<Popup content='Show your custom monsters' trigger={<Checkbox toggle label='Custom' name='custom' checked={this.state.custom} onChange={this.toggleCustom} />} />*/}
           </Grid.Column>
-          <Grid.Column textAlign='center'>
-            <Input fluid icon='search' placeholder='Search...' value={this.state.searchQuery} onChange={this.search.bind(this)} />
+          <Grid.Column width={5}>
+            <Input fluid icon='search' placeholder='Search name, alignment, size, type, etc.' value={this.state.searchQuery} onChange={this.search.bind(this)} />
           </Grid.Column>
-          <Grid.Column textAlign='right'>
-            <Popup content='Coming Soon' trigger={<Button icon='plus' content='Create Monster' onClick={() => this.setState({ isCreatingMonster: true })} />} />
+          <Grid.Column textAlign='right' width={3}>
+            <Popup content='Show your custom monsters' trigger={<Button content={this.state.custom ? 'Custom: On' : 'Custom: Off'} color='blue' name='custom' active={this.state.custom} onClick={this.toggleCustom} />} />
+          </Grid.Column>
+          <Grid.Column textAlign='right' width={3}>
+            <Popup content='Create a new custom monster.' trigger={<Button icon='plus' color='green' content='Create' onClick={() => this.setState({ isCreatingMonster: true })} />} />
+          </Grid.Column>
+          <Grid.Column textAlign='right' width={2}>
             <Dropdown compact selection options={pageLimits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
           </Grid.Column>
         </Grid>
@@ -147,12 +166,13 @@ export default class Monsters extends Component {
 
   search(e){
     this.setState({ searchQuery: e.target.value })
+    const m = (this.state.custom) ? this.state.custom_monsters : this.props.monsters
 
     if(e.target.value === ''){
-      this.setState({ filteredMonsters: this.props.monsters })
+      this.setState({ filteredMonsters: m })
       return;
     }else{
-      var monsters = this.props.monsters.filter((monster) => monster.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+      var monsters = m.filter((monster) => monster.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
         monster.type.toLowerCase().includes(e.target.value.toLowerCase()) ||
         monster.alignment.toLowerCase().includes(e.target.value.toLowerCase()) ||
         monster.size.toLowerCase().includes(e.target.value.toLowerCase())
@@ -160,5 +180,17 @@ export default class Monsters extends Component {
 
       this.setState({ filteredMonsters: monsters })
     }
+  }
+
+  componentDidMount = () => {
+    Auth.onAuthStateChanged((user) => {
+      if (user){
+        const cmRef = Database.ref('userdata/'+user.uid+'/monsters/')
+        cmRef.on('child_added', snapshot => {
+          snapshot.val().id = snapshot.key
+          this.setState({ custom_monsters: [snapshot.val()].concat(this.state.custom_monsters) })
+        })
+      }
+    })
   }
 }

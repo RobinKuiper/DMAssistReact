@@ -30,7 +30,7 @@ export default class MainSidebar extends Component {
               <Image src={require('./../../Images/Logo.png')} />
             </Menu.Header>
           { Auth.currentUser ?
-            <Dropdown item text={Auth.currentUser.displayName || Auth.currentUser.email}>
+            <Dropdown item text={Auth.currentUser.displayName || Auth.currentUser.email.substring(0, Auth.currentUser.email.lastIndexOf('@'))}>
               <Dropdown.Menu>
                 <Dropdown.Item disabled>Profile</Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>

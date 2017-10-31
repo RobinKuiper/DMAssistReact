@@ -2,11 +2,15 @@
   "rules": {
     "monsters": {
       ".read": true,
-      ".write": true
+      ".write": false
+    },
+    "custom_monsters": {
+      ".read": true,
+      ".write": "$uid === auth.uid"
     },
     "spells": {
       ".read": true,
-      ".write": true
+      ".write": false
     },
     "userdata": {
       "$uid": {
