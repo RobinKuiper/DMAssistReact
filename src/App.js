@@ -5,8 +5,9 @@ import { Dimmer, Loader, Sidebar } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { PropsRoute, PrivateRoute } from './Lib/Router'
 
-import MainSidebar from './Components/Sidebar'
+import MainSidebar from './Components/UI/Sidebar'
 import Skype from './Components/Skype'
+import FixedMenu from './Components/UI/FixedMenu'
 
 import Dashboard from './Containers/Dashboard'
 import Monsters from './Containers/Monsters'
@@ -16,7 +17,6 @@ import Campaign from './Containers/Campaign'
 import TreasureGenerator from './Containers/TreasureGenerator'
 import About from './Containers/About'
 import { Default, Mobile } from './Lib/Responsive'
-import FixedMenu from './Components/FixedMenu'
 
 import './App.css';
 

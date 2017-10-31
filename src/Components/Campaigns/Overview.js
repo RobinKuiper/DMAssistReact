@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Image, List } from 'semantic-ui-react'
 import { Auth } from './../../Lib/firebase'
-import LoginModal from './../../Components/LoginModal'
+import LoginModal from './../Auth/LoginModal'
 
 const Overview = ({ campaigns }) => { 
     if(Auth.currentUser) { 

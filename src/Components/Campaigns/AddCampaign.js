@@ -3,7 +3,7 @@ import { Button, Form, Header, Segment } from 'semantic-ui-react'
 
 import { Database, Auth } from './../../Lib/firebase'
 import { Slugify } from './../../Lib/Common'
-import LoginModal from './../../Components/LoginModal'
+import LoginModal from './../Auth/LoginModal'
 
 export default class AddCampaign extends Component {
   constructor(props){

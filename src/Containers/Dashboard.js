@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom'
 import { Grid, List, Statistic } from 'semantic-ui-react'
 import { Auth } from './../Lib/firebase'
 import AdSense from 'react-adsense'
-import Panel from './Panel'
+import Panel from './../Components/UI/Panel'
 
 import MonsterModal from './../Components/MonsterModal'
 import SpellModal from './../Components/SpellModal'
 
-import LoginModal from './../Components/LoginModal'
+import LoginModal from './../Components/Auth/LoginModal'
 
 export default class Dashboard extends Component {
   render() {

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Input, Popup, Table } from 'semantic-ui-react'
-import MonsterModal from './MonsterModal'
-import { calculateMod } from './../Lib/Common'
-import Dice from './../Lib/Dice'
+import MonsterModal from './../MonsterModal'
+import { calculateMod } from './../../Lib/Common'
+import Dice from './../../Lib/Dice'
 
 export default class TurnorderItem extends Component {
   constructor(props) {

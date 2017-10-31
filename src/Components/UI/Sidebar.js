@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { Button, Dropdown, Icon, Image, Menu, Sidebar } from 'semantic-ui-react'
+import { Button, Dropdown, Icon, Image, Menu, Popup, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
-import { Auth } from './../Lib/firebase'
+import { Auth } from './../../Lib/firebase'
 import AdSense from 'react-adsense'
 
-import LoginModal from './../Components/LoginModal'
+import LoginModal from './../Auth/LoginModal'
 
 export default class MainSidebar extends Component {
   constructor(props){
@@ -27,7 +27,7 @@ export default class MainSidebar extends Component {
             </Menu.Header>*/}
             <Menu.Header style={{textAlign: 'center'}}>
               { this.props.mobile && <Button floated='right' icon='sidebar' color='black' onClick={this.props.hideSidebar} />}
-              <Image src={require('./../Images/Logo.png')} />
+              <Image src={require('./../../Images/Logo.png')} />
             </Menu.Header>
           { Auth.currentUser ?
             <Dropdown item text={Auth.currentUser.displayName || Auth.currentUser.email}>
@@ -57,10 +57,10 @@ export default class MainSidebar extends Component {
             <Icon name='newspaper' />
             Campaigns
           </Menu.Item>
-          <Menu.Item as={Link} onClick={this.props.hideSidebar} to='/treasure-generator' name='treasure' disabled>
+          <Popup content='Coming Soon!' trigger={<Menu.Item as={Link} onClick={this.props.hideSidebar} to='/' name='treasure' disabled>
             <Icon name='diamond' />
             Treasure Gen.
-          </Menu.Item>
+          </Menu.Item>} />
         </Menu>
 
         <div id='sideBarAdsense'>

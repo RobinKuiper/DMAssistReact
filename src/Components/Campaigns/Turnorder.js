@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Button, Dropdown, Grid, List, Popup, Table } from 'semantic-ui-react'
 
-import { formatTime } from './../Lib/Common'
+import { formatTime } from './../../Lib/Common'
 
-import Panel from './../Containers/Panel'
+import Panel from './../UI/Panel'
 import TurnorderItem from './TurnorderItem'
 
 export default class Turnorder extends Component {

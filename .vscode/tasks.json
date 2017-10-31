@@ -21,15 +21,6 @@
             "type": "npm",
             "script": "start",
             "problemMatcher": []
-        },
-        {
-            "type": "npm",
-            "script": "bd",
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
         }
     ]
 }

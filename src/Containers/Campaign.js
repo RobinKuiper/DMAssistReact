@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { Database, Auth } from './../Lib/firebase'
 import { formatTime, toSeconds } from './../Lib/Common'
 import { Button, Grid, Input, Popup, Segment } from 'semantic-ui-react'
-import Panel from './Panel'
-import TableFull from './../Components/Table'
-import Turnorder from './../Components/Turnorder'
+import Panel from './../Components/UI/Panel'
+import TableFull from './../Components/UI/Table'
+import Turnorder from './../Components/Campaigns/Turnorder'
 import AdSense from 'react-adsense'
 //import FixedMenu from "./../Components/FixedMenu";
 

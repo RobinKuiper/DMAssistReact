@@ -2,10 +2,10 @@ import React from 'react'
 
 import { Grid } from 'semantic-ui-react'
 
-import Panel from './Panel'
+import Panel from './../Components/UI/Panel'
 
-import Add from './Campaigns/AddCampaign'
-import Overview from './Campaigns/Overview'
+import Add from './../Components/Campaigns/AddCampaign'
+import Overview from './../Components/Campaigns/Overview'
 
 const Campaigns = ({campaigns}) => (
   <main>

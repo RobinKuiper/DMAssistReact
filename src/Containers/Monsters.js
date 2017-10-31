@@ -5,12 +5,12 @@ import { Auth } from './../Lib/firebase'
 
 import AdSense from 'react-adsense'
 
-import Panel from './Panel'
+import Panel from './../Components/UI/Panel'
 import MonsterModal from './../Components/MonsterModal'
 import Encounters from './../Components/Encounters'
 
 import { Button, Dropdown, Grid, Header, Input, Popup } from 'semantic-ui-react'
-import Table from './../Components/Table'
+import Table from './../Components/UI/Table'
 
 import { PaginatorButtons } from './../Components/Paginator'
 
@@ -91,7 +91,7 @@ export default class Monsters extends Component {
             <Input fluid icon='search' placeholder='Search...' value={this.state.searchQuery} onChange={this.search.bind(this)} />
           </Grid.Column>
           <Grid.Column textAlign='right'>
-            <Popup content='Coming Soon' trigger={<Button disabled icon='plus' content='Create Monster' onClick={() => this.setState({ isCreatingMonster: true })} />} />
+            <Popup content='Coming Soon' trigger={<Button icon='plus' content='Create Monster' onClick={() => this.setState({ isCreatingMonster: true })} />} />
             <Dropdown compact selection options={pageLimits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
           </Grid.Column>
         </Grid>

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Button, Divider, Dropdown, Header, Input, List, Popup } from 'semantic-ui-react'
 import { Auth, Database } from './../Lib/firebase'
-import Panel from './../Containers/Panel'
+import Panel from './UI/Panel'
 import MonsterModal from './MonsterModal'
 import { CRtoEXP, formatNumber } from './../Lib/Common'
-import LoginModal from './LoginModal'
+import LoginModal from './Auth/LoginModal'
 
 export default class Encounters extends Component {
     constructor(props) {
@@ -150,7 +150,7 @@ export default class Encounters extends Component {
             this.setState({ encounter })
         })
         this.setState({ seRef })
-        this.props.setEcounter(true)
+        this.props.setEncounter(true)
     }
 
     selectEncounter = (e, {q, value}) => {
