@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Dropdown, Icon, Image, Menu, Popup, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { Auth } from './../../Lib/firebase'
-import AdSense from 'react-adsense'
+import Adsense from './../Adsense'
 
 import LoginModal from './../Auth/LoginModal'
 
@@ -65,7 +65,7 @@ export default class MainSidebar extends Component {
 
         <div id='sideBarAdsense'>
         { process.env.NODE_ENV !== "development" &&
-          <AdSense.Google client='ca-pub-2044382203546332' slot='5925054492' style={{marginTop: 40, width: 728, height: 90}} />
+          <Adsense client='ca-pub-2044382203546332' slot='5925054492' style={{marginTop: 40, width: 728, height: 90}} />
         }
         </div>
 
