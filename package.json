@@ -1,6 +1,6 @@
 {
   "name": "dmassist",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "private": true,
   "dependencies": {
     "create-react-class": "^15.6.2",
@@ -12,6 +12,7 @@
     "react": "^16.0.0",
     "react-alert": "^2.4.0",
     "react-dom": "^16.0.0",
+    "react-firebase-image-uploader": "^1.1.0",
     "react-responsive": "^3.0.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
