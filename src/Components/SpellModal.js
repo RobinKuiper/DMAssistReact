@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Divider, Grid, Header, Icon, Image, Label, List, Modal, Segment } from 'semantic-ui-react'
+import { formatSpellLevel } from './../Lib/Common'
 
 export default class SpellModal extends Component {
   render() {
@@ -10,7 +11,7 @@ export default class SpellModal extends Component {
         <Modal.Content>
           { spell &&
             <Segment raised>
-              <Label color='red' ribbon>{spell.level} {spell.school}</Label>
+              <Label color='red' ribbon>{formatSpellLevel(spell.level)} Level {spell.school}</Label>
               <Header>{spell.name}</Header>
               <Segment.Group>
                 <Segment>

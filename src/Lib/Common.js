@@ -71,6 +71,15 @@ export const formatCR = (cr) => {
   return (cr === 0.125) ? '1/8' : (cr === 0.25) ? '1/4' : (cr === 0.5) ? '1/2' : cr
 }
 
+export const formatSpellLevel = (level) => {
+  switch(level){
+    case 1: return level + 'st';
+    case 2: return level + 'nd';
+    case 3: return level + 'rd';
+    default: return level + 'th';
+  }
+}
+
 export const CRtoEXP = (cr) => {
   var crToExp = {
     0: 10,
