@@ -18,12 +18,13 @@ import TreasureGenerator from './Containers/TreasureGenerator'
 import About from './Containers/About'
 import { Default, Mobile } from './Lib/Responsive'
 import AuthFunctionality from './Components/Auth/AuthFunctionality'
+import Profile from './Containers/Profile'
 
 import './App.css';
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? 1 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? true : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
 
 class App extends Component {
   constructor(props){
@@ -116,6 +117,7 @@ class App extends Component {
               <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} />
               <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} />
               <Route path='/treasure-generator' component={TreasureGenerator} />
+              <Route path='/profile' component={Profile} />
 
               <Route path='/auth' component={AuthFunctionality} />              
 
