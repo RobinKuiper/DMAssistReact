@@ -31,6 +31,7 @@ export default class SpellModal extends Component {
 
                     <Grid.Column>
                       <List>
+                        <List.Item><strong>Classes</strong></List.Item>
                       { spell.classes &&
                           spell.classes.map(c => (
                             <List.Item key={c}>{c}</List.Item>

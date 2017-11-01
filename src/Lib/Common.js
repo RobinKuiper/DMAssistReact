@@ -63,6 +63,10 @@ export const Slugify = (text) => {
 }
 /* eslint-enable */
 
+export const Capitalize = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 export const formatCR = (cr) => {
   return (cr === 0.125) ? '1/8' : (cr === 0.25) ? '1/4' : (cr === 0.5) ? '1/2' : cr
 }

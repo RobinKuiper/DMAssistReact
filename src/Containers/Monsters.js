@@ -3,19 +3,19 @@ import React, { Component } from 'react'
 import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
 import { Auth, Database } from './../Lib/firebase'
 
-import AdSense from 'react-adsense'
+import Adsense from './../Components/Adsense'
 
 import Panel from './../Components/UI/Panel'
 import MonsterModal from './../Components/MonsterModal'
 import Encounters from './../Components/Encounters'
 
-import { Button, Dropdown, Grid, Header, Input, Popup } from 'semantic-ui-react'
-import Table from './../Components/UI/Table'
-
+import { Button, Dropdown, Grid, Header, Icon, Input, Popup, Table } from 'semantic-ui-react'
 
 import { PaginatorButtons } from './../Components/Paginator'
 
 import CreateMonster from './../Components/CreateMonster'
+
+import AlertContainer from 'react-alert'
 
 export default class Monsters extends Component {
   constructor(props){
@@ -37,9 +37,26 @@ export default class Monsters extends Component {
     }
   }
 
+  alertOptions = {
+    offset: 14,
+    position: 'top left',
+    theme: 'dark',
+    time: 5000,
+    transition: 'scale'
+  }
+
+  showAlert = (message, type, icon, time = 5000) => {
+      this.msg.show(message, {
+          time,
+          type,
+          icon: <Icon name={icon} />
+      })
+  }
+
   render() {
     return (
       <main>
+      <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
       { !this.state.isCreatingMonster ? (
         <Grid columns={2} stackable>
           <Grid.Column width={11}>
@@ -50,49 +67,26 @@ export default class Monsters extends Component {
             <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} setEncounter={(encounterActive) => this.setState({ encounterActive }) } />
           </Grid.Column>
         </Grid>
-      ) : <CreateMonster /> }
+      ) : (
+        <CreateMonster onSuccess={() => {
+          this.toggleCustom('show')
+          this.setState({ isCreatingMonster: false })
+          this.showAlert('Your monster is saved!', 'success', 'checkmark')
+        }} />
+      )}
       </main>
     )
   }
 
-  toggleCustom = () => {
+  toggleCustom = (type) => {
     //this.setState({ custom: checked, filteredMonsters: (checked) ? this.state.custom_monsters : this.props.monsters })
-    const custom = !this.state.custom
+    const custom = type === 'show' ? true : type === 'hide' ? false : !this.state.custom
     const filteredMonsters = (custom) ? this.state.custom_monsters : this.props.monsters
     this.setState({ custom, filteredMonsters })
   }
 
   renderContent = () => {
     var monsters = (this.state.filteredMonsters.length === 0) ? this.props.monsters : this.state.filteredMonsters
-
-    const tableConfig = {
-      headerCells: [
-        { content: 'CR', sortName: 'challenge_rating' },
-        { content: 'Name', sortName: 'name' },
-        { content: 'HP', sortName: 'hit_points' },
-        { content: 'AC', sortName: 'armor_class' },
-        { content: 'Exp', sortName: 'challenge_rating' },
-        { content: '' }
-      ],
-      bodyRows: []
-    }
-
-    tableConfig.bodyRows = monsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => {
-      return {
-        key: monster.slug,
-        cells: [
-          { content: formatCR(monster.challenge_rating) },
-          { content: (<div>
-            <MonsterModal monster={monster} trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>} />
-            <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
-          </div>) },
-          { content: monster.hit_points },
-          { content: monster.armor_class },
-          { content: CRtoEXP(monster.challenge_rating) + ' XP' },
-          { content: Auth.currentUser && this.state.encounterActive && (<Popup content='Add to encounter' trigger={<Button icon='plus' size='mini' onClick={() => this.encounters.addMonster(monster) } />} />) }
-        ]
-      }
-    })
 
     return (
       <div>
@@ -115,10 +109,60 @@ export default class Monsters extends Component {
           </Grid.Column>
         </Grid>
 
-        <Table color='purple' headerCells={tableConfig.headerCells} bodyRows={tableConfig.bodyRows} />
+        <Table color='purple' selectable sortable unstackable>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
+                CR
+              </Table.HeaderCell>
+              <Table.HeaderCell sorted={this.state.sortBy === 'name' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('name') }}>
+                Name
+              </Table.HeaderCell>
+              <Table.HeaderCell sorted={this.state.sortBy === 'hit_points' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('hit_points') }}>
+                HP
+              </Table.HeaderCell>
+              <Table.HeaderCell sorted={this.state.sortBy === 'armor_class' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('armor_class') }}>
+                AC
+              </Table.HeaderCell>
+              <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
+                Exp
+              </Table.HeaderCell>
+              { Auth.currentUser && this.state.encounterActive &&
+                <Table.HeaderCell></Table.HeaderCell>
+              }
+            </Table.Row>
+          </Table.Header>
+
+          <Table.Body>
+            { monsters.length > 0 ?
+                monsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => (
+                  <Table.Row key={monster.slug}>
+                    <Table.Cell>{formatCR(monster.challenge_rating)}</Table.Cell>
+                    <Table.Cell>
+                      <div>
+                        <MonsterModal monster={monster} trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>} />
+                        <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell>{monster.hit_points}</Table.Cell>
+                    <Table.Cell>{monster.armor_class}</Table.Cell>
+                    <Table.Cell>{CRtoEXP(monster.challenge_rating) + ' XP'}</Table.Cell>
+                    { Auth.currentUser && this.state.encounterActive &&
+                      <Table.Cell>{(<Popup content='Add to encounter' trigger={<Button icon='plus' size='mini' onClick={() => this.encounters.addMonster(monster) } />} />)}</Table.Cell>
+                    }
+                  </Table.Row>
+                ))
+              : (
+                <Table.Row>
+                  <Table.Cell colSpan={5}>No monsters found.</Table.Cell>
+                </Table.Row>
+              )
+            }
+          </Table.Body>
+        </Table>
 
         { process.env.NODE_ENV !== "development" &&
-          <AdSense.Google client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
+          <Adsense client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
         }
       </div>
     )

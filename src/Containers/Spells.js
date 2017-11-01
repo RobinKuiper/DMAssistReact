@@ -2,14 +2,13 @@ import React, { Component } from 'react'
 
 import { pageLimits } from './../Lib/Common'
 
-import AdSense from 'react-adsense'
+import Adsense from './../Components/Adsense'
 
 import Panel from './../Components/UI/Panel'
 import SpellModal from './../Components/SpellModal'
 import { PaginatorButtons } from './../Components/Paginator'
-import Table from './../Components/UI/Table'
 
-import { Button, Grid, Header, Input, Dropdown, Popup } from 'semantic-ui-react'
+import { Button, Grid, Header, Input, Dropdown, Popup, Table } from 'semantic-ui-react'
 
 export default class Spells extends Component {
   constructor(props){
@@ -43,31 +42,6 @@ export default class Spells extends Component {
   renderContent = () => {
     var spells = (this.state.filteredSpells.length === 0) ? this.props.spells : this.state.filteredSpells
 
-    const tableConfig = {
-      headerCells: [
-        { content: 'Name', sortName: 'name' },
-        { content: 'School', sortName: 'school' },
-        { content: 'Casting Time', sortName: 'castingTime' },
-        { content: 'Duration', sortName: 'duration' },
-      ],
-      bodyRows: []
-    }
-
-    tableConfig.bodyRows = spells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => {
-      return {
-        key: spell.slug,
-        cells: [
-          { content: (<div>
-            <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
-            <span style={{fontSize: '8pt'}}>{spell.school}</span>
-          </div>) },
-          { content: spell.school },
-          { content: spell.castingTime },
-          { content: spell.duration }
-        ]
-      }
-    })
-
     return (
       <div>
         <Grid columns={3}>
@@ -83,10 +57,50 @@ export default class Spells extends Component {
           </Grid.Column>
         </Grid>
 
-        <Table color='purple' headerCells={tableConfig.headerCells} bodyRows={tableConfig.bodyRows} />
+        <Table color='purple' selectable sortable unstackable>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell sorted={this.state.sortBy === 'name' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('name') }}>
+                Name
+              </Table.HeaderCell>
+              <Table.HeaderCell sorted={this.state.sortBy === 'school' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('school') }}>
+                School
+              </Table.HeaderCell>
+              <Table.HeaderCell sorted={this.state.sortBy === 'castingTime' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('castingTime') }}>
+                Casting Time
+              </Table.HeaderCell>
+              <Table.HeaderCell sorted={this.state.sortBy === 'duration' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('duration') }}>
+                Duration
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+
+          <Table.Body>
+            { spells.length > 0 ?
+              spells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
+                  <Table.Row key={spell.slug}>
+                    <Table.Cell>
+                      <div>
+                        <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
+                        <span style={{fontSize: '8pt'}}>{spell.school}</span>
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell>{spell.school}</Table.Cell>
+                    <Table.Cell>{spell.castingTime}</Table.Cell>
+                    <Table.Cell>{spell.duration}</Table.Cell>
+                  </Table.Row>
+                ))
+              : (
+                <Table.Row>
+                  <Table.Cell colSpan={5}>No spells found.</Table.Cell>
+                </Table.Row>
+              )
+            }
+          </Table.Body>
+        </Table>
 
         { process.env.NODE_ENV !== "development" &&
-          <AdSense.Google client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
+          <Adsense client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
         }
       </div>
     )

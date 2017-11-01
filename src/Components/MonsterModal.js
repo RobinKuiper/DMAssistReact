@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Divider, Grid, Header, Label, List, Modal, Segment, Table } from 'semantic-ui-react'
 
-import { formatCR, CRtoEXP, calculateMod } from './../Lib/Common'
+import { Capitalize, formatCR, CRtoEXP, calculateMod } from './../Lib/Common'
 
 export default class MonsterModal extends Component {
   render() {
@@ -12,7 +12,7 @@ export default class MonsterModal extends Component {
         <Modal.Content>
           { monster &&
             <Segment raised>
-              <Label color='red' ribbon>{monster.size} {monster.type}</Label>
+              <Label color='red' ribbon>{Capitalize(monster.size)} {Capitalize(monster.type)}</Label>
               <Header>{monster.name}</Header>
               <Segment.Group>
                 <Segment>
@@ -20,15 +20,15 @@ export default class MonsterModal extends Component {
                     <Grid.Column>
                       <List>
                         <List.Item>
-                          <strong>Armor Class:</strong>
+                          <strong>Armor Class:&nbsp;</strong>
                           <span>{monster.armor_class}</span>
                         </List.Item>
                         <List.Item>
-                          <strong>Hit Points:</strong>
+                          <strong>Hit Points:&nbsp;</strong>
                           <span>{monster.hit_points}</span>
                         </List.Item>
                         <List.Item>
-                          <strong>Speed:</strong>
+                          <strong>Speed:&nbsp;</strong>
                           <span>{monster.speed}</span>
                         </List.Item>
                       </List>
@@ -37,15 +37,15 @@ export default class MonsterModal extends Component {
                     <Grid.Column>
                       <List>
                         <List.Item>
-                          <strong>Alignment:</strong>
+                          <strong>Alignment:&nbsp;</strong>
                           <span>{monster.alignment}</span>
                         </List.Item>
                         <List.Item>
-                          <strong>Languages:</strong>
+                          <strong>Languages:&nbsp;</strong>
                           <span>{monster.languages}</span>
                         </List.Item>
                         <List.Item>
-                          <strong>Challenge:</strong>
+                          <strong>Challenge:&nbsp;</strong>
                           <span>
                             {formatCR(monster.challenge_rating)}
                             ({CRtoEXP(monster.challenge_rating)} XP)
@@ -98,7 +98,7 @@ export default class MonsterModal extends Component {
                   <Grid columns={2}>
                     <Grid.Column>
                       <List>
-                        <List.Item><strong>Skills:</strong>
+                        <List.Item><strong>Skills:&nbsp;</strong>
                           <List horizontal divided>
                             {monster.acrobatics && <List.Item>Acrobatics +{monster.acrobatics}</List.Item>}
                             {monster.animal_handling && <List.Item>Animal Handling +{monster.animal_handling}</List.Item>}
@@ -121,10 +121,10 @@ export default class MonsterModal extends Component {
                           </List>
                         </List.Item>
                         <List.Item>
-                          <strong>Senses:</strong>
+                          <strong>Senses:&nbsp;</strong>
                           <span>{monster.senses}</span>
                         </List.Item>
-                        <List.Item><strong>Saves:</strong>
+                        <List.Item><strong>Saves:&nbsp;</strong>
                           <List horizontal divided>
                             {monster.strength_save && <List.Item>Str +{monster.strength_save}</List.Item>}
                             {monster.dexterity_save && <List.Item>Dex +{monster.dexterity_save}</List.Item>}
@@ -139,10 +139,10 @@ export default class MonsterModal extends Component {
 
                     <Grid.Column>
                       <List>
-                        {monster.damage_immunities && <List.Item><strong>Damage Immunities:</strong> <span>{monster.damage_immunities}</span></List.Item>}
-                        {monster.condition_immunities && <List.Item><strong>Condition Immunities:</strong> <span>{monster.condition_immunities}</span></List.Item>}
-                        {monster.damage_vulnerabilities && <List.Item><strong>Damage Vulnerabilities:</strong> <span>{monster.damage_vulnerabilities}</span></List.Item>}
-                        {monster.damage_resistances && <List.Item><strong>Damage Resistances:</strong> <span>{monster.damage_resistances}</span></List.Item>}
+                        {monster.damage_immunities && <List.Item><strong>Damage Immunities:&nbsp;</strong> <span>{monster.damage_immunities}</span></List.Item>}
+                        {monster.condition_immunities && <List.Item><strong>Condition Immunities:&nbsp;</strong> <span>{monster.condition_immunities}</span></List.Item>}
+                        {monster.damage_vulnerabilities && <List.Item><strong>Damage Vulnerabilities:&nbsp;</strong> <span>{monster.damage_vulnerabilities}</span></List.Item>}
+                        {monster.damage_resistances && <List.Item><strong>Damage Resistances:&nbsp;</strong> <span>{monster.damage_resistances}</span></List.Item>}
                       </List>
                     </Grid.Column>
                   </Grid>
@@ -156,7 +156,7 @@ export default class MonsterModal extends Component {
                       {
                         monster.special_abilities.map((obj) => (
                           <List.Item key={obj.name}>
-                            <strong>{obj.name}</strong>
+                            <strong>{obj.name}&nbsp;</strong>
                             <span>{obj.desc}</span>
                           </List.Item>
                         ))
@@ -174,7 +174,7 @@ export default class MonsterModal extends Component {
                       {
                         monster.actions.map((obj) => (
                           <List.Item key={obj.name}>
-                            <strong>{obj.name}</strong>
+                            <strong>{obj.name}&nbsp;</strong>
                             <span>{obj.desc}</span>
                           </List.Item>
                         ))
@@ -192,7 +192,7 @@ export default class MonsterModal extends Component {
                       {
                         monster.reactions.map((obj) => (
                           <List.Item key={obj.name}>
-                            <strong>{obj.name}</strong>
+                            <strong>{obj.name}&nbsp;</strong>
                             <span>{obj.desc}</span>
                           </List.Item>
                         ))
@@ -213,7 +213,7 @@ export default class MonsterModal extends Component {
                       {
                         monster.legendary_actions.map((obj) => (
                           <List.Item key={obj.name}>
-                            <strong>{obj.name}</strong>
+                            <strong>{obj.name}&nbsp;</strong>
                             <span>{obj.desc}</span>
                           </List.Item>
                         ))

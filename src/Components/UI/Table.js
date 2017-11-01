@@ -16,7 +16,10 @@ export default class Table_ extends Component {
         <Table.Header>
           <Table.Row>
             { this.props.headerCells.map((cell, i) => (
-              <Table.HeaderCell key={i} colSpan={cell.colSpan} sorted={this.state.sortBy === cell.sortName ? this.state.sortOrder : null} onClick={() => { this.changeSortBy(cell.sortName) }}>
+              <Table.HeaderCell key={i} colSpan={cell.colSpan} sorted={this.state.sortBy === cell.sortName ? this.state.sortOrder : null} onClick={() => { 
+                this.props.handleSort(cell.sortName) 
+                this.setState({ sortBy: cell.sortName })
+              }}>
                 {cell.content}
               </Table.HeaderCell>
             ))}

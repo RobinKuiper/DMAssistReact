@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Grid, Icon, List, Message, Statistic } from 'semantic-ui-react'
 import { Auth } from './../Lib/firebase'
-import AdSense from 'react-adsense'
+import Adsense from './../Components/Adsense'
 import Panel from './../Components/UI/Panel'
 
 import MonsterModal from './../Components/MonsterModal'
@@ -61,7 +61,7 @@ export default class Dashboard extends Component {
         )}
 
         { process.env.NODE_ENV !== "development" &&
-          <AdSense.Google client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
+          <Adsense client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
         }
       </main>
     )
@@ -89,17 +89,17 @@ export default class Dashboard extends Component {
 
   renderMonsters = () => (
     <List>
-    { this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => {
-      return <MonsterModal key={item.slug} monster={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
-    })}
+    { this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => 
+      <MonsterModal key={item.slug} monster={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
+    )}
     </List>
   )
 
   renderSpells = () => (
     <List>
-    { this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item => {
-      return <SpellModal key={item.slug} spell={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
-    })}
+    { this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item =>
+      <SpellModal key={item.slug} spell={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
+    )}
     </List>
   )
 

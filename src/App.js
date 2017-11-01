@@ -23,7 +23,7 @@ import './App.css';
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? 1 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? true : true
 
 class App extends Component {
   constructor(props){
@@ -131,6 +131,44 @@ class App extends Component {
     Auth.currentUser.sendEmailVerification()
   }
 
+  keepTrackOfDatabase = (ref, stateName) => {
+    ref.on('child_added', snapshot => {
+      var item = snapshot.val()
+      item.id = snapshot.key
+      this.setState({ [stateName]: [item].concat(this.state[stateName]) })
+    })
+
+    ref.on('child_changed', snapshot => {
+      let items = this.state[stateName],
+      changed_item = snapshot.val()
+
+      changed_item.id = snapshot.key
+
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        if(item.id === changed_item.id){
+          items[i] = changed_item
+          this.setState({ [stateName]: items })
+          break;
+        }
+      }
+    })
+
+    ref.on('child_removed', snapshot => {
+      let items = this.state[stateName],
+      removed_item_id = snapshot.key
+
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        if(item.id === removed_item_id){
+          items.splice(i, 1)
+          this.setState({ [stateName]: items })
+          break;
+        }
+      }
+    })
+  }
+
   componentDidMount() {
     Auth.onAuthStateChanged((user) => {
       if (user){
@@ -141,20 +179,10 @@ class App extends Component {
 
         // Get the campaigns reference in userdata
         let cRef = uDataRef.child('campaigns');
-        // Do shit on new campaign added
-        cRef.on('child_added', snapshot => {
-          var campaign = snapshot.val()
-          campaign.id = snapshot.key
-          this.setState({ campaigns: [campaign].concat(this.state.campaigns) })
-        })
-        // Get the encounters reference in userdata
+        this.keepTrackOfDatabase(cRef, 'campaigns')
         let eRef = uDataRef.child('encounters')
-        // Do shit on new encounter added
-        eRef.on('child_added', snapshot => {
-          var encounter = snapshot.val()
-          encounter.id = snapshot.key
-          this.setState({ encounters: [encounter].concat(this.state.encounters) })
-        })
+        this.keepTrackOfDatabase(eRef, 'encounters')
+
       }else{
         this.setState({ campaigns: [] })
       }

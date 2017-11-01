@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import Panel from './UI/Panel'
-import { Button, Checkbox, Divider, Dropdown, Grid, Header, Label, List, Popup, Table, Segment } from 'semantic-ui-react'
+import { Button, Checkbox, Divider, Dropdown, Grid, Header, Icon, Label, List, Popup, Table, Segment } from 'semantic-ui-react'
 import { Form } from 'formsy-semantic-ui-react'
 import { Auth, Database } from './../Lib/firebase'
 import { Slugify } from './../Lib/Common'
-
 
 export default class CreateMonster extends Component {
     constructor(props) { 
@@ -38,7 +37,7 @@ export default class CreateMonster extends Component {
     handleChangeArray = (type, name, value, index) => {
         var items = this.state[type]
         items[index][name] = value
-        this.setState({ traits: items })
+        this.setState({ [type]: items })
     }
     handleAddition = (type, value) => {
         var options = this.state.options
@@ -57,7 +56,8 @@ export default class CreateMonster extends Component {
         const monster = { name, size, type, armor_class, hit_points, speed, alignment, languages, 
             challenge_rating, strength, dexterity, constitution, intelligence, wisdom, 
             charisma, skills, senses, saves, damage_immunities, damage_resistances, 
-            damage_vulnerabilities, condition_immunities, traits, actions, reactions, legendary_actions,
+            damage_vulnerabilities, condition_immunities, actions, reactions, legendary_actions,
+            special_abilities: traits,
             slug: Slugify(name),
             uid: Auth.currentUser.uid,
             public: this.state.public,
@@ -65,8 +65,8 @@ export default class CreateMonster extends Component {
         }
 
         Database.ref('userdata/'+Auth.currentUser.uid+'/monsters/'+monster.slug).set(monster)
-            .then(e => {
-                console.log(e)
+            .then(() => {
+                this.props.onSuccess()
                 if(monster.public) {
                     Database.ref('custom_monsters/'+monster.slug).set(monster)
                         .then(e => {
@@ -81,6 +81,8 @@ export default class CreateMonster extends Component {
                 console.log(e)
             })
     }
+
+    
 
     render () {
         return (

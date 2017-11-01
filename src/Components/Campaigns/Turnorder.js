@@ -127,7 +127,7 @@ export default class Turnorder extends Component {
 
               <Table.HeaderCell colSpan={4}>
                 <Button.Group size='mini' floated='right'>
-                  <Popup content='Add empty item to the turnorder.' trigger={<Button color='green' icon='plus' onClick={this.addToTurnorder.bind(this)} />} />
+                  <Popup content='Add an empty item to the turnorder.' trigger={<Button color='green' icon='plus' onClick={() => this.addToTurnorder(null)} />} />
                   <Popup content='Reset the turnorder' trigger={<Button color='red' icon='undo' content='Reset' onClick={this.resetTurnorder.bind(this)} />} />
                 </Button.Group>
               </Table.HeaderCell>
@@ -200,6 +200,7 @@ export default class Turnorder extends Component {
   }
 
   addEncounterToTurnorder = (e, {q, value}) => {
+    console.log(this.props.encounters)
     let encounter = this.props.encounters.find(encounter => encounter.id === value)
     if(encounter.monsters){
       for(var key in encounter.monsters){

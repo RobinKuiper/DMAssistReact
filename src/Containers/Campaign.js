@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import { Database, Auth } from './../Lib/firebase'
 import { formatTime, toSeconds } from './../Lib/Common'
-import { Button, Grid, Input, Popup, Segment } from 'semantic-ui-react'
+import { Button, Grid, Label, Popup, Segment, Table } from 'semantic-ui-react'
+import { Form } from 'formsy-semantic-ui-react'
+import Formsy from 'formsy-react'
 import Panel from './../Components/UI/Panel'
-import TableFull from './../Components/UI/Table'
 import Turnorder from './../Components/Campaigns/Turnorder'
-import AdSense from 'react-adsense'
+import Adsense from './../Components/Adsense'
 //import FixedMenu from "./../Components/FixedMenu";
+
+Formsy.addValidationRule('isRequired', function (values, value) {
+  return value !== null && value !== '';
+});
 
 export default class Campaign extends Component {
   constructor(props) {
@@ -63,7 +68,7 @@ export default class Campaign extends Component {
             <Panel title='Players' content={this.playerContent} loaded={this.state.loaded} closeable />
 
             { process.env.NODE_ENV !== "development" &&
-              <AdSense.Google client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
+              <Adsense client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
             }
           </main>
         </div>
@@ -85,47 +90,117 @@ export default class Campaign extends Component {
   }
 
   playerContent = () => {
-    const tableConfig = {
-      headerCells: [
-        { content: 'Name', sortName: 'name' },
-        { content: 'Level', sortName: 'level' },
-        { content: 'HP', sortName: 'hit_points' },
-        { content: 'AC', sortName: 'armor_class' },
-        { content: '', colSpan: 2 },
-      ],
-      bodyRows: [],
-      footerCells: [
-        { content: (<Input placeholder='Name' type='text' transparent value={this.state.newPlayerName} onChange={(e) => this.setState({ newPlayerName: e.target.value }) } />) },
-        { content: (<Input placeholder='Level' type='number' transparent value={this.state.newPlayerLevel} onChange={(e) => this.setState({ newPlayerLevel: e.target.value }) } />) },
-        { content: (<Input placeholder='Hit Points' type='number' transparent value={this.state.newPlayerHP} onChange={(e) => this.setState({ newPlayerHP: e.target.value }) } />) },
-        { content: (<Input placeholder='Armor Class' type='number' transparent value={this.state.newPlayerAC} onChange={(e) => this.setState({ newPlayerAC: e.target.value }) } />) },
-        { content: (<Button icon='plus' content='Add' onClick={this.addPlayer.bind(this)} />) }
-      ]
-    }
-
-    var players = this.state.campaign.players
-    if(players){
-      tableConfig.bodyRows = Object.keys(players).map(key => {
-        return {
-          key,
-          cells: [
-            { content: players[key].name },
-            { content: players[key].level },
-            { content: players[key].hit_points },
-            { content: players[key].armor_class },
-            { content: (
-              <Button.Group size='mini'>
-                <Popup content={'Add ' + players[key].name + ' to the turnorder.'} trigger={<Button color='blue' icon='plus' onClick={() => this.state.campaignRef.child('turnorder').push(players[key]) } />} />
-                <Popup content={'Remove ' + players[key].name + ' from your campaign.'} trigger={<Button color='red' icon='remove' onClick={() => { this.state.campaignRef.child('players/'+key).remove() }} />} />
-              </Button.Group>
-            )}
-          ]
-        }
-      });
-    }
+    const errorLabel = <Label color="red" pointing/>
+    let players = this.state.campaign.players
 
     return (
-      <TableFull color='black' headerCells={tableConfig.headerCells} bodyRows={tableConfig.bodyRows} footerCells={tableConfig.footerCells} />
+      <Form onValidSubmit={this.addPlayer.bind(this)}>
+        <Table color={this.props.color} selectable stackable>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Name</Table.HeaderCell>
+              <Table.HeaderCell>Level</Table.HeaderCell>
+              <Table.HeaderCell>Hit Points</Table.HeaderCell>
+              <Table.HeaderCell>Armor Class</Table.HeaderCell>
+              <Table.HeaderCell colSpan={2} />
+            </Table.Row>
+          </Table.Header>
+
+          <Table.Body>
+            { players ?
+                Object.keys(players).map(key => (
+                  <Table.Row key={key}>
+                    <Table.Cell>{players[key].name}</Table.Cell>
+                    <Table.Cell>{players[key].level}</Table.Cell>
+                    <Table.Cell>{players[key].hit_points}</Table.Cell>
+                    <Table.Cell>{players[key].armor_class}</Table.Cell>
+                    <Table.Cell>
+                      <Button.Group size='mini'>
+                        <Popup content={'Add ' + players[key].name + ' to the turnorder.'} trigger={<Button color='blue' icon='plus' onClick={() => this.state.campaignRef.child('turnorder').push(players[key]) } />} />
+                        <Popup content={'Remove ' + players[key].name + ' from your campaign.'} trigger={<Button color='red' icon='remove' onClick={() => { this.state.campaignRef.child('players/'+key).remove() }} />} />
+                      </Button.Group>
+                    </Table.Cell>
+                  </Table.Row>
+                ))
+              : (
+                <Table.Row>
+                  <Table.Cell colSpan={5}>No players added.</Table.Cell>
+                </Table.Row>
+              )
+            }
+          </Table.Body>
+          
+          <Table.Footer>
+            <Table.Row>
+              <Table.HeaderCell>
+                <Form.Input 
+                  name='name' 
+                  placeholder='Name *' 
+                  type='text' 
+                  transparent 
+                  value={this.state.newPlayerName} 
+                  onChange={(e) => this.setState({ newPlayerName: e.target.value }) } 
+                  validations="minLength:2,isWords,isRequired"
+                  validationErrors={{
+                      minLength: 'Minimal length is 2 letters',
+                      isWords: 'No numbers or special characters allowed',
+                      isRequired: 'Name is Required',
+                  }} 
+                  errorLabel={ errorLabel }
+                />
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <Form.Input 
+                  name='level' 
+                  placeholder='Level' 
+                  type='number' 
+                  transparent 
+                  value={this.state.newPlayerLevel} 
+                  onChange={(e) => this.setState({ newPlayerLevel: e.target.value }) } 
+                  validations='isInt'
+                  validationErrors={{
+                      isInt: 'Must be a number',
+                  }} 
+                  errorLabel={ errorLabel }
+                />
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <Form.Input 
+                  name='hit_points' 
+                  placeholder='Hit Points' 
+                  type='number' 
+                  transparent 
+                  value={this.state.newPlayerHP} 
+                  onChange={(e) => this.setState({ newPlayerHP: e.target.value }) } 
+                  validations='isInt'
+                  validationErrors={{
+                      isInt: 'Must be a number',
+                  }} 
+                  errorLabel={ errorLabel }
+                />
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <Form.Input 
+                  name='armor_class' 
+                  placeholder='Armor Class' 
+                  type='number' 
+                  transparent 
+                  value={this.state.newPlayerAC} 
+                  onChange={(e) => this.setState({ newPlayerAC: e.target.value }) } 
+                  validations='isInt'
+                  validationErrors={{
+                      isInt: 'Must be a number',
+                  }} 
+                  errorLabel={ errorLabel }
+                />
+              </Table.HeaderCell>
+              <Table.HeaderCell>
+                <Button icon='plus' content='Add' type='submit' />
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Footer>
+        </Table>
+      </Form>
     )
   }
 
