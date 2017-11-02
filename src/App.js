@@ -20,8 +20,6 @@ import { Default, Mobile } from './Lib/Responsive'
 import AuthFunctionality from './Components/Auth/AuthFunctionality'
 import Profile from './Containers/Profile'
 
-import './App.css';
-
 const __LIMIT__ = process.env.NODE_ENV === "development" ? 2 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 700 : 300
 const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
