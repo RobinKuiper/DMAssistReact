@@ -57,10 +57,10 @@ export default class MainSidebar extends Component {
             <Icon name='newspaper' />
             Campaigns
           </Menu.Item>
-          <Popup content='Coming Soon!' trigger={<Menu.Item as={Link} onClick={this.props.hideSidebar} to='/' name='treasure' disabled>
+          <Menu.Item as={Link} onClick={this.props.hideSidebar} to='/treasure-generator' name='treasure'>
             <Icon name='diamond' />
             Treasure Gen.
-          </Menu.Item>} />
+          </Menu.Item>
         </Menu>
 
         <div id='sideBarAdsense'>
