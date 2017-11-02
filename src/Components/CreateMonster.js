@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Panel from './UI/Panel'
-import { Button, Checkbox, Divider, Dropdown, Grid, Header, Icon, Label, List, Popup, Table, Segment } from 'semantic-ui-react'
+import { Button, Checkbox, Divider, Dropdown, Grid, Header, Label, List, Popup, Table, Segment } from 'semantic-ui-react'
 import { Form } from 'formsy-semantic-ui-react'
 import { Auth, Database } from './../Lib/firebase'
 import { Slugify } from './../Lib/Common'

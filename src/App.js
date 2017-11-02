@@ -20,6 +20,8 @@ import { Default, Mobile } from './Lib/Responsive'
 import AuthFunctionality from './Components/Auth/AuthFunctionality'
 import Profile from './Containers/Profile'
 
+import Alert from './Components/Alert'
+
 const __LIMIT__ = process.env.NODE_ENV === "development" ? 2 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 700 : 300
 const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
@@ -86,6 +88,10 @@ class App extends Component {
     })
   }
 
+  Alert = (message, type, icon, time = 5000) => {
+    this.alert.showAlert(message, type, icon, time)
+  }
+
   render() {
     return (
       <div id='outer-container'>
@@ -105,19 +111,20 @@ class App extends Component {
             </Mobile>
             
             <Sidebar.Pusher onClick={() => this.setState({ sidebarVisible: false })}>
+              <Alert ref={instance => { this.alert = instance }} />
 
               { this.state.user && !this.state.user.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
               
-              <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} />
-              <Route path='/about' component={About} />
-              <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} encounters={this.state.encounters} />
-              <PropsRoute path='/spells' component={Spells} spells={this.state.spells} />
-              <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} />
-              <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} />
-              <Route path='/treasure-generator' component={TreasureGenerator} />
-              <Route path='/profile' component={Profile} />
+              <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} alert={this.Alert} />
+              <Route path='/about' component={About} alert={this.Alert} />
+              <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
+              <PropsRoute path='/spells' component={Spells} spells={this.state.spells} alert={this.Alert} />
+              <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} alert={this.Alert} />
+              <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
+              <Route path='/treasure-generator' component={TreasureGenerator} alert={this.Alert} />
+              <Route path='/profile' component={Profile} alert={this.Alert} />
 
-              <Route path='/auth' component={AuthFunctionality} />              
+              <Route path='/auth' component={AuthFunctionality} alert={this.Alert} />              
 
             </Sidebar.Pusher>
           </div>

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { Button, Header, Icon, Label, Segment } from 'semantic-ui-react'
+import { Button, Header, Label, Segment } from 'semantic-ui-react'
 import { Form } from 'formsy-semantic-ui-react'
-import AlertContainer from 'react-alert'
 
 import { Database, Auth } from './../../Lib/firebase'
 import { Slugify } from './../../Lib/Common'
@@ -41,7 +40,7 @@ export default class AddCampaign extends Component {
 
     // Send campaign to firebase
     Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+Slugify(campaign.name)).set( campaign )
-      .then(() => { this.showAlert('Your campaign is saved!', 'success', 'checkmark') })
+      .then(() => { this.props.alert('Your campaign is saved!', 'success', 'checkmark') })
   }
 
   render(){
@@ -52,7 +51,6 @@ export default class AddCampaign extends Component {
         <Segment raised>
           <Header dividing>Create New Campaign</Header>
           <Form onValidSubmit={this.save}>
-            <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
             <Form.Group>
               <Form.Input
                 required
@@ -77,20 +75,4 @@ export default class AddCampaign extends Component {
       )
     } else return null
   }
-
-  alertOptions = {
-      offset: 14,
-      position: 'top left',
-      theme: 'dark',
-      time: 5000,
-      transition: 'scale'
-    }
-
-    showAlert = (message, type, icon, time = 5000) => {
-        this.msg.show(message, {
-            time,
-            type,
-            icon: <Icon name={icon} />
-        })
-    }
 }

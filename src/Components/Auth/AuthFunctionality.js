@@ -17,10 +17,10 @@ export default class AuthFunctionality extends Component {
         }
 
         switch(this.state.mode){
-            case 'resetPassword': this.handleResetPassword; break;
-            case 'recoverEmail': this.handleRecoverEmail; break;
+            case 'resetPassword': this.handleResetPassword(); break;
+            case 'recoverEmail': this.handleRecoverEmail(); break;
             case 'verifyEmail': this.verifyEmail(); break;
-            default: () => alert('Failure');
+            default: return false;
         }
     }
 
@@ -71,7 +71,7 @@ export default class AuthFunctionality extends Component {
 
     getParameterByName(name, url) {
         if (!url) url = window.location.href;
-        name = name.replace(/[\[\]]/g, "\\$&");
+        name = name.replace(/[[\]]/g, "\\$&");
         var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
             results = regex.exec(url);
         if (!results) return null;

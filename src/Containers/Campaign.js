@@ -65,7 +65,7 @@ export default class Campaign extends Component {
                 </Grid.Column>
 
                 <Grid.Column width={6} textAlign='right'>
-                  <CampaignSettingsModal campaign={campaign} trigger={<Button icon='settings' content='Settings' color='blue' />} />
+                  <CampaignSettingsModal alert={alert} campaign={campaign} trigger={<Button icon='settings' content='Settings' color='blue' />} />
                 </Grid.Column>
               </Grid>
             </Segment>

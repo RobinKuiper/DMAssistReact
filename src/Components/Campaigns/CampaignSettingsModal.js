@@ -31,7 +31,9 @@ export default class CampaignSettingsModal extends Component {
     }
 
     Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.props.campaign.slug).update(update)
-    this.setState({ open: null })
+      .then(() => {
+        this.setState({ open: null })
+      })
   }
 
   render() {
