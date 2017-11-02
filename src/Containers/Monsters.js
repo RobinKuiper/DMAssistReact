@@ -15,8 +15,6 @@ import { PaginatorButtons } from './../Components/Paginator'
 
 import CreateMonster from './../Components/CreateMonster'
 
-import AlertContainer from 'react-alert'
-
 export default class Monsters extends Component {
   constructor(props){
     super(props)
@@ -37,26 +35,9 @@ export default class Monsters extends Component {
     }
   }
 
-  alertOptions = {
-    offset: 14,
-    position: 'top left',
-    theme: 'dark',
-    time: 5000,
-    transition: 'scale'
-  }
-
-  showAlert = (message, type, icon, time = 5000) => {
-      this.msg.show(message, {
-          time,
-          type,
-          icon: <Icon name={icon} />
-      })
-  }
-
   render() {
     return (
       <main>
-      <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
       { !this.state.isCreatingMonster ? (
         <Grid columns={2} stackable>
           <Grid.Column width={11}>
@@ -71,7 +52,7 @@ export default class Monsters extends Component {
         <CreateMonster onSuccess={() => {
           this.toggleCustom('show')
           this.setState({ isCreatingMonster: false })
-          this.showAlert('Your monster is saved!', 'success', 'checkmark')
+          this.props.alert('Your monster is saved!', 'success', 'checkmark')
         }} />
       )}
       </main>

@@ -8,6 +8,7 @@ import Panel from './../Components/UI/Panel'
 import Turnorder from './../Components/Campaigns/Turnorder'
 import Adsense from './../Components/Adsense'
 //import FixedMenu from "./../Components/FixedMenu";
+import CampaignSettingsModal from './../Components/Campaigns/CampaignSettingsModal'
 
 Formsy.addValidationRule('isRequired', function (values, value) {
   return value !== null && value !== '';
@@ -46,7 +47,7 @@ export default class Campaign extends Component {
             <Turnorder campaign={this.state.campaign} monsters={this.props.monsters} encounters={this.props.encounters} campaignRef={this.state.campaignRef} />
 
             <Segment raised>
-              <Grid columns={2}>
+              <Grid>
                 <Grid.Column width={6}>
                   <Button.Group size='massive' color='blue' floated='left'>
                     <Popup content='Reset Session Time' trigger={<Button icon='undo' onClick={() => { this.state.campaignRef.child('/times/session').set(0) }}/>} />
@@ -59,8 +60,12 @@ export default class Campaign extends Component {
                   </Button.Group>
                 </Grid.Column>
 
-                <Grid.Column width={10}>
-                  Public Link
+                <Grid.Column width={4}>
+                  <Popup content='Coming Soon' trigger={<span>Public Link</span>} />
+                </Grid.Column>
+
+                <Grid.Column width={6} textAlign='right'>
+                  <CampaignSettingsModal alert={alert} campaign={campaign} trigger={<Button icon='settings' content='Settings' color='blue' />} />
                 </Grid.Column>
               </Grid>
             </Segment>

@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
-import { Button, Form, Header, Segment } from 'semantic-ui-react'
+import { Button, Header, Icon, Label, Segment } from 'semantic-ui-react'
+import { Form } from 'formsy-semantic-ui-react'
 
 import { Database, Auth } from './../../Lib/firebase'
 import { Slugify } from './../../Lib/Common'
-import LoginModal from './../Auth/LoginModal'
 
 export default class AddCampaign extends Component {
   constructor(props){
     super(props)
 
     this.state = {
-      user: Auth.currentUser,
-      loaded: false,
       name: '',
       players: [
         { name: '', level: '', hitPoints: '', armorClass: '' }
@@ -19,14 +17,13 @@ export default class AddCampaign extends Component {
       settings: {
         shortRest: '1H',
         longRest: '8H',
-        roundDuration: '6'
+        roundDuration: '6S'
       }
     }
   }
 
   handleChange = (e, { name, value }) => this.setState({ [name]: value })
-  handleSubmit = (e) => {
-    e.preventDefault();
+  save = (e) => {
     const { name, settings } = this.state
 
     var campaign = {
@@ -42,60 +39,40 @@ export default class AddCampaign extends Component {
     }
 
     // Send campaign to firebase
-    Database.ref('userdata/'+this.state.user.uid+'/campaigns/'+Slugify(campaign.name)).set( campaign )
-
-    // Empty form
-    this.setState({
-      campaignName: '',
-      players: [
-        { name: '', level: '', hitPoints: '', armorClass: '' }
-      ],
-      settings: {
-        shortRest: '1H',
-        longRest: '8H',
-        roundDuration: 6
-      }
-    })
+    Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+Slugify(campaign.name)).set( campaign )
+      .then(() => { this.props.alert('Your campaign is saved!', 'success', 'checkmark') })
   }
 
   render(){
+    const errorLabel = <Label color="red" pointing='left' />
+
     if(Auth.currentUser) {
       return (
-        <Form loading={!this.state.loaded} size='tiny'>
-          <Form.Input label='Campaign Name' type='text' name='name' value={this.state.campaignName} onChange={this.handleChange} />
-
-          {/*<Header dividing>Players</Header>
-
-          <Form.Group compact>
-            <Form.Input placeholder='Name' onChange={this.handleChange} />
-            <Form.Input placeholder='Level' onChange={this.handleChange} />
-            <Form.Input placeholder='Hit Points' onChange={this.handleChange} />
-            <Form.Input placeholder='Armor Class' onChange={this.handleChange} />
-          </Form.Group>
-
-          <Button icon='plus' content='Add Player' />*/}
-
-          <Header dividing>Settings</Header>
-          <Form.Input label='Short Rest' type='text' placeholder='1H' name='shortRest' value={this.state.settings.shortRest} onChange={this.handleChange} />
-          <Form.Input label='Long Rest' type='text' placeholder='8H' name='longRest' value={this.state.settings.longRest} onChange={this.handleChange} />
-          <Form.Input label='Round Duration' type='text' placeholder='6' name='roundDuration' value={this.state.settings.roundDuration} onChange={this.handleChange} />
-
-          <Segment basic clearing>
-            <Button color={'green'} floated='right' type='submit' onClick={this.handleSubmit.bind(this)}>Save Campaign</Button>
-          </Segment>
-
-        </Form>
+        <Segment raised>
+          <Header dividing>Create New Campaign</Header>
+          <Form onValidSubmit={this.save}>
+            <Form.Group>
+              <Form.Input
+                required
+                inline
+                name='name'
+                label='Name'
+                type='text'
+                value={this.state.name}
+                onChange={(e) => this.setState({ name: e.target.value }) }
+                validations="minLength:2,isWords"
+                validationErrors={{
+                    minLength: 'Minimal length is 2 letters',
+                    isWords: 'No numbers or special characters allowed',
+                    isDefaultRequiredValue: 'Name is Required',
+                }} 
+                errorLabel={ errorLabel }
+              />
+              <Button icon='save' positive content='Create' type='submit' />
+            </Form.Group>
+          </Form>
+        </Segment>
       )
-    } else {
-      return (<p>Please <LoginModal trigger={<span style={{textDecoration: 'underline', cursor: 'pointer'}}>Sign In</span>} /> to add campaigns.</p>)
-    }
-  }
-
-  componentDidMount() {
-    Auth.onAuthStateChanged((user) => {
-      if (user){
-        this.setState({ user, loaded: true })
-      }
-    })
+    } else return null
   }
 }
