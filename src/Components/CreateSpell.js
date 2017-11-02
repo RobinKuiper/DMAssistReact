@@ -11,13 +11,23 @@ export default class CreateSpell extends Component {
 
         this.state = {
             options: {
-                ranges: [ { key: 0, value: 0, text: 'Self' }, { key: 5, value: 5, text: 'Touch' } ]
+                ranges: [ 
+                    { key: 0, value: 0, text: 'Self' }, 
+                    { key: -1, value: -1, text: 'Touch' },
+                    { key: -2, value: -2, text: 'Touch' },
+                    { key: -3, value: -3, text: 'Touch' },
+                    { key: -4, value: -4, text: 'Touch' },
+                    { key: -5, value: -5, text: 'Touch' },
+                    { key: 2222, value: 2222, text: '1 Mile' },
+                    { key: 5555, value: 5555, text: '500 Miles' },
+                ]
             },
             public: false,
             needMaterial: false,
 
             // Placeholders
-            descriptions: { main: '', level: ''},
+            desc: '',
+            higher_level: '',
             material: ''
         }
     }
@@ -37,9 +47,9 @@ export default class CreateSpell extends Component {
     }
 
     save = () => {
-        const { name, school, level, castingTime, range, duration, classes, descriptions, components, material } = this.state
+        const { name, school, level, casting_time, range, duration, classes, desc, higher_level, components, material } = this.state
 
-        const spell = { name, school, level, castingTime, range, duration, classes, descriptions, components, material,
+        const spell = { name, school, level, casting_time, range, duration, classes, desc, higher_level, components, material,
             slug: Slugify(name),
             uid: Auth.currentUser.uid,
             public: this.state.public,
@@ -93,7 +103,7 @@ export default class CreateSpell extends Component {
 
     content = () => {
         let levelOptions = []
-        for(var i = 1; i <= 9; i++){
+        for(var i = 0; i <= 9; i++){
             levelOptions.push({ key: i, value: i, text: formatSpellLevel(i) })
         }
 
@@ -173,8 +183,8 @@ export default class CreateSpell extends Component {
                                                 label={(<span><Icon name='clock' /> Casting Time</span>)}
                                                 type='text' 
                                                 placeholder='1 Action' 
-                                                name='castingTime' 
-                                                value={this.state.castingTime} 
+                                                name='casting_time' 
+                                                value={this.state.casting_time} 
                                                 onChange={this.handleChange}
                                                 required
                                                 validationErrors={{
@@ -250,26 +260,16 @@ export default class CreateSpell extends Component {
 
                             <Form.TextArea 
                                 label='Description' 
-                                name='description' 
-                                value={this.state.descriptions.main}
-                                onChange={e => {
-                                    const value = e.target.value
-                                    const descriptions = this.state.descriptions
-                                    descriptions.main = value
-                                    this.setState({ descriptions })
-                                }} 
+                                name='desc' 
+                                value={this.state.desc}
+                                onChange={this.handleChange} 
                                 required
                                 validationErrors={{
                                     isDefaultRequiredValue: 'Required Field',
                                 }} 
                                 errorLabel={ errorLabel }
                             />
-                            <Form.TextArea label='At Higher Levels' name='levels' value={this.state.descriptions.level} onChange={(e) => {
-                                const value = e.target.value
-                                const descriptions = this.state.descriptions
-                                descriptions.level = value
-                                this.setState({ descriptions })
-                            }} />
+                            <Form.TextArea label='At Higher Levels' name='higher_level' value={this.state.higher_level} onChange={this.handleChange} />
 
                             <Divider />
 
