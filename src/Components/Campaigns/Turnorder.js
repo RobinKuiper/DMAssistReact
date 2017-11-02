@@ -217,6 +217,6 @@ export default class Turnorder extends Component {
     campaign.turnorder = null
     this.props.campaignRef.set(campaign)
 
-    this.addToTurnorder(Object.keys(campaign.players).map(key => campaign.players[key]))
+    if(campaign.players) this.addToTurnorder(Object.keys(campaign.players).map(key => campaign.players[key]))
   }
 }

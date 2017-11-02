@@ -12,7 +12,7 @@ export default class MonsterModal extends Component {
         <Modal.Content>
           { monster &&
             <Segment raised>
-              <Label color='red' ribbon>{Capitalize(monster.size)} {Capitalize(monster.type)}</Label>
+              <Label color='red' ribbon>{Capitalize(monster.size)} {Capitalize(monster.type)} { monster.subtype && monster.subtype !== '' && <span>({monster.subtype})</span>}</Label>
               <Header>{monster.name}</Header>
               <Segment.Group>
                 <Segment>
@@ -100,24 +100,24 @@ export default class MonsterModal extends Component {
                       <List>
                         <List.Item><strong>Skills:&nbsp;</strong>
                           <List horizontal divided>
-                            {monster.acrobatics && <List.Item>Acrobatics +{monster.acrobatics}</List.Item>}
-                            {monster.animal_handling && <List.Item>Animal Handling +{monster.animal_handling}</List.Item>}
-                            {monster.arcana && <List.Item>Arcana +{monster.arcana}</List.Item>}
-                            {monster.athletics && <List.Item>Athletics +{monster.athletics}</List.Item>}
-                            {monster.deception && <List.Item>Deception +{monster.deception}</List.Item>}
-                            {monster.history && <List.Item>History +{monster.history}</List.Item>}
-                            {monster.insight && <List.Item>Insight +{monster.insight}</List.Item>}
-                            {monster.intimidation && <List.Item>Intimidation +{monster.intimidation}</List.Item>}
-                            {monster.investigation && <List.Item>Investigation +{monster.investigation}</List.Item>}
-                            {monster.medicine && <List.Item>Medicine +{monster.medicine}</List.Item>}
-                            {monster.nature && <List.Item>Nature +{monster.nature}</List.Item>}
-                            {monster.perception && <List.Item>Perception +{monster.perception}</List.Item>}
-                            {monster.performance && <List.Item>Performance +{monster.performance}</List.Item>}
-                            {monster.persuasion && <List.Item>Persuasion +{monster.persuasion}</List.Item>}
-                            {monster.religion && <List.Item>Religion +{monster.religion}</List.Item>}
-                            {monster.sleight_of_hand && <List.Item>Sleight of Hand +{monster.sleight_of_hand}</List.Item>}
-                            {monster.stealth && <List.Item>Stealth +{monster.stealth}</List.Item>}
-                            {monster.survival && <List.Item>Survival +{monster.survival}</List.Item>}
+                            {monster.acrobatics && <List.Item>Acrobatics {monster.acrobatics}</List.Item>}
+                            {monster.animal_handling && <List.Item>Animal Handling {monster.animal_handling}</List.Item>}
+                            {monster.arcana && <List.Item>Arcana {monster.arcana}</List.Item>}
+                            {monster.athletics && <List.Item>Athletics {monster.athletics}</List.Item>}
+                            {monster.deception && <List.Item>Deception {monster.deception}</List.Item>}
+                            {monster.history && <List.Item>History {monster.history}</List.Item>}
+                            {monster.insight && <List.Item>Insight {monster.insight}</List.Item>}
+                            {monster.intimidation && <List.Item>Intimidation {monster.intimidation}</List.Item>}
+                            {monster.investigation && <List.Item>Investigation {monster.investigation}</List.Item>}
+                            {monster.medicine && <List.Item>Medicine {monster.medicine}</List.Item>}
+                            {monster.nature && <List.Item>Nature {monster.nature}</List.Item>}
+                            {monster.perception && <List.Item>Perception {monster.perception}</List.Item>}
+                            {monster.performance && <List.Item>Performance {monster.performance}</List.Item>}
+                            {monster.persuasion && <List.Item>Persuasion {monster.persuasion}</List.Item>}
+                            {monster.religion && <List.Item>Religion {monster.religion}</List.Item>}
+                            {monster.sleight_of_hand && <List.Item>Sleight of Hand {monster.sleight_of_hand}</List.Item>}
+                            {monster.stealth && <List.Item>Stealth {monster.stealth}</List.Item>}
+                            {monster.survival && <List.Item>Survival {monster.survival}</List.Item>}
                           </List>
                         </List.Item>
                         <List.Item>
@@ -126,12 +126,12 @@ export default class MonsterModal extends Component {
                         </List.Item>
                         <List.Item><strong>Saves:&nbsp;</strong>
                           <List horizontal divided>
-                            {monster.strength_save && <List.Item>Str +{monster.strength_save}</List.Item>}
-                            {monster.dexterity_save && <List.Item>Dex +{monster.dexterity_save}</List.Item>}
-                            {monster.constition_save && <List.Item>Con +{monster.constition_save}</List.Item>}
-                            {monster.intelligence_save && <List.Item>Int +{monster.intelligence_save}</List.Item>}
-                            {monster.wisdom_save && <List.Item>Wis +{monster.wisdom_save}</List.Item>}
-                            {monster.charisma_save && <List.Item>Cha +{monster.charisma_save}</List.Item>}
+                            {monster.strength_save && <List.Item>Str {monster.strength_save}</List.Item>}
+                            {monster.dexterity_save && <List.Item>Dex {monster.dexterity_save}</List.Item>}
+                            {monster.constition_save && <List.Item>Con {monster.constition_save}</List.Item>}
+                            {monster.intelligence_save && <List.Item>Int {monster.intelligence_save}</List.Item>}
+                            {monster.wisdom_save && <List.Item>Wis {monster.wisdom_save}</List.Item>}
+                            {monster.charisma_save && <List.Item>Cha {monster.charisma_save}</List.Item>}
                           </List>
                         </List.Item>
                       </List>
@@ -152,7 +152,7 @@ export default class MonsterModal extends Component {
                   { monster.special_abilities &&
                     <div>
                       <Header>Traits</Header>
-                      <List>
+                      <List relaxed='very'>
                       {
                         monster.special_abilities.map((obj) => (
                           <List.Item key={obj.name}>
@@ -170,7 +170,7 @@ export default class MonsterModal extends Component {
                   { monster.actions &&
                     <div>
                       <Header>Actions</Header>
-                      <List>
+                      <List relaxed='very'>
                       {
                         monster.actions.map((obj) => (
                           <List.Item key={obj.name}>
@@ -188,7 +188,7 @@ export default class MonsterModal extends Component {
                   { monster.reactions &&
                     <div>
                       <Header>Reactions</Header>
-                      <List>
+                      <List relaxed='very'>
                       {
                         monster.reactions.map((obj) => (
                           <List.Item key={obj.name}>
@@ -209,7 +209,7 @@ export default class MonsterModal extends Component {
                         Legendary Actions
                         <Header.Subheader>The {monster.name} can take 3 legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature\'s turn. The {monster.name} regains spent legendary actions at the start of its turn.</Header.Subheader>
                       </Header>
-                      <List>
+                      <List relaxed='very'>
                       {
                         monster.legendary_actions.map((obj) => (
                           <List.Item key={obj.name}>

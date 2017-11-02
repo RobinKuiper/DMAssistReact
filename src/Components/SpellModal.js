@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Divider, Grid, Header, Icon, Image, Label, List, Modal, Segment } from 'semantic-ui-react'
-import { formatSpellLevel } from './../Lib/Common'
+import { formatSpellLevel, formatSpellRange } from './../Lib/Common'
 
 export default class SpellModal extends Component {
   render() {
@@ -19,10 +19,10 @@ export default class SpellModal extends Component {
                     <Grid.Column>
                       <List>
                         <List.Item>
-                          <Icon name='clock' />Casting Time: {spell.castingTime}
+                          <Icon name='clock' />Casting Time: {spell.casting_time}
                         </List.Item>
                         <List.Item>
-                          <Icon name='wifi' />Range: {spell.range}
+                          <Icon name='wifi' />Range: {formatSpellRange(spell.range)}
                         </List.Item>
                         <List.Item>
                           <Icon name='history' />Duration: {spell.duration}
@@ -44,7 +44,16 @@ export default class SpellModal extends Component {
 
                   <Divider />
 
-                  <this.Descriptions descriptions={spell.descriptions} />
+                  <p dangerouslySetInnerHTML={{ __html: spell.desc }}></p>
+
+                  { spell.higher_level && spell.higher_level !== '' &&
+                    (
+                      <div>
+                        <Header>At Higher Levels</Header>
+                        <p dangerouslySetInnerHTML={{ __html: spell.higher_level }}></p>
+                      </div>
+                    )
+                  }
 
                   <Divider />
 
@@ -70,23 +79,5 @@ export default class SpellModal extends Component {
         </Modal.Content>
       </Modal>
     )
-  }
-
-  Descriptions = (props) => {
-    var main, level;
-    if(props.descriptions){
-      if(props.descriptions.main){
-        main = <p>{props.descriptions.main}</p>
-      }
-      if(props.descriptions.level){
-        level = (<div><Header.Subheader>At Higher Levels</Header.Subheader><p>{props.descriptions.level}</p></div>)
-      }
-    }
-    return (
-      <div>
-        {main}
-        {level}
-      </div>
-    );
   }
 }
