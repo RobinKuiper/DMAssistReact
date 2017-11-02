@@ -10,11 +10,6 @@ export default class CreateMonster extends Component {
         super(props) 
 
         this.state = {
-            options: {
-                skills: [ { value: 'Perception +6', text: 'Perception +6' }, { value: 'Steahlth +3', text: 'Steahlth +3' } ],
-                senses: [ { value: 'Blindsight 30ft.', text: 'Blindsight 30ft.' }, { value: 'Darkvision 60ft.', text: 'Darkvision 60ft.' }, { value: 'Darkvision 120ft.', text: 'Darkvision 120ft.' }, { value: 'Truesight', text: 'Truesight' }],
-                saves: [ { value: 'Dex +3', text: 'Dex +3' }, { value: 'Con +2', text: 'Con +2' }, { value: 'Wis +3', text: 'Wis +3' } ]
-            },
             public: false,
             traits: [ {} ],
             actions: [ {} ],
@@ -29,7 +24,30 @@ export default class CreateMonster extends Component {
             damage_immunities: null,
             damage_resistances: null,
             damage_vulnerabilities: null,
-            condition_immunities: null
+            condition_immunities: null,
+            strength_save: null,
+            dexterity_save: null,
+            constitution_save: null,
+            intelligence_save: null,
+            wisdom_save: null,
+            charisma_save: null,
+            acrobatics: null,animal_handling: null,arcana: null,athletics: null,deception: null,history: null,insight: null,intimidation: null,investigation: null,medicine: null,nature: null,perception: null,performance: null,persuasion: null,religion: null,sleight_of_hand: null,stealth: null,survival: null,
+
+
+            name: 'MUHAHAHAHA',
+            size: 'Large',
+            type: 'Undead',
+            armor_class: 8,
+            hit_points: 22,
+            speed: '20 ft.',
+            alignment: 'Neutral Good',
+            challenge_rating: 6,
+            strength: 3,
+            dexterity: 3,
+            constitution: 3,
+            wisdom: 3,
+            intelligence: 3,
+            charisma: 3
         }
     }
 
@@ -51,12 +69,20 @@ export default class CreateMonster extends Component {
         const { name, size, type, armor_class, hit_points, speed, alignment, languages, 
             challenge_rating, strength, dexterity, constitution, intelligence, wisdom, 
             charisma, skills, senses, saves, damage_immunities, damage_resistances, 
-            damage_vulnerabilities, condition_immunities, traits, actions, reactions, legendary_actions } = this.state
+            damage_vulnerabilities, condition_immunities, traits, actions, reactions, legendary_actions,
+            strength_save, dexterity_save, constitution_save, intelligence_save, wisdom_save, charisma_save, 
+            acrobatics, animal_handling, arcana, athletics, deception, history, insight, intimidation, 
+            investigation, medicine, nature, perception, performance, persuasion, religion, sleight_of_hand, stealth, survival
+             } = this.state
 
         const monster = { name, size, type, armor_class, hit_points, speed, alignment, languages, 
             challenge_rating, strength, dexterity, constitution, intelligence, wisdom, 
             charisma, skills, senses, saves, damage_immunities, damage_resistances, 
             damage_vulnerabilities, condition_immunities, actions, reactions, legendary_actions,
+            strength_save, dexterity_save, constitution_save, intelligence_save, wisdom_save, charisma_save, 
+            acrobatics, animal_handling, arcana, athletics, deception, history, insight, intimidation, 
+            investigation, medicine, nature, perception, performance, persuasion, religion, sleight_of_hand, stealth, survival,
+
             special_abilities: traits,
             slug: Slugify(name),
             uid: Auth.currentUser.uid,
@@ -119,19 +145,19 @@ export default class CreateMonster extends Component {
             crOptions.push({ key: i, value: i, text: i })
         }
 
+        var skills = ['Acrobatics', 'Animal Handling', 'Arcana', 'Athletics', 'Deception', 'History', 'Insight', 'Intimidation', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Performance', 'Persuasion', 'Religion', 'Sleight of Hand', 'Stealth', 'Survival']
+        var skillOptions = skills.map((skill, i) => {
+            return { key: skill, value: skill, text: skill }
+        })
+
+        var saves = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma']
+        var saveOptions = saves.map((save, i) => {
+            return { key: save, value: save, text: save }
+        })
+
         var alignments = ['Unaligned', 'Any Alignment', '-', 'Lawful Good', 'Neutral Good', 'Chaotic Good', 'Lawful Neutral', 'Neutral', 'Chaotic Neutral', 'Lawful Evil', 'Neutral Evil', 'Chaotic Evil', '-', 'Any Evil', 'Any Good', 'Any Neutral', 'Any Lawful', 'Any Chaotic']
         var alignOptions = alignments.map((alignment, i) => {
             return alignment !== '-' ? { key: alignment, value: alignment, text: alignment } : { key: i, value: i, text: '----', disabled: true }
-        })
-
-        var dmgTypes = ['Acid', 'Bludgeoning', 'Cold', 'Fire', 'Force', 'Lightning', 'Necrotic', 'Piercing', 'Poison', 'Psychic', 'Slasing', 'Thunder']
-        var dmgOptions = dmgTypes.map(type => {
-            return { key: type, value: type, text: type }
-        })
-
-        var conditions = ['Blinded', 'Charmed', 'Deafened', 'Fatiqued', 'Frightened', 'Grappled', 'Incapacitated', 'Invisible', 'Paralyzed', 'Petrified', 'Poisoned', 'Prone', 'Restrained', 'Stunned', 'Unconscious', 'Exhaustion']
-        var conOptions = conditions.map(condition => {
-            return { key: condition, value: condition, text: condition }
         })
 
         var sizes = ['Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan']
@@ -415,20 +441,159 @@ export default class CreateMonster extends Component {
                             <Grid columns={2}>
                                 <Grid.Column>
                                     <List>
-                                        <List.Item><Dropdown placeholder='Skills' fluid multiple search selection allowAdditions options={this.state.options.skills} name='skills' value={this.state.skills} onChange={this.handleChange} onAddItem={(e, { value }) => this.handleAddition('skills', value)} /></List.Item>
-                                        <List.Item><Dropdown placeholder='Senses' fluid multiple search selection allowAdditions options={this.state.options.senses} name='senses' value={this.state.senses} onChange={this.handleChange} onAddItem={(e, { value }) => this.handleAddition('senses', value)} /></List.Item>
-                                        <List.Item><Dropdown placeholder='Saves' fluid multiple search selection allowAdditions options={this.state.options.saves} name='saves' value={this.state.saves} onChange={this.handleChange} onAddItem={(e, { value }) => this.handleAddition('saves', value)} /></List.Item>
+                                        <List.Item>
+                                            <Form.Input  
+                                                focus 
+                                                label='Senses' 
+                                                type='text' 
+                                                placeholder='blindsight 30 ft., darkvision 120 ft., passive Perception 16' 
+                                                name='senses' 
+                                                value={this.state.senses} 
+                                                onChange={this.handleChange}
+                                                validations="minLength:5"
+                                                validationErrors={{
+                                                    minLength: 'Minimal length is 2 letters',
+                                                }} 
+                                                errorLabel={ errorLabel }
+                                            />
+                                        </List.Item>
+                                        <List.Item>
+                                            <Dropdown 
+                                                placeholder='Skills' 
+                                                fluid 
+                                                multiple 
+                                                search 
+                                                selection 
+                                                options={skillOptions} 
+                                                name='skills' 
+                                                value={this.state.skills} 
+                                                onChange={this.handleChange} 
+                                            />
+                                        </List.Item>
+                                        <List.Item>
+                                            <Dropdown 
+                                                placeholder='Saves' 
+                                                fluid 
+                                                multiple 
+                                                search 
+                                                selection 
+                                                options={saveOptions} 
+                                                name='saves' 
+                                                value={this.state.saves} 
+                                                onChange={this.handleChange} 
+                                            />
+                                        </List.Item>
                                     </List>
                                 </Grid.Column>
 
                                 <Grid.Column>
                                     <List>
-                                        <List.Item><Dropdown placeholder='Damage Immunities' fluid multiple selection options={dmgOptions} name='damage_immunities' value={this.state.damage_immunities} onChange={this.handleChange} /></List.Item>
-                                        <List.Item><Dropdown placeholder='Condition Immunities' fluid multiple selection options={conOptions} name='condition_immunities' value={this.state.condition_immunities} onChange={this.handleChange} /></List.Item>
-                                        <List.Item><Dropdown placeholder='Damage Vulnerabilities' fluid multiple selection options={dmgOptions} name='damage_vulnerabilities' value={this.state.damage_vulnerabilities} onChange={this.handleChange} /></List.Item>
-                                        <List.Item><Dropdown placeholder='Damage Resistances' fluid multiple selection options={dmgOptions} name='damage_resistances' value={this.state.damage_resistances} onChange={this.handleChange} /></List.Item>
+                                        <List.Item>
+                                            <Form.Input  
+                                                focus 
+                                                label='Damage Immunities' 
+                                                type='text' 
+                                                placeholder='Cold, Fire' 
+                                                name='damage_immunities' 
+                                                value={this.state.damage_immunities} 
+                                                onChange={this.handleChange}
+                                            />
+                                        </List.Item>
+                                        <List.Item>
+                                            <Form.Input  
+                                                focus 
+                                                label='Condition Immunities' 
+                                                type='text' 
+                                                placeholder='Poisoned' 
+                                                name='condition_immunities' 
+                                                value={this.state.condition_immunities} 
+                                                onChange={this.handleChange}
+                                            />
+                                        </List.Item>
+                                        <List.Item>
+                                            <Form.Input  
+                                                focus 
+                                                label='Damage Vulnerabilities' 
+                                                type='text' 
+                                                placeholder='Acid' 
+                                                name='damage_vulnerabilities' 
+                                                value={this.state.damage_vulnerabilities} 
+                                                onChange={this.handleChange}
+                                            />
+                                        </List.Item>
+                                        <List.Item>
+                                            <Form.Input  
+                                                focus 
+                                                label='Damage Resistances' 
+                                                type='text' 
+                                                placeholder='Radiant' 
+                                                name='damage_resistances' 
+                                                value={this.state.damage_resistances} 
+                                                onChange={this.handleChange}
+                                            />
+                                        </List.Item>
                                     </List>
                                 </Grid.Column>
+                            </Grid>
+
+                            <Grid>
+                                { this.state.skills && this.state.skills.length > 0 && (
+                                    <Grid.Column width={6}>
+                                        <List.Item>
+                                            <List>
+                                                <List.Item><strong>Skills</strong></List.Item>
+                                                { this.state.skills.map(skill => (
+                                                    <List.Item>
+                                                        <Form.Input 
+                                                             
+                                                            required 
+                                                            name={Slugify(skill.toLowerCase(), "_")} 
+                                                            value={this.state[Slugify(skill.toLowerCase(), '_')]}
+                                                            label={skill} 
+                                                            placeholder='+1'
+                                                            validations='isInt'
+                                                            validationErrors={{
+                                                                isInt: 'Must be a number',
+                                                                isDefaultRequiredValue: 'Required Field',
+                                                            }} 
+                                                            errorLabel={ errorLabel }
+                                                            onChange={this.handleChange}
+                                                        />
+                                                    </List.Item>
+                                                ))}
+                                            </List>
+                                        </List.Item>
+                                    </Grid.Column>
+                                )}
+
+                                { this.state.saves && this.state.saves.length > 0 && (
+                                    <Grid.Column width={6}>
+                                        <List.Item>
+                                            <List>
+                                                <List.Item><strong>Saves</strong></List.Item>
+                                                { this.state.saves.map(save => (
+                                                    <List.Item>
+                                                        <Form.Input 
+                                                             
+                                                            required 
+                                                            name={Slugify(save.toLowerCase(), '_')+'_save'} 
+                                                            value={this.state[Slugify(save.toLowerCase(), '_')+'_save']}
+                                                            label={save} 
+                                                            placeholder='+1'
+                                                            validations='isInt'
+                                                            validationErrors={{
+                                                                isInt: 'Must be a number',
+                                                                isDefaultRequiredValue: 'Required Field',
+                                                            }} 
+                                                            errorLabel={ errorLabel }
+                                                            onChange={this.handleChange}
+                                                        />
+                                                    </List.Item>
+                                                ))}
+                                            </List>
+                                        </List.Item>
+                                    </Grid.Column>
+                                )}
                             </Grid>
 
                             <Divider />

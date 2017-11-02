@@ -1,22 +1,15 @@
 import React from 'react'
 
-import { Grid } from 'semantic-ui-react'
-
 import Panel from './../Components/UI/Panel'
 
-import Add from './../Components/Campaigns/AddCampaign'
+import AddCampaign from './../Components/Campaigns/AddCampaign'
 import Overview from './../Components/Campaigns/Overview'
 
 const Campaigns = ({campaigns}) => (
   <main>
-    <Grid columns={2} stackable>
-      <Grid.Column width={10}>
-        <Panel title={'Campaigns'} content={() => ( <Overview campaigns={campaigns} /> )} footer={false} loaded={true} />
-      </Grid.Column>
-      <Grid.Column width={6}>
-        <Panel title='Add New Campaign' content={Add} footer={false} loaded={true} />
-      </Grid.Column>
-    </Grid>
+      <Panel title={'Campaigns'} content={() => ( <Overview campaigns={campaigns} /> )} footer={false} />
+
+      <AddCampaign />
   </main>
 )
 

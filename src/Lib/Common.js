@@ -53,9 +53,9 @@ export const formatTime = (seconds) => {
 }
 
 /* eslint-disable */
-export const Slugify = (text) => {
+export const Slugify = (text, space='-') => {
   return text.toString().toLowerCase()
-    .replace(/\s+/g, '-')           // Replace spaces with -
+    .replace(/\s+/g, space)           // Replace spaces with -
     .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
     .replace(/\-\-+/g, '-')         // Replace multiple - with single -
     .replace(/^-+/, '')             // Trim - from start of text
@@ -73,10 +73,25 @@ export const formatCR = (cr) => {
 
 export const formatSpellLevel = (level) => {
   switch(level){
+    case 0: return 'Cantrip';
     case 1: return level + 'st';
     case 2: return level + 'nd';
     case 3: return level + 'rd';
     default: return level + 'th';
+  }
+}
+
+export const formatSpellRange = (range) => {
+  switch(range) {
+    case 0: return 'Self'
+    case -1: return 'CHANGE'
+    case -2: return 'CHANGE'
+    case -3: return 'CHANGE'
+    case -4: return 'CHANGE'
+    case -5: return 'Touch'
+    case 2222: return '1 Mile'
+    case 5555: return '500 Miles'
+    default: return range + ' feet'
   }
 }
 
