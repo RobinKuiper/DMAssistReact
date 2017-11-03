@@ -4,6 +4,9 @@ import { Image, List } from 'semantic-ui-react'
 import { Auth } from './../../Lib/firebase'
 import LoginModal from './../Auth/LoginModal'
 
+// IMAGES
+import NoCampaignImage from './../../Images/no-campaign-image.png'
+
 const Overview = ({ campaigns }) => {
   if(Auth.currentUser) { 
     return (
@@ -14,7 +17,7 @@ const Overview = ({ campaigns }) => {
               // Render campaigns
               campaigns.map( campaign => (
                 <List.Item as={Link} to={'/campaign/'+campaign.slug} key={campaign.slug}>
-                  <Image style={{marginRight: 15}} size='mini' src={campaign.pictureURL ? campaign.pictureURL : './images/no-campaign-image.png'} />
+                  <Image style={{marginRight: 15}} size='mini' src={campaign.pictureURL ? campaign.pictureURL : NoCampaignImage} />
                   <List.Content verticalAlign='middle'>
                     <List.Header>
                       {campaign.name}
@@ -23,7 +26,7 @@ const Overview = ({ campaigns }) => {
                       <List horizontal divided>
                       { campaign.players && 
                         Object.keys(campaign.players).map(key => (
-                          <List.Item>{campaign.players[key].name}</List.Item>
+                          <List.Item key={key}>{campaign.players[key].name}</List.Item>
                         ))
                       }
                       </List>

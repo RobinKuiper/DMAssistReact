@@ -5,6 +5,12 @@ import { Form } from 'formsy-semantic-ui-react'
 import Panel from './../UI/Panel'
 import ImageUploader from 'react-firebase-image-uploader';
 
+// IMAGES
+import FacebookLogo from './../../Images/Social/facebook-logo.png'
+import GoogleLogo from './../../Images/Social/google-logo.png'
+import TwitterLogo from './../../Images/Social/twitter-logo.png'
+import GithubLogo from './../../Images/Social/github-logo.png'
+
 export default class EditProfile extends Component {
     constructor(props){
         super(props)
@@ -217,10 +223,10 @@ export default class EditProfile extends Component {
                                                 size='tiny' 
                                                 src={provider.photoURL} 
                                                 onMouseOver={(e) => 
-                                                    e.target.src= provider.providerId === 'facebook.com' ? 'https://facebookbrand.com/wp-content/themes/fb-branding/prj-fb-branding/assets/images/fb-art.png' : 
-                                                        provider.providerId === 'google.com' ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Google-favicon-2015.png/150px-Google-favicon-2015.png' : 
-                                                        provider.providerId === 'twitter.com' ? 'https://seeklogo.com/images/T/twitter-2012-negative-logo-5C6C1F1521-seeklogo.com.png' :
-                                                        provider.providerId === 'github.com' && 'https://image.flaticon.com/icons/png/512/25/25231.png' } 
+                                                    e.target.src= provider.providerId === 'facebook.com' ? FacebookLogo : 
+                                                        provider.providerId === 'google.com' ? GoogleLogo : 
+                                                        provider.providerId === 'twitter.com' ? TwitterLogo :
+                                                        provider.providerId === 'github.com' && GithubLogo } 
                                                 onMouseOut={(e) => 
                                                     e.target.src=provider.photoURL} 
                                                 onClick={() => this.setProfilePhoto(provider.photoURL)}

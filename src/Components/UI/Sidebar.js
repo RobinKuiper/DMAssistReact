@@ -6,6 +6,9 @@ import Adsense from './../Adsense'
 
 import LoginModal from './../Auth/LoginModal'
 
+// IMAGES
+import Logo from './../../Images/Logo.png'
+
 export default class MainSidebar extends Component {
   constructor(props){
     super(props)
@@ -27,7 +30,7 @@ export default class MainSidebar extends Component {
             </Menu.Header>*/}
             <Menu.Header style={{textAlign: 'center'}}>
               { this.props.mobile && <Button floated='right' icon='sidebar' color='black' onClick={this.props.hideSidebar} />}
-              <Image src={require('./../../Images/Logo.png')} />
+              <Image src={Logo} />
             </Menu.Header>
           { Auth.currentUser ?
             <Dropdown item text={Auth.currentUser.displayName || Auth.currentUser.email.substring(0, Auth.currentUser.email.lastIndexOf('@'))}>

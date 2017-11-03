@@ -25,7 +25,7 @@
     "eject": "react-scripts eject",
     "deploy:staging": "firebase use staging && firebase deploy",
     "deploy:production": "firebase use production && firebase deploy",
-    "server": "firebase-server"
+    "server": "firebase-server -f ./dbdata/dndassist-2870c-export.json -v"
   },
   "devDependencies": {
     "firebase-server": "^0.11.0"
