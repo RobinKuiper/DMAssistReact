@@ -5,6 +5,8 @@ import { Auth } from './../Lib/firebase'
 import Adsense from './../Components/Adsense'
 import Panel from './../Components/UI/Panel'
 
+import TreasureGenerator from './../Components/TreasureGenerator'
+
 import MonsterModal from './../Components/MonsterModal'
 import SpellModal from './../Components/SpellModal'
 
@@ -23,26 +25,42 @@ export default class Dashboard extends Component {
     return (
       <main>
 
-        <Grid columns={3} stackable>
-          <Grid.Row>
-            <Grid.Column>
-              <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loaded={true} />
-            </Grid.Column>
+        <Grid stackable>
+          <Grid.Column width={6}>
+            <Grid>
+              <Grid.Row>
+                <Grid.Column>
+                  <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loaded={true} />
+                </Grid.Column>
+              </Grid.Row>
 
-            <Grid.Column>
-              <Panel title={'Latest Monsters'} content={this.renderMonsters.bind(this)} footer={false} loaded={true} />
-            </Grid.Column>
+              <Grid.Row>
+                <Grid.Column>
+                  <Panel title={'Latest Monsters'} content={this.renderMonsters.bind(this)} footer={false} loaded={true} />
+                </Grid.Column>
+              </Grid.Row>
 
-            <Grid.Column>
-              <Panel title={'Latest Spells'} content={this.renderSpells.bind(this)} footer={false} loaded={true} />
-            </Grid.Column>
-          </Grid.Row>
+              <Grid.Row>
+                <Grid.Column>
+                  <Panel title={'Latest Spells'} content={this.renderSpells.bind(this)} footer={false} loaded={true} />
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Grid.Column>
 
-          <Grid.Row>
-            <Grid.Column width={8}>
-              <Panel title={'Statistics'} content={this.renderStatistics.bind(this)} footer={false} loaded={true} />
-            </Grid.Column>
-          </Grid.Row>
+          <Grid.Column width={10} as={Grid}>
+            <Grid.Row>
+              <Grid.Column>
+                <TreasureGenerator />
+              </Grid.Column>
+            </Grid.Row>
+
+            <Grid.Row>
+              <Grid.Column>
+                <Panel title={'Statistics'} content={this.renderStatistics.bind(this)} footer={false} loaded={true} />
+              </Grid.Column>
+            </Grid.Row>
+          </Grid.Column>
         </Grid>
 
         { this.state.showMessage && (

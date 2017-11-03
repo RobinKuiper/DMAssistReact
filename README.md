@@ -1,4 +1,4 @@
-Version 0.1.5
+Version 0.1.6
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 

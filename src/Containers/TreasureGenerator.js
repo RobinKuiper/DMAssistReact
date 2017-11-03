@@ -1,9 +1,16 @@
 import React, { Component } from 'react'
+import { Button, Grid, Header, List, Statistic } from 'semantic-ui-react'
+import { Form } from 'formsy-semantic-ui-react'
 
-export default class TreasureGenerator extends Component {
-  render() {
-    return (
-        <h1>Jordy is een sukkel</h1>
-    )
-  }
-}
+import Generator from './../Components/TreasureGenerator'
+
+import Panel from './../Components/UI/Panel'
+import Dice from './../Lib/Dice'
+
+const TreasureGenerator = () => (
+  <main>
+    <Generator />
+  </main>
+)
+
+export default TreasureGenerator
