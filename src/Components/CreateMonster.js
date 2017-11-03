@@ -32,22 +32,6 @@ export default class CreateMonster extends Component {
             wisdom_save: null,
             charisma_save: null,
             acrobatics: null,animal_handling: null,arcana: null,athletics: null,deception: null,history: null,insight: null,intimidation: null,investigation: null,medicine: null,nature: null,perception: null,performance: null,persuasion: null,religion: null,sleight_of_hand: null,stealth: null,survival: null,
-
-
-            name: 'MUHAHAHAHA',
-            size: 'Large',
-            type: 'Undead',
-            armor_class: 8,
-            hit_points: 22,
-            speed: '20 ft.',
-            alignment: 'Neutral Good',
-            challenge_rating: 6,
-            strength: 3,
-            dexterity: 3,
-            constitution: 3,
-            wisdom: 3,
-            intelligence: 3,
-            charisma: 3
         }
     }
 
@@ -605,7 +589,7 @@ export default class CreateMonster extends Component {
                                 </div>
                                 <List>
                                 { this.state.traits.map((item, i) => (
-                                    <List.Item>
+                                    <List.Item key={i}>
                                         <Form.Input type='text' placeholder='Multiattack' value={item.name}  name='name' onChange={(e, { name, value }) => this.handleChangeArray('traits', name, value, i)} />
                                         <Form.TextArea placeholder='The Zombie makes three attacks.' value={item.desc} name='desc' onChange={(e, { name, value }) => this.handleChangeArray('traits', name, value, i)} />
                                     </List.Item>
@@ -622,7 +606,7 @@ export default class CreateMonster extends Component {
                                 </div>
                                 <List>
                                 { this.state.actions.map((item, i) => (
-                                    <List.Item>
+                                    <List.Item key={i}>
                                         <Form.Input type='text' placeholder='Multiattack' value={item.name}  name='name' onChange={(e, { name, value }) => this.handleChangeArray('actions', name, value, i)} />
                                         <Form.TextArea placeholder='The Zombie makes three attacks.' value={item.desc} name='desc' onChange={(e, { name, value }) => this.handleChangeArray('actions', name, value, i)} />
                                     </List.Item>
@@ -639,7 +623,7 @@ export default class CreateMonster extends Component {
                                 </div>
                                 <List>
                                 { this.state.reactions.map((item, i) => (
-                                    <List.Item>
+                                    <List.Item key={i}>
                                         <Form.Input type='text' placeholder='Multiattack' value={item.name}  name='name' onChange={(e, { name, value }) => this.handleChangeArray('reactions', name, value, i)} />
                                         <Form.TextArea placeholder='The Zombie makes three attacks.' value={item.desc} name='desc' onChange={(e, { name, value }) => this.handleChangeArray('reactions', name, value, i)} />
                                     </List.Item>
@@ -656,7 +640,7 @@ export default class CreateMonster extends Component {
                                 </div>
                                 <List>
                                 { this.state.legendary_actions.map((item, i) => (
-                                    <List.Item>
+                                    <List.Item key={i}>
                                         <Form.Input type='text' placeholder='Multiattack' value={item.name}  name='name' onChange={(e, { name, value }) => this.handleChangeArray('legendary_actions', name, value, i)} />
                                         <Form.TextArea placeholder='The Zombie makes three attacks.' value={item.desc} name='desc' onChange={(e, { name, value }) => this.handleChangeArray('legendary_actions', name, value, i)} />
                                     </List.Item>

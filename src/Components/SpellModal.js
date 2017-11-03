@@ -2,7 +2,22 @@ import React, { Component } from 'react'
 import { Divider, Grid, Header, Icon, Image, Label, List, Modal, Segment } from 'semantic-ui-react'
 import { formatSpellLevel, formatSpellRange } from './../Lib/Common'
 
+// IMAGES
+import Verbal from './../Images/Verbal.png'
+import Material from './../Images/Material.png'
+import Somatic from './../Images/Somatic.png'
+
 export default class SpellModal extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      Verbal,
+      Material,
+      Somatic
+    }
+  }
+
   render() {
     const spell = this.props.spell
 
@@ -61,7 +76,7 @@ export default class SpellModal extends Component {
                   { spell.components &&
                       spell.components.map(component => (
                         <List.Item key={component}>
-                          <Image size='mini' src={'./images/'+component+'.png'} />
+                          <Image size='mini' src={this.state[component]} />
                           <div>{component}</div>
                         </List.Item>
                       ))

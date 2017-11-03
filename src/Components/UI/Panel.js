@@ -14,7 +14,7 @@ export default class Panel extends Component {
 
     return (
       <Segment.Group raised>
-        <Segment id="panelHeader" className='header' textAlign='center' inverted clearing style={style} onClick={this.props.closeable && this.toggleContent}>{this.props.title}</Segment>
+        <Segment id="panelHeader" className='header' textAlign='center' inverted clearing style={style} onClick={this.toggleContent}>{this.props.title}</Segment>
 
         <Segment className='panel content' loading={!this.props.loaded} style={{display: this.state.display}}>
           <this.props.content />
@@ -30,9 +30,11 @@ export default class Panel extends Component {
   }
 
   toggleContent = () => {
-    this.setState({
-      display: this.state.display === 'none' ? 'block' : 'none'
-    })
+    if(this.props.closeable){
+      this.setState({
+        display: this.state.display === 'none' ? 'block' : 'none'
+      })
+    }
   }
 }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase, { Auth } from './Lib/firebase'
+import firebase, { __LOCAL__, Auth } from './Lib/firebase'
 
 import { Dimmer, Loader, Message, Sidebar } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
@@ -22,9 +22,9 @@ import Profile from './Containers/Profile'
 
 import Alert from './Components/Alert'
 
-const __LIMIT__ = process.env.NODE_ENV === "development" ? 2 : 1000
-const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? false : true
+const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 2 : 1000
+const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 200 : 700 : 300
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? true : false : true
 
 class App extends Component {
   constructor(props){
