@@ -24,6 +24,10 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "deploy:staging": "firebase use staging && firebase deploy",
-    "deploy:production": "firebase use production && firebase deploy"
+    "deploy:production": "firebase use production && firebase deploy",
+    "server": "firebase-server"
+  },
+  "devDependencies": {
+    "firebase-server": "^0.11.0"
   }
 }

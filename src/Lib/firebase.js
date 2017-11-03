@@ -3,8 +3,19 @@ import firebase from 'firebase'
 // Initialize Firebase
 var config = {}
 
+const __LOCAL__ = true
+
 // TODO: CHANGE TO .ENV FILES
-if(window && window.location && window.location.hostname === 'dmassist5e.firebaseapp.com'){
+if(process.env.NODE_ENV === "development" && __LOCAL__){
+  config = {
+    apiKey: "AIzaSyA_4Vn12xMBhQCCGFfBB12mNPwOulLq9wU",
+    authDomain: "dmassist5e.firebaseapp.com",
+    databaseURL: "ws://127.0.1:5000",
+    projectId: "dmassist5e",
+    storageBucket: "dmassist5e.appspot.com",
+    messagingSenderId: "647735221488"
+  }
+} else if(window && window.location && window.location.hostname === 'dmassist5e.firebaseapp.com'){
   config = {
     apiKey: "AIzaSyA_4Vn12xMBhQCCGFfBB12mNPwOulLq9wU",
     authDomain: "dmassist5e.firebaseapp.com",

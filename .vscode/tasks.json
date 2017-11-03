@@ -26,6 +26,11 @@
             "type": "npm",
             "script": "deploy:staging",
             "problemMatcher": []
+        },
+        {
+            "type": "npm",
+            "script": "server",
+            "problemMatcher": []
         }
     ]
 }
