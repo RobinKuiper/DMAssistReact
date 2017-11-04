@@ -26,38 +26,6 @@ export default class Turnorder extends Component {
   }
 
   content = () => {
-    /*const tableConfig = {
-      headerCells: [
-        { content: 'Name', sortName: 'name' },
-        { content: 'Initiative', sortName: 'initiative' },
-        { content: 'Level', sortName: 'level' },
-        { content: 'HP', sortName: 'hit_points' },
-        { content: 'AC', sortName: 'armor_class' },
-        { content: 'Buffs', sortName: 'buffs' },
-        { content: 'Conditions', sortName: 'conditions' },
-        { content: 'Concentration', sortName: 'concentration' },
-        { content: '' },
-      ],
-      bodyRows: []
-    }
-
-    this.props.campaign.turnorder.sort(this.compare.bind(this)).map(item => {
-      tableConfig.bodyRows.push({
-        key: item.id,
-        cells: [
-          { content: this.renderName(item) },
-          { content: item.initiative },
-          { content: item.level },
-          { content: item.hit_points },
-          { content: item.armor_class },
-          { content: '' },
-          { content: '' },
-          { content: '' },
-          { content: '' },
-        ]
-      })
-    });*/
-
     var encounterOptions = this.props.encounters.map(encounter => {
       return {
         key: encounter.id,
@@ -171,8 +139,19 @@ export default class Turnorder extends Component {
   }
 
   compare(a,b){
-    var x = a.done === b.done ? 0 : a.done ? 1 : -1
-    return x === 0 ? a.initiative < b.initiative : x
+    // Set the right values (int, everything there, etc.)
+    const iniA = parseInt(a.initiative, 10), iniB = parseInt(b.initiative, 10),
+    doneA = (a.done === undefined) ? false : a.done, doneB = (b.done === undefined) ? false : b.done
+
+    // Compare if item is done
+    const done = doneA === doneB ? 0 : doneA ? 1 : -1
+    // Compare initiatives
+    const initiative = done === 0 ? iniA === iniB ? 0 : iniA < iniB ? 1 : -1 : done
+    // Compare if monster
+    const monster = initiative === 0 ? a.monster === b.monster ? 0 : a.monster ? 1 : -1 : initiative
+    
+    // Return last comparement
+    return monster
   }
 
   addToTurnorder = (item, monster=false) => {
@@ -195,17 +174,14 @@ export default class Turnorder extends Component {
 
   addMonsterToTurnorder = (e, { searchQuery, value }) => {
     let monster = this.props.monsters.find((monster) => { return monster.slug === value })
-    monster.monster = true
-    this.addToTurnorder(monster)
+    this.addToTurnorder(monster, true)
   }
 
   addEncounterToTurnorder = (e, {q, value}) => {
-    console.log(this.props.encounters)
     let encounter = this.props.encounters.find(encounter => encounter.id === value)
     if(encounter.monsters){
       for(var key in encounter.monsters){
-        encounter.monsters[key].monster = true
-        this.addToTurnorder(encounter.monsters[key])
+        this.addToTurnorder(encounter.monsters[key], true)
       }
     }else alert('There are no monsters in this encounter.')
   }

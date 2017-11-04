@@ -15,8 +15,7 @@ export default class Adsense extends Component {
 
     componentDidMount(){
         (window.adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-6223338907094283",
-            enable_page_level_ads: true
+            google_ad_client: "ca-pub-6223338907094283"
         });
     }
 }

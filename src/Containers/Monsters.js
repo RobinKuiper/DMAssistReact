@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { Button, Dropdown, Grid, Header, Input, Icon, Popup, Table } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 
 import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
 import { Auth, Database } from './../Lib/firebase'
@@ -8,8 +10,6 @@ import Adsense from './../Components/Adsense'
 import Panel from './../Components/UI/Panel'
 import MonsterModal from './../Components/MonsterModal'
 import Encounters from './../Components/Encounters'
-
-import { Button, Dropdown, Grid, Header, Input, Popup, Table } from 'semantic-ui-react'
 
 import { PaginatorButtons } from './../Components/Paginator'
 
@@ -120,10 +120,20 @@ export default class Monsters extends Component {
                   <Table.Row key={monster.slug}>
                     <Table.Cell>{formatCR(monster.challenge_rating)}</Table.Cell>
                     <Table.Cell>
-                      <div>
-                        <MonsterModal monster={monster} trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>} />
-                        <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
-                      </div>
+                      <Grid>
+                        <Grid.Column width={14}>
+                          <MonsterModal monster={monster} trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>} />
+                          <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
+                        </Grid.Column>
+
+                        <Grid.Column width={2}>
+                          <Popup position='center top' content='Open in a new page' trigger={
+                            <Link to={'/monster/'+monster.slug}>
+                              <Icon name='external link' />
+                            </Link>
+                          } />
+                        </Grid.Column>
+                      </Grid>
                     </Table.Cell>
                     <Table.Cell>{monster.hit_points}</Table.Cell>
                     <Table.Cell>{monster.armor_class}</Table.Cell>

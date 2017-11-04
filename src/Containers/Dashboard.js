@@ -7,7 +7,6 @@ import Panel from './../Components/UI/Panel'
 
 import TreasureGenerator from './../Components/TreasureGenerator'
 
-import MonsterModal from './../Components/MonsterModal'
 import SpellModal from './../Components/SpellModal'
 
 import LoginModal from './../Components/Auth/LoginModal'
@@ -108,7 +107,7 @@ export default class Dashboard extends Component {
   renderMonsters = () => (
     <List>
     { this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => 
-      <MonsterModal key={item.slug} monster={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
+      <List.Item as={Link} to={'/monster/'+item.slug} key={item.slug}>{item.name}</List.Item>
     )}
     </List>
   )
