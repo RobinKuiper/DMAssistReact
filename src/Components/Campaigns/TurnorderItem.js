@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Button, Input, Popup, Table } from 'semantic-ui-react'
+import { Button, Icon, Input, Label, List, Popup, Table } from 'semantic-ui-react'
 import MonsterModal from './../MonsterModal'
-import { calculateMod } from './../../Lib/Common'
+import { calculateMod, formatTime } from './../../Lib/Common'
 import Dice from './../../Lib/Dice'
 import AddModal from './AddModal'
 
@@ -87,18 +87,61 @@ export default class TurnorderItem extends Component {
         { item.armor_class ? item.armor_class
           : <Input placeholder='Armor Class' type='number' name='armor_class' transparent onBlur={this.handleInput} onKeyDown={this.handleInput} /> }
         </Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell></Table.Cell>
+        <Table.Cell>
+          { item.buffs && 
+            <List>
+            { Object.keys(item.buffs).map(key => (
+              <List.Item>
+                <Label size='tiny' key={key}>
+                  <Icon name='remove' style={{cursor: 'pointer'}} onClick={() => this.remove('buffs', key)} /> 
+                  {item.buffs[key].name} { item.buffs[key].time && formatTime(item.buffs[key].time) }
+                </Label>
+              </List.Item>
+            ))}
+            </List>
+          }
+        </Table.Cell>
+        <Table.Cell>
+          { item.conditions && 
+            <List>
+            { Object.keys(item.conditions).map(key => (
+              <List.Item>
+                <Label size='tiny' key={key}>
+                  <Icon name='remove' style={{cursor: 'pointer'}} onClick={() => this.remove('conditions', key)} /> 
+                  {item.conditions[key].name} { item.conditions[key].time && formatTime(item.conditions[key].time) }
+                </Label>
+              </List.Item>
+            ))}
+            </List>
+          }
+        </Table.Cell>
+        <Table.Cell>
+          { item.concentrations && 
+            <List>
+            { Object.keys(item.concentrations).map(key => (
+              <List.Item>
+                <Label size='tiny' key={key}>
+                  <Icon name='remove' style={{cursor: 'pointer'}} onClick={() => this.remove('concentrations', key)} /> 
+                  {item.concentrations[key].name} { item.concentrations[key].time && formatTime(item.concentrations[key].time) }
+                </Label>
+              </List.Item>
+            ))}
+            </List>
+          }
+        </Table.Cell>
         <Table.Cell>
           <Button.Group size='mini'>
-            <AddModal trigger={<Button icon='plus' color='green' />} />
+            <AddModal item={item} campaignRef={this.props.campaignRef} trigger={<Button icon='plus' color='green' />} />
             <Popup content={'Done, ' + item.name + '\'s turn is over.'} trigger={<Button color='blue' icon='checkmark' onClick={this.props.setDone} />} />
             <Popup content={'Remove ' + item.name + ' from the item.'} trigger={<Button color='red' icon='remove' onClick={() => { this.props.campaignRef.child('turnorder/'+item.id).remove() }} />} />
           </Button.Group>
         </Table.Cell>
       </Table.Row>
     )
+  }
+
+  remove = (type, key) => {
+    this.props.campaignRef.child('turnorder/'+this.props.item.id+'/'+type+'/'+key).remove()
   }
 
   renderName = (item) => {

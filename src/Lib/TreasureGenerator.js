@@ -4,7 +4,6 @@ export const Generator = (challenge_ratings, percentage) => {
     if(!challenge_ratings) return;
 
   var ratings = Array.isArray(challenge_ratings) ? challenge_ratings : [challenge_ratings]
-  console.log(ratings)
   let treasure = {
     cp: 0,
     sp: 0,
