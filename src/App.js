@@ -21,12 +21,13 @@ import AuthFunctionality from './Components/Auth/AuthFunctionality'
 import Profile from './Containers/Profile'
 import Monster from './Containers/Monster'
 import Spell from './Containers/Spell'
+import './Lib/Validation'
 
 import Alert from './Components/Alert'
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 2 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 200 : 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? true : false : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : false : true
 
 class App extends Component {
   constructor(props){
@@ -34,10 +35,12 @@ class App extends Component {
 
     this.state = {
       user: null,
-      campaigns: [],
+      //campaigns: [],
       encounters: [],
       monsters: [],
+      custom_monsters: [],
       spells: [],
+      custom_spells: [],
       loaded: false,
       loadStep: 0,
       loadSteps: ['Loading Monsters...', 'Loading Spells...']
@@ -117,14 +120,14 @@ class App extends Component {
 
               { this.state.user && !this.state.user.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
               
-              <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} alert={this.Alert} />
+              <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
               <Route path='/about' component={About} alert={this.Alert} />
-              <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
+              <PropsRoute path='/monsters/:custom?' component={Monsters} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
               <PropsRoute path='/monster/:slug' component={Monster} />
-              <PropsRoute path='/spells' component={Spells} spells={this.state.spells} alert={this.Alert} />
+              <PropsRoute path='/spells' component={Spells} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
               <PropsRoute path='/spell/:slug' component={Spell} />
-              <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} alert={this.Alert} />
-              <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
+              <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" alert={this.Alert} />
+              <PrivateRoute path='/campaign/:key' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
               <Route path='/treasure-generator' component={TreasureGenerator} alert={this.Alert} />
               <Route path='/profile' component={Profile} alert={this.Alert} />
 
@@ -189,10 +192,14 @@ class App extends Component {
         let uDataRef = firebase.database().ref('userdata').child(this.state.user.uid);
 
         // Get the campaigns reference in userdata
-        let cRef = uDataRef.child('campaigns');
-        this.keepTrackOfDatabase(cRef, 'campaigns')
+        //let cRef = uDataRef.child('campaigns');
+        //this.keepTrackOfDatabase(cRef, 'campaigns')
         let eRef = uDataRef.child('encounters')
         this.keepTrackOfDatabase(eRef, 'encounters')
+        let mRef = uDataRef.child('monsters')
+        this.keepTrackOfDatabase(mRef, 'custom_monsters')
+        let sRef = uDataRef.child('spells')
+        this.keepTrackOfDatabase(sRef, 'custom_spells')
 
       }else{
         this.setState({ campaigns: [] })

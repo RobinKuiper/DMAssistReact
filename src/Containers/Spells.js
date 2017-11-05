@@ -11,8 +11,6 @@ import SpellModal from './../Components/SpellModal'
 import { PaginatorButtons } from './../Components/Paginator'
 import CreateSpell from './../Components/CreateSpell'
 
-import { Auth, Database } from './../Lib/firebase'
-
 import AlertContainer from 'react-alert'
 
 export default class Spells extends Component {
@@ -51,9 +49,8 @@ export default class Spells extends Component {
   }
 
   toggleCustom = (type) => {
-    //this.setState({ custom: checked, filteredMonsters: (checked) ? this.state.custom_monsters : this.props.monsters })
     const custom = type === 'show' ? true : type === 'hide' ? false : !this.state.custom
-    const filteredSpells = (custom) ? this.state.custom_spells : this.props.spells
+    const filteredSpells = (custom) ? this.props.custom_spells : this.props.spells
     this.setState({ custom, filteredSpells })
   }
 
@@ -79,7 +76,7 @@ export default class Spells extends Component {
   }
 
   renderContent = () => {
-    var spells = (this.state.filteredSpells.length === 0) ? this.props.spells : this.state.filteredSpells
+    var spells = (this.state.filteredSpells.length === 0 && this.state.searchQuery === '') ? this.props.spells : this.state.filteredSpells
 
     return (
       <div>
@@ -110,7 +107,7 @@ export default class Spells extends Component {
               <Table.HeaderCell sorted={this.state.sortBy === 'school' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('school') }}>
                 School
               </Table.HeaderCell>
-              <Table.HeaderCell sorted={this.state.sortBy === 'castingTime' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('castingTime') }}>
+              <Table.HeaderCell sorted={this.state.sortBy === 'casting_time' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('casting_time') }}>
                 Casting Time
               </Table.HeaderCell>
               <Table.HeaderCell sorted={this.state.sortBy === 'duration' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('duration') }}>
@@ -131,16 +128,16 @@ export default class Spells extends Component {
                         </Grid.Column>
 
                         <Grid.Column width={2}>
-                          <Popup position='center top' content='Open in a new page' trigger={
+                          <Popup position='top center' content='Open in a new page' trigger={
                             <Link to={'/spell/'+spell.slug}>
-                              <Icon name='external link' />
+                              <Icon name='external' />
                             </Link>
                           } />
                         </Grid.Column>
                       </Grid>
                     </Table.Cell>
                     <Table.Cell>{spell.school}</Table.Cell>
-                    <Table.Cell>{spell.castingTime}</Table.Cell>
+                    <Table.Cell>{spell.casting_time}</Table.Cell>
                     <Table.Cell>{spell.duration}</Table.Cell>
                   </Table.Row>
                 ))
@@ -199,35 +196,21 @@ export default class Spells extends Component {
     return comparison;
   }
 
-  search(e){
-    e.preventDefault()
+  search(e, {value}){
+    this.setState({ searchQuery: value })
+    const s = (this.state.custom) ? this.props.custom_spells : this.props.spells
 
-    this.setState({ searchQuery: e.target.value })
-    const s = (this.state.custom) ? this.state.custom_spells : this.props.spells
-
-    if(e.target.value === ''){
+    if(value === ''){
       this.setState({ filteredSpells: s })
       return;
     }else{
-      var spells = s.filter((spell) => spell.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        spell.school.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        spell.duration.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        spell.castingTime.toLowerCase().includes(e.target.value.toLowerCase())
+      var spells = s.filter((spell) => spell.name.toLowerCase().includes(value.toLowerCase()) ||
+        spell.school.toLowerCase().includes(value.toLowerCase()) ||
+        spell.duration.toLowerCase().includes(value.toLowerCase()) ||
+        spell.casting_time.toLowerCase().includes(value.toLowerCase())
       )
 
       this.setState({ filteredSpells: spells })
     }
-  }
-
-  componentDidMount = () => {
-    Auth.onAuthStateChanged((user) => {
-      if (user){
-        const csRef = Database.ref('userdata/'+user.uid+'/spells/')
-        csRef.on('child_added', snapshot => {
-          snapshot.val().id = snapshot.key
-          this.setState({ custom_spells: [snapshot.val()].concat(this.state.custom_spells) })
-        })
-      }
-    })
   }
 }

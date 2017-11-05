@@ -122,10 +122,22 @@ export default class Turnorder extends Component {
 
   nextRound = (turnorder) => {
     const campaign = this.props.campaign
-
-    for(var key in turnorder) turnorder[key].done = false
-    
     const roundDuration = parseInt(campaign.settings.roundDuration, 10)
+
+    const types = ['buffs', 'concentrations', 'conditions']
+
+    for(var key in turnorder) {
+      turnorder[key].done = false
+
+      for(var i = 0; i < types.length; i++)
+      if(turnorder[key][types[i]]){
+        for(var bKey in turnorder[key][types[i]]){
+          if(turnorder[key][types[i]][bKey].time) turnorder[key][types[i]][bKey].time -= roundDuration
+          if(turnorder[key][types[i]][bKey].time <= 0) turnorder[key][types[i]][bKey] = null
+        }
+      }
+    }
+
     const update = {
       round: campaign.round ? campaign.round + 1 : 1,
       times: {
@@ -135,6 +147,7 @@ export default class Turnorder extends Component {
       },
       turnorder
     }
+  
     this.props.campaignRef.update(update)
   }
 

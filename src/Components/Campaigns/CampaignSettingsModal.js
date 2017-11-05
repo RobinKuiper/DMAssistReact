@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Grid, Header, Image, Label, Modal, Segment } from 'semantic-ui-react'
+import { Button, Divider, Grid, Header, Image, Label, Modal, Segment } from 'semantic-ui-react'
 import { Form } from 'formsy-semantic-ui-react'
 import ImageUploader from 'react-firebase-image-uploader';
 import firebase, { Auth, Database } from './../../Lib/firebase'
@@ -20,6 +20,10 @@ export default class CampaignSettingsModal extends Component {
   }
 
   handleChange = (e, { name, value }) => { this.setState({ [name]: value })}
+
+  removeCampaign = () => {
+    Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.props.campaign.slug).remove()
+  }
 
   save = () => {
     let update = {
@@ -49,91 +53,97 @@ export default class CampaignSettingsModal extends Component {
         trigger={this.props.trigger}>
         <Modal.Content>
           { campaign &&
-            <Form size='massive' onValidSubmit={this.save}>
-              {/*<Form.Input
-                disabled
-                required
-                name='name'
-                label='Name'
-                type='text'
-                value={this.state.name || campaign.name}
-                onChange={this.handleChange}
-                validations="minLength:2,isWords"
-                validationErrors={{
-                    minLength: 'Minimal length is 2 letters',
-                    isWords: 'No numbers or special characters allowed',
-                    isDefaultRequiredValue: 'Name is Required',
-                }} 
-                errorLabel={ errorLabel }
-              />*/}
-              
-              <Grid>
-                <Grid.Column width={8}>
-                  <Header>Settings</Header>
-                  <Segment basic>
-                    <Form.Input
-                      required
+            <div>
+              <Form size='massive' onValidSubmit={this.save}>
+                {/*<Form.Input
+                  disabled
+                  required
+                  name='name'
+                  label='Name'
+                  type='text'
+                  value={this.state.name || campaign.name}
+                  onChange={this.handleChange}
+                  validations="minLength:2,isWords"
+                  validationErrors={{
+                      minLength: 'Minimal length is 2 letters',
+                      isWords: 'No numbers or special characters allowed',
+                      isDefaultRequiredValue: 'Name is Required',
+                  }} 
+                  errorLabel={ errorLabel }
+                />*/}
+                
+                <Grid>
+                  <Grid.Column width={8}>
+                    <Header>Settings</Header>
+                    <Segment basic>
+                      <Form.Input
+                        required
 
-                      name='short_rest'
-                      label='Short Rest'
-                      type='text'
-                      value={this.state.short_rest || campaign.settings.shortRest}
-                      onChange={this.handleChange}
-                      validationErrors={{
-                          isDefaultRequiredValue: 'Short rest time is Required',
-                      }} 
-                      errorLabel={ errorLabel }
-                    />
-                    <Form.Input
-                      required
+                        name='short_rest'
+                        label='Short Rest'
+                        type='text'
+                        value={this.state.short_rest || campaign.settings.shortRest}
+                        onChange={this.handleChange}
+                        validationErrors={{
+                            isDefaultRequiredValue: 'Short rest time is Required',
+                        }} 
+                        errorLabel={ errorLabel }
+                      />
+                      <Form.Input
+                        required
 
-                      name='long_rest'
-                      label='Long Rest'
-                      type='text'
-                      value={this.state.long_rest || campaign.settings.longRest}
-                      onChange={this.handleChange}
-                      validationErrors={{
-                          isDefaultRequiredValue: 'Long rest time is Required',
-                      }} 
-                      errorLabel={ errorLabel }
-                    />
-                    <Form.Input
-                      required
+                        name='long_rest'
+                        label='Long Rest'
+                        type='text'
+                        value={this.state.long_rest || campaign.settings.longRest}
+                        onChange={this.handleChange}
+                        validationErrors={{
+                            isDefaultRequiredValue: 'Long rest time is Required',
+                        }} 
+                        errorLabel={ errorLabel }
+                      />
+                      <Form.Input
+                        required
 
-                      name='round_duration'
-                      label='Round Duration'
-                      type='text'
-                      value={this.state.round_duration || campaign.settings.roundDuration}
-                      onChange={this.handleChange}
-                      validationErrors={{
-                          isDefaultRequiredValue: 'Round duration is Required',
-                      }} 
-                      errorLabel={ errorLabel }
-                    />
-                  </Segment>
-                </Grid.Column>
-              
-                <Grid.Column width={8}>
-                  <Header>Picture</Header>
-                  <Segment basic>
-                    <Image centered src={this.state.pictureURL || campaign.pictureURL} size='small' />
-                    { this.state.isUploading &&
-                        <p>Progress: {this.state.progress}%</p>
-                    }
-                    <ImageUploader
-                        name="avatar"
-                        storageRef={firebase.storage().ref('images')}
-                        onUploadStart={this.handleUploadStart}
-                        onUploadError={this.handleUploadError}
-                        onUploadSuccess={this.handleUploadSuccess}
-                        onProgress={this.handleProgress}
-                    />
-                  </Segment>
-                </Grid.Column>
-              </Grid>
-              
-              <Button size='massive' fluid type='submit' content='Save' positive icon='save' />
-            </Form>
+                        name='round_duration'
+                        label='Round Duration'
+                        type='text'
+                        value={this.state.round_duration || campaign.settings.roundDuration}
+                        onChange={this.handleChange}
+                        validationErrors={{
+                            isDefaultRequiredValue: 'Round duration is Required',
+                        }} 
+                        errorLabel={ errorLabel }
+                      />
+                    </Segment>
+                  </Grid.Column>
+                
+                  <Grid.Column width={8}>
+                    <Header>Picture</Header>
+                    <Segment basic>
+                      <Image centered src={this.state.pictureURL || campaign.pictureURL} size='small' />
+                      { this.state.isUploading &&
+                          <p>Progress: {this.state.progress}%</p>
+                      }
+                      <ImageUploader
+                          name="avatar"
+                          storageRef={firebase.storage().ref('images')}
+                          onUploadStart={this.handleUploadStart}
+                          onUploadError={this.handleUploadError}
+                          onUploadSuccess={this.handleUploadSuccess}
+                          onProgress={this.handleProgress}
+                      />
+                    </Segment>
+                  </Grid.Column>
+                </Grid>
+                
+                <Button size='massive' fluid type='submit' content='Save' positive icon='save' />
+              </Form>
+
+              <Divider />
+
+              <Button negative fluid content='Remove Campaign' icon='remove' onClick={this.removeCampaign} />
+            </div>
           }
         </Modal.Content>
       </Modal>

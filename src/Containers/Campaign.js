@@ -1,25 +1,20 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 import { Database, Auth } from './../Lib/firebase'
 import { formatTime, toSeconds } from './../Lib/Common'
 import { Button, Grid, Label, Popup, Segment, Table } from 'semantic-ui-react'
 import { Form } from 'formsy-semantic-ui-react'
-import Formsy from 'formsy-react'
 import Panel from './../Components/UI/Panel'
 import Turnorder from './../Components/Campaigns/Turnorder'
 import Adsense from './../Components/Adsense'
 //import FixedMenu from "./../Components/FixedMenu";
 import CampaignSettingsModal from './../Components/Campaigns/CampaignSettingsModal'
 
-Formsy.addValidationRule('isRequired', function (values, value) {
-  return value !== null && value !== '';
-});
-
 export default class Campaign extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      user: null,
       campaign: null,
       turnorder: null,
       loaded: false,
@@ -42,6 +37,7 @@ export default class Campaign extends Component {
     if(campaign){
       return (
         <div>
+          { this.state.removed && <Redirect to='/campaigns' />}
           {/*<FixedMenu title={this.state.campaign.name} />*/}
           <main>
             <Turnorder campaign={this.state.campaign} monsters={this.props.monsters} encounters={this.props.encounters} campaignRef={this.state.campaignRef} />
@@ -88,7 +84,8 @@ export default class Campaign extends Component {
       name: this.state.newPlayerName,
       level: this.state.newPlayerLevel,
       hit_points: this.state.newPlayerHP,
-      armor_class: this.state.newPlayerAC
+      armor_class: this.state.newPlayerAC,
+      player: true
     }
 
     Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.state.campaign.slug).child('players').push(player)
@@ -214,49 +211,33 @@ export default class Campaign extends Component {
     var campaign = this.state.campaign
     campaign.times.total += time
     campaign.times.session += time
+
+    const types = ['buffs', 'concentrations', 'conditions']
+
+    if(campaign.turnorder){
+      for(var key in campaign.turnorder) {
+        for(var i = 0; i < types.length; i++)
+        if(campaign.turnorder[key][types[i]]){
+          for(var bKey in campaign.turnorder[key][types[i]]){
+            if(campaign.turnorder[key][types[i]][bKey].time) campaign.turnorder[key][types[i]][bKey].time -= time
+            if(campaign.turnorder[key][types[i]][bKey].time <= 0) campaign.turnorder[key][types[i]][bKey] = null
+          }
+        }
+      }
+    }
+
     this.state.campaignRef.set(campaign)
   }
 
   componentDidMount() {
-    const slug = this.props.match.params.campaignSlug
+    const key = this.props.match.params.key
     Auth.onAuthStateChanged((user) => {
       if (user){
-        this.setState({ user })
-        var campaignRef = Database.ref('userdata/'+user.uid+'/campaigns/'+slug);
-        var turnorderRef = campaignRef.child('turnorder');
-        campaignRef.on('value', snapshot => {
+        Database.ref('/campaigns/'+key).on('value', snapshot => {
           var campaign = snapshot.val()
-          var turnorder = []
-
-          /*if(campaign.turnorder){
-            var turnorder = []
-            var done = true
-            console.log(campaign.turnorder)
-            Object.keys(campaign.turnorder).map(key => {
-              console.log(campaign.turnorder[key])
-              var t = campaign.turnorder[key]
-              t.id = key
-              turnorder.push(t)
-
-              if(!t.done){ done = false }
-              return t;
-            })
-
-            if(done){
-              for (var i = 0; i < turnorder.length; i++) {
-                turnorder[i].done = false
-              }
-              const roundDuration = parseInt(campaign.settings.roundDuration, 10)
-              campaign.round = (campaign.round) ? campaign.round + 1 : 1
-              campaign.times.encounter += 
-              campaign.times.session += roundDuration
-              campaign.times.total += roundDuration
-              campaign.turnorder = turnorder
-              campaignRef.set(campaign)
-            }
-          }*/
-          // Update React state when campaign is added to the firebase database
-          this.setState({ campaign, campaignRef, turnorder, turnorderRef, loaded: true })
+          if(campaign){
+            this.setState({ campaign })
+          } else this.setState({ removed: true })
         });
       }
     })

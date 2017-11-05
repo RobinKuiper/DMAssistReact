@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 import { Button, Header, Label, Segment } from 'semantic-ui-react'
 import { Form } from 'formsy-semantic-ui-react'
 
@@ -10,10 +11,8 @@ export default class AddCampaign extends Component {
     super(props)
 
     this.state = {
+      created: null,
       name: '',
-      players: [
-        { name: '', level: '', hitPoints: '', armorClass: '' }
-      ],
       settings: {
         shortRest: '1H',
         longRest: '8H',
@@ -28,19 +27,28 @@ export default class AddCampaign extends Component {
 
     var campaign = {
       name,
-      slug: Slugify(name),
       round: 0,
       times: {
         encounter: 0,
         session: 0,
         total: 0
       },
+      uid: Auth.currentUser.uid,
       settings
     }
 
-    // Send campaign to firebase
-    Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+Slugify(campaign.name)).set( campaign )
-      .then(() => { this.props.alert('Your campaign is saved!', 'success', 'checkmark') })
+    const key = Database.ref().child('campaigns').push().key
+
+    let data = {}
+    data['campaigns/' + key] = campaign
+    data['userdata/' + Auth.currentUser.uid + '/campaigns/' + key] = { name }
+
+    Database.ref().update(data)
+      .then(() => {
+        this.props.alert('Your campaign is saved!', 'success', 'checkmark') 
+        this.setState({ created: key })
+      })
+      .catch((e) => console.log(e))
   }
 
   render(){
@@ -49,6 +57,7 @@ export default class AddCampaign extends Component {
     if(Auth.currentUser) {
       return (
         <Segment raised>
+          { this.state.created && <Redirect to={'/campaign/'+this.state.created} /> }
           <Header dividing>Create New Campaign</Header>
           <Form onValidSubmit={this.save}>
             <Form.Group>
