@@ -46,6 +46,8 @@ export default class Campaign extends Component {
           <main>
             <Turnorder campaign={this.state.campaign} monsters={this.props.monsters} encounters={this.props.encounters} campaignRef={this.state.campaignRef} />
 
+            <Panel title='Players' content={this.playerContent} loaded={this.state.loaded} closeable />
+            
             <Segment raised>
               <Grid>
                 <Grid.Column width={6}>
@@ -69,8 +71,6 @@ export default class Campaign extends Component {
                 </Grid.Column>
               </Grid>
             </Segment>
-
-            <Panel title='Players' content={this.playerContent} loaded={this.state.loaded} closeable />
 
             { process.env.NODE_ENV !== "development" &&
               <Adsense client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />

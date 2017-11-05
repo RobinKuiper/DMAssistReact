@@ -3,6 +3,7 @@ import { Button, Input, Popup, Table } from 'semantic-ui-react'
 import MonsterModal from './../MonsterModal'
 import { calculateMod } from './../../Lib/Common'
 import Dice from './../../Lib/Dice'
+import AddModal from './AddModal'
 
 export default class TurnorderItem extends Component {
   constructor(props) {
@@ -91,6 +92,7 @@ export default class TurnorderItem extends Component {
         <Table.Cell></Table.Cell>
         <Table.Cell>
           <Button.Group size='mini'>
+            <AddModal trigger={<Button icon='plus' color='green' />} />
             <Popup content={'Done, ' + item.name + '\'s turn is over.'} trigger={<Button color='blue' icon='checkmark' onClick={this.props.setDone} />} />
             <Popup content={'Remove ' + item.name + ' from the item.'} trigger={<Button color='red' icon='remove' onClick={() => { this.props.campaignRef.child('turnorder/'+item.id).remove() }} />} />
           </Button.Group>
