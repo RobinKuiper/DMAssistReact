@@ -3,7 +3,7 @@ import firebase from 'firebase'
 // Initialize Firebase
 var config = {}
 
-export const __LOCAL__ = false
+export const __LOCAL__ = true
 
 // TODO: CHANGE TO .ENV FILES
 if(process.env.NODE_ENV === "development" && __LOCAL__){

@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { Button, Grid, Header, Icon, Input, Dropdown, Popup, Table } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 
 import { pageLimits } from './../Lib/Common'
 
@@ -11,7 +13,6 @@ import CreateSpell from './../Components/CreateSpell'
 
 import { Auth, Database } from './../Lib/firebase'
 
-import { Button, Grid, Header, Icon, Input, Dropdown, Popup, Table } from 'semantic-ui-react'
 import AlertContainer from 'react-alert'
 
 export default class Spells extends Component {
@@ -123,10 +124,20 @@ export default class Spells extends Component {
               spells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
                   <Table.Row key={spell.slug}>
                     <Table.Cell>
-                      <div>
-                        <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
-                        <span style={{fontSize: '8pt'}}>{spell.school}</span>
-                      </div>
+                      <Grid>
+                        <Grid.Column width={14}>
+                          <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
+                          <span style={{fontSize: '8pt'}}>{spell.school}</span>
+                        </Grid.Column>
+
+                        <Grid.Column width={2}>
+                          <Popup position='center top' content='Open in a new page' trigger={
+                            <Link to={'/spell/'+spell.slug}>
+                              <Icon name='external link' />
+                            </Link>
+                          } />
+                        </Grid.Column>
+                      </Grid>
                     </Table.Cell>
                     <Table.Cell>{spell.school}</Table.Cell>
                     <Table.Cell>{spell.castingTime}</Table.Cell>

@@ -115,7 +115,7 @@ export default class Dashboard extends Component {
   renderSpells = () => (
     <List>
     { this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item =>
-      <SpellModal key={item.slug} spell={item} trigger={<List.Item as='a'>{item.name}</List.Item>} />
+      <List.Item as={Link} to={'/spell/'+item.slug} key={item.slug}>{item.name}</List.Item>
     )}
     </List>
   )

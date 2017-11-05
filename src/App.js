@@ -20,6 +20,7 @@ import { Default, Mobile } from './Lib/Responsive'
 import AuthFunctionality from './Components/Auth/AuthFunctionality'
 import Profile from './Containers/Profile'
 import Monster from './Containers/Monster'
+import Spell from './Containers/Spell'
 
 import Alert from './Components/Alert'
 
@@ -121,6 +122,7 @@ class App extends Component {
               <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
               <PropsRoute path='/monster/:slug' component={Monster} />
               <PropsRoute path='/spells' component={Spells} spells={this.state.spells} alert={this.Alert} />
+              <PropsRoute path='/spell/:slug' component={Spell} />
               <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} alert={this.Alert} />
               <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
               <Route path='/treasure-generator' component={TreasureGenerator} alert={this.Alert} />
