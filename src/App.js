@@ -11,6 +11,7 @@ import FixedMenu from './Components/UI/FixedMenu'
 
 import Dashboard from './Containers/Dashboard'
 import Monsters from './Containers/Monsters'
+import Landing from './Containers/Landing'
 import Spells from './Containers/Spells'
 import Campaigns from './Containers/Campaigns'
 import Campaign from './Containers/Campaign'
@@ -26,7 +27,7 @@ import Alert from './Components/Alert'
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 2 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 200 : 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? true : false : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : false : true
 
 class App extends Component {
   constructor(props){
@@ -95,46 +96,50 @@ class App extends Component {
   }
 
   render() {
-    return (
-      <div id='outer-container'>
-        <Dimmer active={!this.state.loaded}>
-          <Loader size='massive'>{this.state.loadSteps[this.state.loadStep]}</Loader>
-        </Dimmer>
+    if(Auth.currentUser){
+      return (
+        <div id='outer-container'>
+          <Dimmer active={!this.state.loaded}>
+            <Loader size='massive'>{this.state.loadSteps[this.state.loadStep]}</Loader>
+          </Dimmer>
 
-        <Default><Skype /></Default>
-        <Router>
-          <div>
-            <Default>
-              <MainSidebar mobile={false} visible={true} />
-            </Default>
-            <Mobile>
-              <FixedMenu showSidebar={() => this.setState({ sidebarVisible: true })} />
-              <MainSidebar mobile={true} visible={this.state.sidebarVisible} hideSidebar={() => this.setState({ sidebarVisible: false })} />
-            </Mobile>
-            
-            <Sidebar.Pusher onClick={() => this.setState({ sidebarVisible: false })}>
-              <Alert ref={instance => { this.alert = instance }} />
-
-              { this.state.user && !this.state.user.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
+          <Default><Skype /></Default>
+          <Router>
+            <div>
+              <Default>
+                <MainSidebar mobile={false} visible={true} />
+              </Default>
+              <Mobile>
+                <FixedMenu showSidebar={() => this.setState({ sidebarVisible: true })} />
+                <MainSidebar mobile={true} visible={this.state.sidebarVisible} hideSidebar={() => this.setState({ sidebarVisible: false })} />
+              </Mobile>
               
-              <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} alert={this.Alert} />
-              <Route path='/about' component={About} alert={this.Alert} />
-              <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
-              <PropsRoute path='/monster/:slug' component={Monster} />
-              <PropsRoute path='/spells' component={Spells} spells={this.state.spells} alert={this.Alert} />
-              <PropsRoute path='/spell/:slug' component={Spell} />
-              <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} alert={this.Alert} />
-              <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
-              <Route path='/treasure-generator' component={TreasureGenerator} alert={this.Alert} />
-              <Route path='/profile' component={Profile} alert={this.Alert} />
+              <Sidebar.Pusher onClick={() => this.setState({ sidebarVisible: false })}>
+                <Alert ref={instance => { this.alert = instance }} />
 
-              <Route path='/auth' component={AuthFunctionality} alert={this.Alert} />              
+                { this.state.user && !this.state.user.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
+                
+                <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} monsters={this.state.monsters} spells={this.state.spells} alert={this.Alert} />
+                <Route path='/about' component={About} alert={this.Alert} />
+                <PropsRoute path='/monsters' component={Monsters} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
+                <PropsRoute path='/monster/:slug' component={Monster} />
+                <PropsRoute path='/spells' component={Spells} spells={this.state.spells} alert={this.Alert} />
+                <PropsRoute path='/spell/:slug' component={Spell} />
+                <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} alert={this.Alert} />
+                <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
+                <Route path='/treasure-generator' component={TreasureGenerator} alert={this.Alert} />
+                <Route path='/profile' component={Profile} alert={this.Alert} />
 
-            </Sidebar.Pusher>
-          </div>
-        </Router>
-      </div>
-    )
+                <Route path='/auth' component={AuthFunctionality} alert={this.Alert} />              
+
+              </Sidebar.Pusher>
+            </div>
+          </Router>
+        </div>
+      )
+    } else {
+      return <Landing />
+    }
   }
 
   sendVerification = () => {
