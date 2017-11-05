@@ -61,17 +61,17 @@ export default class CreateSpell extends Component {
                 this.props.onSuccess()
                 if(spell.public) {
                     Database.ref('custom_monsters/'+spell.slug).set(spell)
-                        .then(e => {
-                            console.log(e)
+                        /*.then(e => {
+                            
                         })
                         .catch(e => {
-                            console.log(e)
-                        })
+                            
+                        })*/
                 }
             })
-            .catch(e => {
-                console.log(e)
-            })
+            /*.catch(e => {
+                
+            })*/
     }
 
     

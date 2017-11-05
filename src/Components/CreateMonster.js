@@ -79,17 +79,17 @@ export default class CreateMonster extends Component {
                 this.props.onSuccess()
                 if(monster.public) {
                     Database.ref('custom_monsters/'+monster.slug).set(monster)
-                        .then(e => {
-                            console.log(e)
+                        /*.then(e => {
+                            
                         })
                         .catch(e => {
-                            console.log(e)
-                        })
+                            
+                        })*/
                 }
             })
-            .catch(e => {
-                console.log(e)
-            })
+            /*.catch(e => {
+                
+            })*/
     }
 
     

@@ -5,7 +5,7 @@ export default class About extends Component {
   render() {
     return (
       <main>
-        <span>Version 0.1.7 Beta -</span>
+        <span>Version 0.1.8 Beta -</span>
         <Grid columns={1} textAlign='center'>
           <Grid.Column>
             <Segment raised style={{paddingTop: 30, paddingBottom: 30}}>

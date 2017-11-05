@@ -1,17 +1,95 @@
 {
   "rules": {
     "monsters": {
-      ".read": true,
-      ".write": false
+      ".write": false,
+      ".read": true
     },
     "spells": {
-      ".read": true,
-      ".write": false
+      ".write": false,
+      ".read": true
     },
     "userdata": {
       "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+
+        "campaigns": {
+          "$campaign": {
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
+          }
+        },
+
+        "encounters": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid",
+
+          "$encounter": {
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25",
+
+            "monsters": {
+              "$monster": {
+                ".validate": "newData.hasChildren(['name']) && newData.child('name').isString()"
+              }
+            },
+
+            "treasure": {
+              "cp": { ".validate": "newData.isNumber()" },
+              "sp": { ".validate": "newData.isNumber()" },
+              "ep": { ".validate": "newData.isNumber()" },
+              "gp": { ".validate": "newData.isNumber()" },
+              "pp": { ".validate": "newData.isNumber()" },
+
+              "art": {
+                "$item": {
+                  ".validate": "newData.isString()"
+                }
+              },
+
+              "gem": {
+                "$item": {
+                  ".validate": "newData.isString()"
+                }
+              }
+            }
+          }
+        },
+        "monsters": {
           ".read": "$uid === auth.uid",
           ".write": "$uid === auth.uid"
+        },
+        "spells": {
+          ".read": "$uid === auth.uid",
+          ".write": "$uid === auth.uid"
+        }
+      }
+    },
+    "campaigns": {
+      ".write": "auth.uid !== null",
+      
+      "$campaign": {
+        ".write": "auth.uid === data.child('uid').val()",
+        ".read": "data.child('public').val() === true || data.child('uid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['name', 'round', 'settings', 'times']) && newData.child('name').isString() && newData.child('name').val().length < 25 && newData.child('round').isNumber()",
+      
+        "players": {
+          "$player": {
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25 && newData.child('level').isNumber() && newData.child('armor_class').isNumber() && newData.child('hit_points').isNumber()"
+          }
+        },
+
+        "settings": {
+          ".validate": "newData.hasChildren(['longRest', 'roundDuration', 'shortRest'])"
+        },
+
+        "times": {
+          ".validate": "newData.hasChildren(['encounter', 'session', 'total']) && newData.child('encounter').isNumber() && newData.child('session').isNumber() && newData.child('total').isNumber()"
+        },
+
+        "turnorder": {
+          "$item": {
+            ".validate": "newData.hasChildren(['name', 'done']) && newData.child('name').isString() && newData.child('done').isBoolean()"
+          }
+        }
       }
     },
     ".read": false,

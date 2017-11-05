@@ -207,7 +207,6 @@ export default class Encounters extends Component {
             var encounter = snapshot.val()
             if(encounter !== null) encounter.id = snapshot.key
             this.setState({ encounter })
-            console.log(encounter.treasure)
         })
         this.setState({ seRef })
         this.props.setEncounter(true)

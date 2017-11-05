@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Button, Input, Popup, Table } from 'semantic-ui-react'
+import { Button, Icon, Input, Label, List, Popup, Table } from 'semantic-ui-react'
 import MonsterModal from './../MonsterModal'
-import { calculateMod } from './../../Lib/Common'
+import { calculateMod, formatTime } from './../../Lib/Common'
 import Dice from './../../Lib/Dice'
 import AddModal from './AddModal'
+import { Database } from './../../Lib/firebase'
 
 export default class TurnorderItem extends Component {
   constructor(props) {
@@ -38,14 +39,14 @@ export default class TurnorderItem extends Component {
   onMouseUp = () => {
       clearTimeout(this.t)
       this.start = 100
-      this.props.campaignRef.child('turnorder/'+this.props.item.id).update({ hit_points: parseInt(this.state.tempHP, 10) })
+      Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder/'+this.props.item.id).update({ hit_points: parseInt(this.state.tempHP, 10) })
   }
 
   handleInput = (e) => {
     var { name, value } = e.target
 
     if(e.keyCode === 13 || e.type === 'blur'){
-      if(value !== null || value !== '') this.props.campaignRef.child('turnorder/'+this.props.item.id).update({ [name]: value })
+      if(value !== null || value !== '') Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder/'+this.props.item.id).update({ [name]: value })
     }
   }
 
@@ -75,7 +76,7 @@ export default class TurnorderItem extends Component {
             <Popup position='top center' trigger={<Button content={this.state.tempHP || item.hit_points} />} on='click' hoverable content={<Input placeholder='5, -6, etc' type='number' onKeyDown={(e) => {if(e.keyCode === 13) {
               var newHP = parseInt(item.hit_points, 10)+parseInt(e.target.value, 10)
               this.setState({ tempHP: newHP })
-              this.props.campaignRef.child('turnorder/'+item.id).update({ hit_points: newHP })
+              Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder/'+item.id).update({ hit_points: newHP })
             }} } />} />
             <Popup content='Increase Hit Points' trigger={<Button color='green' icon='plus' onMouseDown={this.increaseHP.bind(this)} onMouseUp={this.onMouseUp} />} />
           </Button.Group>
@@ -87,18 +88,61 @@ export default class TurnorderItem extends Component {
         { item.armor_class ? item.armor_class
           : <Input placeholder='Armor Class' type='number' name='armor_class' transparent onBlur={this.handleInput} onKeyDown={this.handleInput} /> }
         </Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell></Table.Cell>
+        <Table.Cell>
+          { item.buffs && 
+            <List>
+            { Object.keys(item.buffs).map(key => (
+              <List.Item>
+                <Label size='tiny' key={key}>
+                  <Icon name='remove' style={{cursor: 'pointer'}} onClick={() => this.remove('buffs', key)} /> 
+                  {item.buffs[key].name} { item.buffs[key].time && formatTime(item.buffs[key].time) }
+                </Label>
+              </List.Item>
+            ))}
+            </List>
+          }
+        </Table.Cell>
+        <Table.Cell>
+          { item.conditions && 
+            <List>
+            { Object.keys(item.conditions).map(key => (
+              <List.Item>
+                <Label size='tiny' key={key}>
+                  <Icon name='remove' style={{cursor: 'pointer'}} onClick={() => this.remove('conditions', key)} /> 
+                  {item.conditions[key].name} { item.conditions[key].time && formatTime(item.conditions[key].time) }
+                </Label>
+              </List.Item>
+            ))}
+            </List>
+          }
+        </Table.Cell>
+        <Table.Cell>
+          { item.concentrations && 
+            <List>
+            { Object.keys(item.concentrations).map(key => (
+              <List.Item>
+                <Label size='tiny' key={key}>
+                  <Icon name='remove' style={{cursor: 'pointer'}} onClick={() => this.remove('concentrations', key)} /> 
+                  {item.concentrations[key].name} { item.concentrations[key].time && formatTime(item.concentrations[key].time) }
+                </Label>
+              </List.Item>
+            ))}
+            </List>
+          }
+        </Table.Cell>
         <Table.Cell>
           <Button.Group size='mini'>
-            <AddModal trigger={<Button icon='plus' color='green' />} />
+            <AddModal item={item} campaign={this.props.campaign} trigger={<Button icon='plus' color='green' />} />
             <Popup content={'Done, ' + item.name + '\'s turn is over.'} trigger={<Button color='blue' icon='checkmark' onClick={this.props.setDone} />} />
-            <Popup content={'Remove ' + item.name + ' from the item.'} trigger={<Button color='red' icon='remove' onClick={() => { this.props.campaignRef.child('turnorder/'+item.id).remove() }} />} />
+            <Popup content={'Remove ' + item.name + ' from the item.'} trigger={<Button color='red' icon='remove' onClick={() => { Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder/'+item.id).remove() }} />} />
           </Button.Group>
         </Table.Cell>
       </Table.Row>
     )
+  }
+
+  remove = (type, key) => {
+    Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder/'+this.props.item.id+'/'+type+'/'+key).remove()
   }
 
   renderName = (item) => {
@@ -117,6 +161,6 @@ export default class TurnorderItem extends Component {
     var dex = (item.dexterity) ? calculateMod(item.dexterity).mod : 0
     var roll = Dice.roll(1, 20)
 
-    this.props.campaignRef.child('turnorder/'+item.id).update({ initiative: roll+dex })
+    Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder/'+item.id).update({ initiative: roll+dex })
   }
 }

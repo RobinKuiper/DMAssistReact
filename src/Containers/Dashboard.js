@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Grid, Icon, List, Message, Statistic } from 'semantic-ui-react'
-import { Auth } from './../Lib/firebase'
+import { Auth, Database } from './../Lib/firebase'
 import Adsense from './../Components/Adsense'
 import Panel from './../Components/UI/Panel'
 
 import TreasureGenerator from './../Components/TreasureGenerator'
-
-import SpellModal from './../Components/SpellModal'
 
 import LoginModal from './../Components/Auth/LoginModal'
 
@@ -88,9 +86,9 @@ export default class Dashboard extends Component {
     if(Auth.currentUser){
       return (
         <List>
-        { this.props.campaigns.length !== 0 ?
-            this.props.campaigns.slice(this.props.campaigns.length-5, this.props.campaigns.length).map(item => {
-              return <List.Item as={Link} to={'/campaign/'+item.slug} key={item.slug}>{item.name}</List.Item>
+        { this.state.campaigns  ?
+            Object.keys(this.state.campaigns).map(key => {
+              return <List.Item as={Link} to={'/campaign/'+key} key={key}>{this.state.campaigns[key].name}</List.Item>
             })
           :
             <List.Item>You don't have any campaigns yet.</List.Item>
@@ -133,21 +131,31 @@ export default class Dashboard extends Component {
           <Statistic.Label>Spells</Statistic.Label>
         </Statistic>
 
-        <Statistic as={Link} to='/monsters'>
-          <Statistic.Value>0</Statistic.Value>
+        <Statistic as={Link} to='/monsters/custom'>
+          <Statistic.Value>{this.props.custom_monsters.length}</Statistic.Value>
           <Statistic.Label>My Monsters</Statistic.Label>
         </Statistic>
 
-        <Statistic as={Link} to='/spells'>
-          <Statistic.Value>0</Statistic.Value>
+        <Statistic as={Link} to='/spells/custom'>
+          <Statistic.Value>{this.props.custom_spells.length}</Statistic.Value>
           <Statistic.Label>My Spells</Statistic.Label>
         </Statistic>
 
         <Statistic as={Link} to='/campaigns'>
-          <Statistic.Value>{this.props.campaigns.length}</Statistic.Value>
+          <Statistic.Value>blaat</Statistic.Value>
           <Statistic.Label>My Campaigns</Statistic.Label>
         </Statistic>
       </Statistic.Group>
     </div>
   )
+
+  componentDidMount() {
+    Auth.onAuthStateChanged((user) => {
+      if (user){
+        Database.ref('userdata').child(user.uid).child('campaigns').limitToLast(5).on('value', snapshot => {
+          this.setState({ campaigns: snapshot.val() })
+        })
+      }
+    })
+  }
 }

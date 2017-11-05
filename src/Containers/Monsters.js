@@ -3,7 +3,7 @@ import { Button, Dropdown, Grid, Header, Input, Icon, Popup, Table } from 'seman
 import { Link } from 'react-router-dom'
 
 import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
-import { Auth, Database } from './../Lib/firebase'
+import { Auth } from './../Lib/firebase'
 
 import Adsense from './../Components/Adsense'
 
@@ -18,7 +18,6 @@ import CreateMonster from './../Components/CreateMonster'
 export default class Monsters extends Component {
   constructor(props){
     super(props)
-
     this.changeSortBy = this.changeSortBy.bind(this);
 
     this.state = {
@@ -60,14 +59,14 @@ export default class Monsters extends Component {
   }
 
   toggleCustom = (type) => {
-    //this.setState({ custom: checked, filteredMonsters: (checked) ? this.state.custom_monsters : this.props.monsters })
+    //this.setState({ custom: checked, filteredMonsters: (checked) ? this.props.custom_monsters : this.props.monsters })
     const custom = type === 'show' ? true : type === 'hide' ? false : !this.state.custom
-    const filteredMonsters = (custom) ? this.state.custom_monsters : this.props.monsters
+    const filteredMonsters = (custom) ? this.props.custom_monsters : this.props.monsters
     this.setState({ custom, filteredMonsters })
   }
 
   renderContent = () => {
-    var monsters = (this.state.filteredMonsters.length === 0) ? this.props.monsters : this.state.filteredMonsters
+    var monsters = (this.state.filteredMonsters.length === 0 && this.state.searchQuery === '') ? this.props.monsters : this.state.filteredMonsters
 
     return (
       <div>
@@ -127,9 +126,9 @@ export default class Monsters extends Component {
                         </Grid.Column>
 
                         <Grid.Column width={2}>
-                          <Popup position='center top' content='Open in a new page' trigger={
+                          <Popup position='top center' content='Open in a new page' trigger={
                             <Link to={'/monster/'+monster.slug}>
-                              <Icon name='external link' />
+                              <Icon name='external' />
                             </Link>
                           } />
                         </Grid.Column>
@@ -199,33 +198,21 @@ export default class Monsters extends Component {
   }
 
 
-  search(e){
-    this.setState({ searchQuery: e.target.value })
-    const m = (this.state.custom) ? this.state.custom_monsters : this.props.monsters
+  search(e, {value}){
+    this.setState({ searchQuery: value })
+    const m = (this.state.custom) ? this.props.custom_monsters : this.props.monsters
 
-    if(e.target.value === ''){
+    if(value === ''){
       this.setState({ filteredMonsters: m })
       return;
     }else{
-      var monsters = m.filter((monster) => monster.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        monster.type.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        monster.alignment.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        monster.size.toLowerCase().includes(e.target.value.toLowerCase())
+      var monsters = m.filter((monster) => monster.name.toLowerCase().includes(value.toLowerCase()) ||
+        monster.type.toLowerCase().includes(value.toLowerCase()) ||
+        monster.alignment.toLowerCase().includes(value.toLowerCase()) ||
+        monster.size.toLowerCase().includes(value.toLowerCase())
       )
 
       this.setState({ filteredMonsters: monsters })
     }
-  }
-
-  componentDidMount = () => {
-    Auth.onAuthStateChanged((user) => {
-      if (user){
-        const cmRef = Database.ref('userdata/'+user.uid+'/monsters/')
-        cmRef.on('child_added', snapshot => {
-          snapshot.val().id = snapshot.key
-          this.setState({ custom_monsters: [snapshot.val()].concat(this.state.custom_monsters) })
-        })
-      }
-    })
   }
 }
