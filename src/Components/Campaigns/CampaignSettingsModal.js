@@ -22,7 +22,8 @@ export default class CampaignSettingsModal extends Component {
   handleChange = (e, { name, value }) => { this.setState({ [name]: value })}
 
   removeCampaign = () => {
-    Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.props.campaign.slug).remove()
+    Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.props.campaign.key).remove()
+    Database.ref('campaigns/'+this.props.campaign.key).remove()
   }
 
   save = () => {
@@ -34,7 +35,7 @@ export default class CampaignSettingsModal extends Component {
       }
     }
 
-    Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.props.campaign.slug).update(update)
+    Database.ref('campaigns/'+this.props.campaign.key).update(update)
       .then(() => {
         this.setState({ open: null })
       })
@@ -164,6 +165,6 @@ export default class CampaignSettingsModal extends Component {
   };
   setCampaignPicture = (url) => {
     this.setState({ pictureURL: url })
-    Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+this.props.campaign.slug).update({ pictureURL: url })
+    Database.ref('campaigns/'+this.props.campaign.key).update({ pictureURL: url })
   }
 }

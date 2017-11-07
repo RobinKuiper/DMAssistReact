@@ -131,7 +131,7 @@ export default class Campaign extends Component {
       }
     }
 
-    this.state.campaignRef.set(campaign)
+    Database.ref('campaigns/'+campaign.key).set(campaign)
   }
 
   componentDidMount() {

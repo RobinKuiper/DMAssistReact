@@ -87,7 +87,7 @@
 
         "turnorder": {
           "$item": {
-            ".validate": "newData.hasChildren(['name', 'done']) && newData.child('name').isString() && newData.child('done').isBoolean()"
+            ".validate": "newData.hasChildren(['done']) && newData.child('name').isString() && newData.child('done').isBoolean()"
           }
         }
       }
