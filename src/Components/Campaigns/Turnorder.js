@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Dropdown, Grid, List, Popup, Table } from 'semantic-ui-react'
 
 import { formatTime } from './../../Lib/Common'
-import { Database } from './../../Lib/firebase'
+import { Auth, Database } from './../../Lib/firebase'
 
 import Panel from './../UI/Panel'
 import TurnorderItem from './TurnorderItem'
@@ -12,6 +12,7 @@ export default class Turnorder extends Component {
     super(props)
 
     this.state = {
+      encounters: {},
       monsterOptions: props.monsters.map(monster => {
         return {
           key: monster.slug,
@@ -27,11 +28,11 @@ export default class Turnorder extends Component {
   }
 
   content = () => {
-    var encounterOptions = this.props.encounters.map(encounter => {
+    var encounterOptions = Object.keys(this.state.encounters).map(key => {
       return {
-        key: encounter.id,
-        value: encounter.id,
-        text: encounter.name
+        key: key,
+        value: key,
+        text: this.state.encounters[key].name
       }
     })
 
@@ -192,12 +193,14 @@ export default class Turnorder extends Component {
   }
 
   addEncounterToTurnorder = (e, {q, value}) => {
-    let encounter = this.props.encounters.find(encounter => encounter.id === value)
-    if(encounter.monsters){
-      for(var key in encounter.monsters){
-        this.addToTurnorder(encounter.monsters[key], true)
-      }
-    }else alert('There are no monsters in this encounter.')
+    Database.ref('encounters').child(value).on('value', snapshot => {
+        let encounter = snapshot.val()
+        if(encounter.monsters){
+          for(var key in encounter.monsters){
+            this.addToTurnorder(encounter.monsters[key], true)
+          }
+        }else alert('There are no monsters in this encounter.')
+    })
   }
 
   resetTurnorder = () => {
@@ -208,5 +211,15 @@ export default class Turnorder extends Component {
     Database.ref('/campaigns/'+this.props.campaign.key).set(campaign)
 
     if(campaign.players) this.addToTurnorder(Object.keys(campaign.players).map(key => campaign.players[key]))
+  }
+
+  componentDidMount() {
+      Auth.onAuthStateChanged((user) => {
+          if (user){
+              Database.ref('userdata/' + Auth.currentUser.uid + '/encounters/').on('value', snapshot => {
+                  this.setState({ encounters: snapshot.val() })
+              })
+          }
+      })
   }
 }

@@ -27,7 +27,7 @@ import Alert from './Components/Alert'
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 2 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 200 : 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : false : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : true : true
 
 class App extends Component {
   constructor(props){
@@ -190,8 +190,6 @@ class App extends Component {
         // Get the userdata reference
         let uDataRef = firebase.database().ref('userdata').child(this.state.user.uid);
 
-        let eRef = uDataRef.child('encounters')
-        this.keepTrackOfDatabase(eRef, 'encounters')
         let mRef = uDataRef.child('monsters')
         this.keepTrackOfDatabase(mRef, 'custom_monsters')
         let sRef = uDataRef.child('spells')

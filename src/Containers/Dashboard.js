@@ -14,7 +14,8 @@ export default class Dashboard extends Component {
     super(props)
 
     this.state = {
-      showMessage: localStorage.getItem('showMessage') === 'false' ? false : true
+      showMessage: localStorage.getItem('showMessage') === 'false' ? false : true,
+      loading_campaigns: true
     }
   }
 
@@ -27,7 +28,7 @@ export default class Dashboard extends Component {
             <Grid>
               <Grid.Row>
                 <Grid.Column>
-                  <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loaded={true} />
+                  <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loading={this.state.loading_campaigns} />
                 </Grid.Column>
               </Grid.Row>
 
@@ -153,7 +154,7 @@ export default class Dashboard extends Component {
     Auth.onAuthStateChanged((user) => {
       if (user){
         Database.ref('userdata').child(user.uid).child('campaigns').limitToLast(5).on('value', snapshot => {
-          this.setState({ campaigns: snapshot.val() })
+          this.setState({ campaigns: snapshot.val(), loading_campaigns: false })
         })
       }
     })
