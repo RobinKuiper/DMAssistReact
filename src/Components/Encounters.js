@@ -13,20 +13,12 @@ export default class Encounters extends Component {
         super(props)
 
         this.state = {
+            encounters: {},
             encounter: null,
             encounterName: '',
             percentage: 0,
             challenge_ratings: []
         }
-    }
-
-    componentDidMount() {
-        Auth.onAuthStateChanged((user) => {
-            if (user){
-                var eRef = Database.ref('userdata').child(user.uid).child('encounters')
-                this.setState({ eRef })
-            }
-        })
     }
 
     render() {
@@ -37,11 +29,11 @@ export default class Encounters extends Component {
 
     content = () => {
         if(Auth.currentUser){
-            var options = this.props.encounters.map(encounter => {
+            var options = Object.keys(this.state.encounters).map(key => {
                 return {
-                    key: encounter.id,
-                    value: encounter.id,
-                    text: encounter.name
+                    key: key,
+                    value: key,
+                    text: this.state.encounters[key].name
                 }
             })
 
@@ -55,7 +47,7 @@ export default class Encounters extends Component {
                     this.challenge_ratings.push(monster.challenge_rating)
                     return (
                         <List.Item key={key}>
-                            <List.Content floated='right'><Button size='mini' negative icon='remove' onClick={() => this.state.seRef.child('monsters').child(key).remove()} /></List.Content>
+                            <List.Content floated='right'><Button size='mini' negative icon='remove' onClick={() => Database.ref('encounters').child(this.state.encounter.key).child('monsters').child(key).remove()} /></List.Content>
                             <List.Content>
                                 <List.Header as='a'>
                                     <MonsterModal monster={monster} trigger={<span>{monster.name}</span>} />
@@ -87,7 +79,7 @@ export default class Encounters extends Component {
                             <Button icon='plus' content='Create' positive onClick={this.createEncounter.bind(this)} />
                             <Button.Or />
                             {/*TODO: Dropdown not refreshing */}
-                            <Dropdown button scrolling text="Select" options={options} disabled={options.length === 0} onChange={this.selectEncounter.bind(this)} />
+                            <Dropdown button scrolling text="Select" options={options} disabled={options.length === 0} onChange={(e, {q, value}) => { this.setEncounter(value) }} />
                         </Button.Group>
                     </div>
 
@@ -172,47 +164,60 @@ export default class Encounters extends Component {
     generateTreasure = () => {
         const treasure = Generator(this.challenge_ratings, this.state.percentage)
         this.setState({ treasure })
-        this.state.seRef.child('treasure').set(treasure)
+        Database.ref('encounters').child(this.state.encounter.key).child('treasure').set(treasure)
     }
 
     addMonster = (monster) => {
-        this.state.seRef.child('monsters').push(monster)
+        Database.ref('encounters').child(this.state.encounter.key).child('monsters').push(monster)
     }
 
     createEncounter = () => {
-        var r = this.state.eRef.push()
-        r.set({ name: '' })
-        this.setEncounter(r.key)
+        const key = Database.ref().child('encounters').push().key
+
+        let data = {}
+        data['encounters/' + key] = { name: '', uid: Auth.currentUser.uid }
+        data['userdata/' + Auth.currentUser.uid + '/encounters/' + key] = { name: '' }
+
+        Database.ref().update(data)
+          .then(() => {
+            this.setEncounter(key)
+          })
+          .catch((e) => console.log(e))
     }
 
     removeEncounter = () => {
-        this.state.seRef.remove()
+        Database.ref('encounters').child(this.state.encounter.key).remove()
+        Database.ref('userdata/' + Auth.currentUser.uid + '/encounters/').child(this.state.encounter.key).remove()
+        this.setState({ encounter: null })
         this.props.setEncounter(false)
     }
 
     handleNameChange = (e) => {
         if(e.keyCode === 13) {
-            this.state.eRef.child(this.state.encounter.id).update({ name: this.state.encounterName })
+            let data = {}
+            data['encounters/' + this.state.encounter.key + '/name'] = this.state.encounterName
+            data['userdata/' + Auth.currentUser.uid + '/encounters/' + this.state.encounter.key + '/name'] = this.state.encounterName
 
-            var encounter = this.state.encounter
-            encounter.name = this.state.encounterName
-            this.setState({ encounter })
+            Database.ref().update(data)
         }
     }
 
-    setEncounter = (id) => {
-        if(this.state.seRef) this.state.seRef.off()
-        var seRef = Database.ref('userdata').child(Auth.currentUser.uid).child('encounters').child(id)
-        seRef.on('value', snapshot => {
+    setEncounter = (key) => { 
+        Database.ref('encounters').child(key).on('value', snapshot => {
             var encounter = snapshot.val()
-            if(encounter !== null) encounter.id = snapshot.key
+            if(encounter !== null) encounter.key = snapshot.key
             this.setState({ encounter })
+            this.props.setEncounter(true)
         })
-        this.setState({ seRef })
-        this.props.setEncounter(true)
     }
 
-    selectEncounter = (e, {q, value}) => {
-        this.setEncounter(value)
+    componentDidMount() {
+        Auth.onAuthStateChanged((user) => {
+            if (user){
+                Database.ref('userdata/' + Auth.currentUser.uid + '/encounters/').on('value', snapshot => {
+                    this.setState({ encounters: snapshot.val() })
+                })
+            }
+        })
     }
 }
