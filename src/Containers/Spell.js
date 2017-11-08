@@ -5,35 +5,31 @@ import { Database } from './../Lib/firebase'
 import SpellLayout from './../Components/SpellLayout'
 
 export default class MonsterModal extends Component {
-    constructor(props){
-        super(props)
+    state = { spell: null, loading: true }
 
-        this.state = { spell: null }
-    }
-
-    componentWillMount() {
+    componentWillMount(){
         const slug = this.props.match.params.slug
-        Database.ref('spells/'+slug).on('value', snapshot => {
-            this.setState({ spell: snapshot.val() })
+        const custom = this.props.match.params.custom
+        const ref = custom === 'custom' ? 'custom_spells' : 'spell_data'
+        Database.ref(ref).child(slug).on('value', snapshot => {
+            this.setState({ spell: snapshot.val(), loading: false })
         })
     }
 
     render() {
-        if(this.state.spell){
-            const spell = this.state.spell
-            return (
-                <main>
-                    <Grid>
-                        <Grid.Column width={1} />
+        const {spell, loading} = this.state
+        return (
+            <main>
+                <Grid>
+                    <Grid.Column width={1} />
 
-                        <Grid.Column width={14}>
+                    <Grid.Column width={14} loading={loading}>
+                        { spell && 
                             <SpellLayout spell={spell} backButton={true} history={this.props.history} />
-                        </Grid.Column>
-                    </Grid>
-                </main>
-            )
-        } else {
-            return (<Header>Spell not found</Header>)
-        }
+                        }
+                    </Grid.Column>
+                </Grid>
+            </main>
+        )
     }
 }

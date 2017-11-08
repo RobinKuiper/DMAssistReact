@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase, { __LOCAL__, Auth } from './Lib/firebase'
+import firebase, { __LOCAL__, Auth, Database } from './Lib/firebase'
 
 import { Dimmer, Loader, Message, Sidebar } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
@@ -27,7 +27,7 @@ import Alert from './Components/Alert'
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 2 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 200 : 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : true : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : false : true
 
 class App extends Component {
   constructor(props){
@@ -35,11 +35,8 @@ class App extends Component {
 
     this.state = {
       user: null,
-      encounters: [],
       monsters: [],
-      custom_monsters: [],
       spells: [],
-      custom_spells: [],
       loaded: false,
       loadStep: 0,
       loadSteps: ['Loading Monsters...', 'Loading Spells...']
@@ -63,8 +60,9 @@ class App extends Component {
 
     var t;
     mRef.on('child_added', snapshot => {
-      snapshot.val().id = snapshot.key
-      this.setState({ monsters: [snapshot.val()].concat(this.state.monsters) })
+      let monster = snapshot.val()
+      monster.key = snapshot.key
+      this.setState({ monsters: [monster].concat(this.state.monsters) })
 
       if(!this.state.loaded){
         clearTimeout(t)
@@ -82,8 +80,9 @@ class App extends Component {
 
     var t
     sRef.on('child_added', snapshot => {
-      snapshot.val().id = snapshot.key
-      this.setState({ spells: [snapshot.val()].concat(this.state.spells)  })
+      let spell = snapshot.val()
+      spell.key = snapshot.key
+      this.setState({ spells: [spell].concat(this.state.spells)  })
 
       if(!this.state.loaded){
         clearTimeout(t)
@@ -122,9 +121,9 @@ class App extends Component {
               <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
               <Route path='/about' component={About} alert={this.Alert} />
               <PropsRoute path='/monsters/:custom?' component={Monsters} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
-              <PropsRoute path='/monster/:slug' component={Monster} />
+              <PropsRoute path='/monster/:slug/:custom?' component={Monster} />
               <PropsRoute path='/spells' component={Spells} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
-              <PropsRoute path='/spell/:slug' component={Spell} />
+              <PropsRoute path='/spell/:slug/:custom?' component={Spell} />
               <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" alert={this.Alert} />
               <PrivateRoute path='/campaign/:key' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
               <Route path='/treasure-generator' component={TreasureGenerator} alert={this.Alert} />
@@ -189,11 +188,6 @@ class App extends Component {
 
         // Get the userdata reference
         let uDataRef = firebase.database().ref('userdata').child(this.state.user.uid);
-
-        let mRef = uDataRef.child('monsters')
-        this.keepTrackOfDatabase(mRef, 'custom_monsters')
-        let sRef = uDataRef.child('spells')
-        this.keepTrackOfDatabase(sRef, 'custom_spells')
 
       }else{
         this.setState({ campaigns: [] })

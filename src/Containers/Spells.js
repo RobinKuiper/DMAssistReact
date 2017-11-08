@@ -3,6 +3,7 @@ import { Button, Grid, Header, Icon, Input, Dropdown, Popup, Table } from 'seman
 import { Link } from 'react-router-dom'
 
 import { pageLimits } from './../Lib/Common'
+import { Auth, Database } from './../Lib/firebase'
 
 import Adsense from './../Components/Adsense'
 
@@ -21,7 +22,8 @@ export default class Spells extends Component {
 
     this.state = {
       searchQuery: '',
-      filteredSpells: this.props.spells,
+      custom: 'both',
+      processed_spells: this.props.spells,
       custom_spells: [],
       sortBy: 'name',
       sortOrder: 'ascending',
@@ -48,10 +50,10 @@ export default class Spells extends Component {
       })
   }
 
-  toggleCustom = (type) => {
-    const custom = type === 'show' ? true : type === 'hide' ? false : !this.state.custom
-    const filteredSpells = (custom) ? this.props.custom_spells : this.props.spells
-    this.setState({ custom, filteredSpells })
+  toggleCustom = () => {
+    const custom = this.state.custom === true ? 'both' : this.state.custom === 'both' ? false : true
+    const processed_spells = custom === true ? this.state.custom_spells : custom === 'both' ? this.props.spells.concat(this.state.custom_spells) : this.props.spells
+    this.setState({ custom, processed_spells })
   }
 
   render() {
@@ -76,7 +78,7 @@ export default class Spells extends Component {
   }
 
   renderContent = () => {
-    var spells = (this.state.filteredSpells.length === 0 && this.state.searchQuery === '') ? this.props.spells : this.state.filteredSpells
+    var spells = this.state.processed_spells
 
     return (
       <div>
@@ -88,7 +90,7 @@ export default class Spells extends Component {
             <Input fluid icon='search' placeholder='Search name, school, duration, etc.' value={this.state.searchQuery} onChange={this.search.bind(this)} />
           </Grid.Column>
           <Grid.Column textAlign='right' width={3}>
-            <Popup content='Show your custom spells' trigger={<Button content={this.state.custom ? 'Custom: On' : 'Custom: Off'} color='blue' name='custom' active={this.state.custom} onClick={this.toggleCustom} />} />
+            <Popup content='Show your custom spells' trigger={<Button content={this.state.custom === 'both' ? 'custom: Both' : this.state.custom ? 'Custom: On' : 'Custom: Off'} color='blue' name='custom' active={this.state.custom} onClick={this.toggleCustom} />} />
           </Grid.Column>
           <Grid.Column textAlign='right' width={3}>
             <Popup content='Create a custom spell' trigger={<Button icon='plus' color='green' content='Create' onClick={() => this.setState({ isCreatingSpell: true })} />} />
@@ -129,7 +131,7 @@ export default class Spells extends Component {
 
                         <Grid.Column width={2}>
                           <Popup position='top center' content='Open in a new page' trigger={
-                            <Link to={'/spell/'+spell.slug}>
+                            <Link to={spell.custom ? '/spell/'+spell.key+'/custom' : '/spell/'+spell.key}>
                               <Icon name='external' />
                             </Link>
                           } />
@@ -158,7 +160,7 @@ export default class Spells extends Component {
   }
 
   renderFooter = () => {
-    var spells = (this.state.filteredSpells.length === 0) ? this.props.spells : this.state.filteredSpells
+    var spells = this.state.processed_spells
     return (
       <div>
         <PaginatorButtons page={this.state.page} totalPages={Math.ceil(spells.length/this.state.limit)} handlePageChange={(page) => { this.setState({page}) }}/>
@@ -198,19 +200,41 @@ export default class Spells extends Component {
 
   search(e, {value}){
     this.setState({ searchQuery: value })
-    const s = (this.state.custom) ? this.props.custom_spells : this.props.spells
+    const processed_spells = this.state.custom === true ? this.state.custom_spells : this.state.custom === 'both' ? this.props.spells.concat(this.state.custom_spells) : this.props.spells
 
     if(value === ''){
-      this.setState({ filteredSpells: s })
+      this.setState({ processed_spells })
       return;
     }else{
-      var spells = s.filter((spell) => spell.name.toLowerCase().includes(value.toLowerCase()) ||
+      var spells = processed_spells.filter((spell) => spell.name.toLowerCase().includes(value.toLowerCase()) ||
         spell.school.toLowerCase().includes(value.toLowerCase()) ||
         spell.duration.toLowerCase().includes(value.toLowerCase()) ||
         spell.casting_time.toLowerCase().includes(value.toLowerCase())
       )
 
-      this.setState({ filteredSpells: spells })
+      this.setState({ processed_spells: spells })
     }
+  }
+
+  componentWillMount() {
+    if(this.state.custom === 'both' || this.state.custom === false)
+      this.setState({ processed_spells: this.props.spells.concat(this.state.processed_spells) })
+  }
+
+  componentDidMount() {
+    Auth.onAuthStateChanged((user) => {
+      if (user){
+        Database.ref('userdata/'+ user.uid + '/spells').on('child_added', snapshot => {
+          let spell = snapshot.val()
+          spell.key = snapshot.key
+          spell.custom = true
+          this.setState({ custom_spells: [spell].concat(this.state.custom_spells) })
+
+          if(this.state.custom === true || this.state.custom === 'both'){
+            this.setState({ processed_spells: [spell].concat(this.state.processed_spells) })
+          }
+        })
+      }
+    })
   }
 }
