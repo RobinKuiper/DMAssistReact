@@ -4,7 +4,6 @@ import { Button, Header, Label, Segment } from 'semantic-ui-react'
 import { Form } from 'formsy-semantic-ui-react'
 
 import { Database, Auth } from './../../Lib/firebase'
-import { Slugify } from './../../Lib/Common'
 
 export default class AddCampaign extends Component {
   constructor(props){

@@ -16,7 +16,7 @@ export default class Overview extends Component {
               // Render campaigns
               Object.keys(this.state.campaigns).map(key => (
                 <List.Item as={Link} to={'/campaign/' + key} key={key}>
-                  <Image style={{marginRight: 15}} size='mini' src={this.state.campaigns[key].photoURL || NoCampaignImage} />
+                  <Image style={{marginRight: 15}} size='mini' src={this.state.campaigns[key].pictureURL || NoCampaignImage} />
                   <List.Content verticalAlign='middle'>
                     <List.Header>
                       {this.state.campaigns[key].name}

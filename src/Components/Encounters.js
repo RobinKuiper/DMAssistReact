@@ -29,7 +29,7 @@ export default class Encounters extends Component {
 
     content = () => {
         if(Auth.currentUser){
-            var options = Object.keys(this.state.encounters).map(key => {
+            var options = this.state.encounters && Object.keys(this.state.encounters).map(key => {
                 return {
                     key: key,
                     value: key,
@@ -79,7 +79,7 @@ export default class Encounters extends Component {
                             <Button icon='plus' content='Create' positive onClick={this.createEncounter.bind(this)} />
                             <Button.Or />
                             {/*TODO: Dropdown not refreshing */}
-                            <Dropdown button scrolling text="Select" options={options} disabled={options.length === 0} onChange={(e, {q, value}) => { this.setEncounter(value) }} />
+                            <Dropdown button scrolling text="Select" options={options} disabled={!options || options.length === 0} onChange={(e, {q, value}) => { this.setEncounter(value) }} />
                         </Button.Group>
                     </div>
 

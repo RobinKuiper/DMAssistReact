@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase, { __LOCAL__, Auth, Database } from './Lib/firebase'
+import { __LOCAL__, Auth, Database } from './Lib/firebase'
 
 import { Dimmer, Loader, Message, Sidebar } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
@@ -22,7 +22,6 @@ import Profile from './Containers/Profile'
 import Monster from './Containers/Monster'
 import Spell from './Containers/Spell'
 import './Lib/Validation'
-
 import Alert from './Components/Alert'
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 2 : 1000
@@ -57,8 +56,7 @@ class App extends Component {
   }
 
   loadMonsters = () => {
-    let db = firebase.database()
-    let mRef = db.ref('monsters').limitToLast(__LIMIT__);
+    let mRef = Database.ref('monsters').limitToLast(__LIMIT__);
 
     var t;
     mRef.on('child_added', snapshot => {
@@ -77,8 +75,7 @@ class App extends Component {
   }
 
   loadSpells = () => {
-    let db = firebase.database()
-    let sRef = db.ref('spells').limitToLast(__LIMIT__);
+    let sRef = Database.ref('spells').limitToLast(__LIMIT__);
 
     var t
     sRef.on('child_added', snapshot => {
@@ -115,10 +112,10 @@ class App extends Component {
               <MainSidebar mobile={true} visible={this.state.sidebarVisible} hideSidebar={() => this.setState({ sidebarVisible: false })} />
             </Mobile>
             
-            <Sidebar.Pusher >{/*onClick={() => this.setState({ sidebarVisible: false })}*/}
+            <Sidebar.Pusher>{/*onClick={() => this.setState({ sidebarVisible: false })}*/}
               <Alert ref={instance => { this.alert = instance }} />
 
-              { this.state.user && !this.state.user.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
+              { Auth.currentUser && !Auth.currentUser.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
               
               <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
               <Route path='/about' component={About} alert={this.Alert} />
@@ -179,20 +176,6 @@ class App extends Component {
           this.setState({ [stateName]: items })
           break;
         }
-      }
-    })
-  }
-
-  componentDidMount() {
-    Auth.onAuthStateChanged((user) => {
-      if (user){
-        this.setState({ user })
-
-        // Get the userdata reference
-        let uDataRef = firebase.database().ref('userdata').child(this.state.user.uid);
-
-      }else{
-        this.setState({ campaigns: [] })
       }
     })
   }

@@ -128,7 +128,7 @@ export default class CampaignSettingsModal extends Component {
                       }
                       <ImageUploader
                           name="avatar"
-                          storageRef={firebase.storage().ref('images')}
+                          storageRef={firebase.storage().ref('user/'+Auth.currentUser.uid+'/campaigns/'+campaign.key)}
                           onUploadStart={this.handleUploadStart}
                           onUploadError={this.handleUploadError}
                           onUploadSuccess={this.handleUploadSuccess}
@@ -159,12 +159,21 @@ export default class CampaignSettingsModal extends Component {
   }
   handleUploadSuccess = (filename) => {
       this.setState({avatar: filename, progress: 100, isUploading: false});
-      firebase.storage().ref('images').child(filename).getDownloadURL().then(url => {
-          this.setCampaignPicture(url)
+      firebase.storage().ref('user/'+Auth.currentUser.uid+'/campaigns/'+this.props.campaign.key).child(filename).getDownloadURL().then(url => {
+        if(this.props.campaign.picture && this.props.campaign.picture.pictureFilename) firebase.storage().ref('user/'+Auth.currentUser.uid+'/campaigns/'+this.props.campaign.key).child(this.props.campaign.picture.pictureFilename).delete()
+        this.setCampaignPicture(filename, url)
       });
   };
-  setCampaignPicture = (url) => {
+  setCampaignPicture = (filename, url) => {
     this.setState({ pictureURL: url })
-    Database.ref('campaigns/'+this.props.campaign.key).update({ pictureURL: url })
+
+    let update = {}
+    update['campaigns/'+this.props.campaign.key+'/picture'] = { pictureFilename: filename, pictureURL: url }
+    update['userdata/'+Auth.currentUser.uid+'/campaigns/'+this.props.campaign.key+'/pictureURL'] = url
+    Database.ref().update(update)
+    .then(() => {
+      console.log('Saved')
+    })
+    .catch((e) => console.log(e))
   }
 }

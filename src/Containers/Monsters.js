@@ -15,6 +15,8 @@ import { PaginatorButtons } from './../Components/Paginator'
 
 import CreateMonster from './../Components/CreateMonster'
 
+import { removeByKey } from './../Lib/Array'
+
 export default class Monsters extends Component {
   constructor(props){
     super(props)
@@ -68,6 +70,7 @@ export default class Monsters extends Component {
 
   renderContent = () => {
     var monsters = this.state.processed_monsters
+
 
     return (
       <div>
@@ -234,6 +237,13 @@ export default class Monsters extends Component {
           if(this.state.custom === true || this.state.custom === 'both'){
             this.setState({ processed_monsters: [monster].concat(this.state.processed_monsters) })
           }
+        })
+
+        Database.ref('userdata/'+ user.uid + '/monsters').on('child_removed', snapshot => {
+          const custom_monsters = removeByKey(this.state.custom_monsters, { key: 'key', value: snapshot.key })
+          const processed_monsters = removeByKey(this.state.processed_monsters, { key: 'key', value: snapshot.key })
+
+          this.setState({ custom_monsters, processed_monsters })
         })
       }
     })

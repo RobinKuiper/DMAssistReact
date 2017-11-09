@@ -13,6 +13,7 @@ import { PaginatorButtons } from './../Components/Paginator'
 import CreateSpell from './../Components/CreateSpell'
 
 import AlertContainer from 'react-alert'
+import { removeByKey } from './../Lib/Array'
 
 export default class Spells extends Component {
   constructor(props){
@@ -233,6 +234,13 @@ export default class Spells extends Component {
           if(this.state.custom === true || this.state.custom === 'both'){
             this.setState({ processed_spells: [spell].concat(this.state.processed_spells) })
           }
+        })
+
+        Database.ref('userdata/'+ user.uid + '/spells').on('child_removed', snapshot => {
+          const custom_spells = removeByKey(this.state.custom_spells, { key: 'key', value: snapshot.key })
+          const processed_spells = removeByKey(this.state.processed_spells, { key: 'key', value: snapshot.key })
+
+          this.setState({ custom_spells, processed_spells })
         })
       }
     })
