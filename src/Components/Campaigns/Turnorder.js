@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Button, Dropdown, Grid, List, Popup, Table } from 'semantic-ui-react'
 
 import { formatTime } from './../../Lib/Common'
+import { Auth, Database } from './../../Lib/firebase'
 
 import Panel from './../UI/Panel'
 import TurnorderItem from './TurnorderItem'
@@ -11,6 +12,7 @@ export default class Turnorder extends Component {
     super(props)
 
     this.state = {
+      encounters: {},
       monsterOptions: props.monsters.map(monster => {
         return {
           key: monster.slug,
@@ -26,11 +28,11 @@ export default class Turnorder extends Component {
   }
 
   content = () => {
-    var encounterOptions = this.props.encounters.map(encounter => {
+    var encounterOptions = Object.keys(this.state.encounters).map(key => {
       return {
-        key: encounter.id,
-        value: encounter.id,
-        text: encounter.name
+        key: key,
+        value: key,
+        text: this.state.encounters[key].name
       }
     })
 
@@ -74,7 +76,7 @@ export default class Turnorder extends Component {
           <Table.Body>
             { this.props.campaign.turnorder ? (
                 Object.keys(this.props.campaign.turnorder).map(key => {this.props.campaign.turnorder[key].id = key; return this.props.campaign.turnorder[key]}).sort(this.compare).map((turnorder) => (
-                  <TurnorderItem key={turnorder.id} item={turnorder} campaignRef={this.props.campaignRef} setDone={() => this.setDone(turnorder.id)} />
+                  <TurnorderItem key={turnorder.id} item={turnorder} campaign={this.props.campaign} setDone={() => this.setDone(turnorder.id)} />
                 ))
               ) : (
                 <Table.Row>
@@ -116,7 +118,7 @@ export default class Turnorder extends Component {
       if(turnorder[key].done === false) done = false
     }
 
-    if(!done) this.props.campaignRef.child('turnorder/'+id).update({ done: true })
+    if(!done) Database.ref('/campaigns/'+campaign.key).child('turnorder/'+id).update({ done: true })
     else this.nextRound(turnorder)
   }
 
@@ -148,7 +150,7 @@ export default class Turnorder extends Component {
       turnorder
     }
   
-    this.props.campaignRef.update(update)
+    Database.ref('/campaigns/'+campaign.key).update(update)
   }
 
   compare(a,b){
@@ -168,11 +170,11 @@ export default class Turnorder extends Component {
   }
 
   addToTurnorder = (item, monster=false) => {
-    if(item === null) this.props.campaignRef.child('turnorder').push({ done: false })
+    if(item === null) Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder').push({ done: false })
     else if(item.name){ 
       item.done = false
       item.monster = monster
-      this.props.campaignRef.child('turnorder').push(item)
+      Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder').push(item)
     }else if(Array.isArray(item)){
       for(var i = 0; i < item.length; i++){
 
@@ -180,7 +182,7 @@ export default class Turnorder extends Component {
         item[i].done = false
         item[i].monster = monster
 
-        this.props.campaignRef.child('turnorder').push(item[i])
+        Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder').push(item[i])
       }
     }
   }
@@ -191,12 +193,14 @@ export default class Turnorder extends Component {
   }
 
   addEncounterToTurnorder = (e, {q, value}) => {
-    let encounter = this.props.encounters.find(encounter => encounter.id === value)
-    if(encounter.monsters){
-      for(var key in encounter.monsters){
-        this.addToTurnorder(encounter.monsters[key], true)
-      }
-    }else alert('There are no monsters in this encounter.')
+    Database.ref('encounters').child(value).on('value', snapshot => {
+        let encounter = snapshot.val()
+        if(encounter.monsters){
+          for(var key in encounter.monsters){
+            this.addToTurnorder(encounter.monsters[key], true)
+          }
+        }else alert('There are no monsters in this encounter.')
+    })
   }
 
   resetTurnorder = () => {
@@ -204,8 +208,18 @@ export default class Turnorder extends Component {
     campaign.times.encounter = 0
     campaign.round = 0
     campaign.turnorder = null
-    this.props.campaignRef.set(campaign)
+    Database.ref('/campaigns/'+this.props.campaign.key).set(campaign)
 
     if(campaign.players) this.addToTurnorder(Object.keys(campaign.players).map(key => campaign.players[key]))
+  }
+
+  componentDidMount() {
+      Auth.onAuthStateChanged((user) => {
+          if (user){
+              Database.ref('userdata/' + Auth.currentUser.uid + '/encounters/').on('value', snapshot => {
+                  this.setState({ encounters: snapshot.val() })
+              })
+          }
+      })
   }
 }

@@ -1,36 +1,26 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Image, List } from 'semantic-ui-react'
-import { Auth } from './../../Lib/firebase'
+import { Auth, Database } from './../../Lib/firebase'
 import LoginModal from './../Auth/LoginModal'
 
 // IMAGES
 import NoCampaignImage from './../../Images/no-campaign-image.png'
 
-const Overview = ({ campaigns }) => {
-  if(Auth.currentUser) { 
-    return (
-      <div>
-        
+export default class Overview extends Component {
+  render() {
+    if(Auth.currentUser){
+      return (
         <List relaxed='very' size='large' divided>
-          { campaigns.length !== 0 ?
+          { this.state && this.state.campaigns ?
               // Render campaigns
-              campaigns.map( campaign => (
-                <List.Item as={Link} to={'/campaign/'+campaign.slug} key={campaign.slug}>
-                  <Image style={{marginRight: 15}} size='mini' src={campaign.pictureURL ? campaign.pictureURL : NoCampaignImage} />
+              Object.keys(this.state.campaigns).map(key => (
+                <List.Item as={Link} to={'/campaign/' + key} key={key}>
+                  <Image style={{marginRight: 15}} size='mini' src={this.state.campaigns[key].photoURL || NoCampaignImage} />
                   <List.Content verticalAlign='middle'>
                     <List.Header>
-                      {campaign.name}
+                      {this.state.campaigns[key].name}
                     </List.Header>
-                    <List.Description>
-                      <List horizontal divided>
-                      { campaign.players && 
-                        Object.keys(campaign.players).map(key => (
-                          <List.Item key={key}>{campaign.players[key].name}</List.Item>
-                        ))
-                      }
-                      </List>
-                    </List.Description>
                   </List.Content>
                 </List.Item>
               ))
@@ -38,13 +28,19 @@ const Overview = ({ campaigns }) => {
               <List.Item>You don't have any campaigns yet.</List.Item>
           }
         </List>
+      )
+    } else {
+      return (<p>Please <LoginModal trigger={<span style={{textDecoration: 'underline', cursor: 'pointer'}}>Sign In</span>} /> to see your campaigns.</p>)
+    }
+  }
 
-        
-      </div>
-    )
-  }else{
-    return (<p>Please <LoginModal trigger={<span style={{textDecoration: 'underline', cursor: 'pointer'}}>Sign In</span>} /> to see your campaigns.</p>)
+  componentDidMount() {
+    Auth.onAuthStateChanged((user) => {
+      if (user){
+        Database.ref('userdata').child(user.uid).child('campaigns').on('value', snapshot => {
+          this.setState({ campaigns: snapshot.val() })
+        })
+      }
+    })
   }
 }
-
-export default Overview

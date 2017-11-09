@@ -27,22 +27,28 @@ export default class AddCampaign extends Component {
 
     var campaign = {
       name,
-      slug: Slugify(name),
       round: 0,
       times: {
         encounter: 0,
         session: 0,
         total: 0
       },
+      uid: Auth.currentUser.uid,
       settings
     }
 
-    // Send campaign to firebase
-    Database.ref('userdata/'+Auth.currentUser.uid+'/campaigns/'+campaign.slug).set( campaign )
-      .then(() => { 
+    const key = Database.ref().child('campaigns').push().key
+
+    let data = {}
+    data['campaigns/' + key] = campaign
+    data['userdata/' + Auth.currentUser.uid + '/campaigns/' + key] = { name }
+
+    Database.ref().update(data)
+      .then(() => {
         this.props.alert('Your campaign is saved!', 'success', 'checkmark') 
-        this.setState({ created: campaign.slug })
+        this.setState({ created: key })
       })
+      .catch((e) => console.log(e))
   }
 
   render(){

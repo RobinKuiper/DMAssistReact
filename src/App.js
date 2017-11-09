@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase, { __LOCAL__, Auth } from './Lib/firebase'
+import firebase, { __LOCAL__, Auth, Database } from './Lib/firebase'
 
 import { Dimmer, Loader, Message, Sidebar } from 'semantic-ui-react'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
@@ -27,7 +27,7 @@ import Alert from './Components/Alert'
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 2 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 200 : 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? true : false : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : false : true
 
 class App extends Component {
   constructor(props){
@@ -35,8 +35,6 @@ class App extends Component {
 
     this.state = {
       user: null,
-      campaigns: [],
-      encounters: [],
       monsters: [],
       custom_monsters: [],
       spells: [],
@@ -64,8 +62,9 @@ class App extends Component {
 
     var t;
     mRef.on('child_added', snapshot => {
-      snapshot.val().id = snapshot.key
-      this.setState({ monsters: [snapshot.val()].concat(this.state.monsters) })
+      let monster = snapshot.val()
+      monster.key = snapshot.key
+      this.setState({ monsters: [monster].concat(this.state.monsters) })
 
       if(!this.state.loaded){
         clearTimeout(t)
@@ -83,8 +82,9 @@ class App extends Component {
 
     var t
     sRef.on('child_added', snapshot => {
-      snapshot.val().id = snapshot.key
-      this.setState({ spells: [snapshot.val()].concat(this.state.spells)  })
+      let spell = snapshot.val()
+      spell.key = snapshot.key
+      this.setState({ spells: [spell].concat(this.state.spells)  })
 
       if(!this.state.loaded){
         clearTimeout(t)
@@ -115,7 +115,7 @@ class App extends Component {
               <MainSidebar mobile={true} visible={this.state.sidebarVisible} hideSidebar={() => this.setState({ sidebarVisible: false })} />
             </Mobile>
             
-            <Sidebar.Pusher onClick={() => this.setState({ sidebarVisible: false })}>
+            <Sidebar.Pusher >{/*onClick={() => this.setState({ sidebarVisible: false })}*/}
               <Alert ref={instance => { this.alert = instance }} />
 
               { this.state.user && !this.state.user.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
@@ -123,11 +123,11 @@ class App extends Component {
               <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
               <Route path='/about' component={About} alert={this.Alert} />
               <PropsRoute path='/monsters/:custom?' component={Monsters} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
-              <PropsRoute path='/monster/:slug' component={Monster} />
+              <PropsRoute path='/monster/:slug/:custom?' component={Monster} />
               <PropsRoute path='/spells' component={Spells} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
-              <PropsRoute path='/spell/:slug' component={Spell} />
-              <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" campaigns={this.state.campaigns} alert={this.Alert} />
-              <PrivateRoute path='/campaign/:campaignSlug' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
+              <PropsRoute path='/spell/:slug/:custom?' component={Spell} />
+              <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" alert={this.Alert} />
+              <PrivateRoute path='/campaign/:key' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
               <Route path='/treasure-generator' component={TreasureGenerator} alert={this.Alert} />
               <Route path='/profile' component={Profile} alert={this.Alert} />
 
@@ -190,16 +190,6 @@ class App extends Component {
 
         // Get the userdata reference
         let uDataRef = firebase.database().ref('userdata').child(this.state.user.uid);
-
-        // Get the campaigns reference in userdata
-        let cRef = uDataRef.child('campaigns');
-        this.keepTrackOfDatabase(cRef, 'campaigns')
-        let eRef = uDataRef.child('encounters')
-        this.keepTrackOfDatabase(eRef, 'encounters')
-        let mRef = uDataRef.child('monsters')
-        this.keepTrackOfDatabase(mRef, 'custom_monsters')
-        let sRef = uDataRef.child('spells')
-        this.keepTrackOfDatabase(sRef, 'custom_spells')
 
       }else{
         this.setState({ campaigns: [] })

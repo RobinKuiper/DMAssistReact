@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Grid, Icon, List, Message, Statistic } from 'semantic-ui-react'
-import { Auth } from './../Lib/firebase'
+import { Auth, Database } from './../Lib/firebase'
 import Adsense from './../Components/Adsense'
 import Panel from './../Components/UI/Panel'
 
@@ -14,7 +14,8 @@ export default class Dashboard extends Component {
     super(props)
 
     this.state = {
-      showMessage: localStorage.getItem('showMessage') === 'false' ? false : true
+      showMessage: localStorage.getItem('showMessage') === 'false' ? false : true,
+      loading_campaigns: true
     }
   }
 
@@ -27,7 +28,7 @@ export default class Dashboard extends Component {
             <Grid>
               <Grid.Row>
                 <Grid.Column>
-                  <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loaded={true} />
+                  <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} loading={this.state.loading_campaigns} />
                 </Grid.Column>
               </Grid.Row>
 
@@ -86,9 +87,9 @@ export default class Dashboard extends Component {
     if(Auth.currentUser){
       return (
         <List>
-        { this.props.campaigns.length !== 0 ?
-            this.props.campaigns.slice(this.props.campaigns.length-5, this.props.campaigns.length).map(item => {
-              return <List.Item as={Link} to={'/campaign/'+item.slug} key={item.slug}>{item.name}</List.Item>
+        { this.state.campaigns  ?
+            Object.keys(this.state.campaigns).map(key => {
+              return <List.Item as={Link} to={'/campaign/'+key} key={key}>{this.state.campaigns[key].name}</List.Item>
             })
           :
             <List.Item>You don't have any campaigns yet.</List.Item>
@@ -104,17 +105,17 @@ export default class Dashboard extends Component {
 
   renderMonsters = () => (
     <List>
-    { this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => 
+    {/* this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => 
       <List.Item as={Link} to={'/monster/'+item.slug} key={item.slug}>{item.name}</List.Item>
-    )}
+    )*/}
     </List>
   )
 
   renderSpells = () => (
     <List>
-    { this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item =>
+    {/* this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item =>
       <List.Item as={Link} to={'/spell/'+item.slug} key={item.slug}>{item.name}</List.Item>
-    )}
+    )*/}
     </List>
   )
 
@@ -122,30 +123,43 @@ export default class Dashboard extends Component {
     <div>
       <Statistic.Group>
         <Statistic as={Link} to='/monsters'>
-          <Statistic.Value>{this.props.monsters.length}</Statistic.Value>
+          <Statistic.Value>MONSTERS</Statistic.Value>
           <Statistic.Label>Monsters</Statistic.Label>
         </Statistic>
 
         <Statistic as={Link} to='/spells'>
-          <Statistic.Value>{this.props.spells.length}</Statistic.Value>
+          <Statistic.Value>SPELLS</Statistic.Value>
           <Statistic.Label>Spells</Statistic.Label>
         </Statistic>
 
         <Statistic as={Link} to='/monsters/custom'>
-          <Statistic.Value>{this.props.custom_monsters.length}</Statistic.Value>
+          <Statistic.Value>CMONSTERS</Statistic.Value>
           <Statistic.Label>My Monsters</Statistic.Label>
         </Statistic>
 
         <Statistic as={Link} to='/spells/custom'>
-          <Statistic.Value>{this.props.custom_spells.length}</Statistic.Value>
+          <Statistic.Value>CSPELLS</Statistic.Value>
           <Statistic.Label>My Spells</Statistic.Label>
         </Statistic>
 
         <Statistic as={Link} to='/campaigns'>
-          <Statistic.Value>{this.props.campaigns.length}</Statistic.Value>
+          <Statistic.Value>blaat</Statistic.Value>
           <Statistic.Label>My Campaigns</Statistic.Label>
         </Statistic>
       </Statistic.Group>
+
+      <a href={this.state.newSpells}>DOWNLOAD</a>
+      
     </div>
   )
+
+  componentDidMount() {
+    Auth.onAuthStateChanged((user) => {
+      if (user){
+        Database.ref('userdata').child(user.uid).child('campaigns').limitToLast(5).on('value', snapshot => {
+          this.setState({ campaigns: snapshot.val(), loading_campaigns: false })
+        })
+      }
+    })
+  }
 }

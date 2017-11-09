@@ -16,12 +16,12 @@ export default class Panel extends Component {
       <Segment.Group raised>
         <Segment id="panelHeader" className='header' textAlign='center' inverted clearing style={style} onClick={this.toggleContent}>{this.props.title}</Segment>
 
-        <Segment className='panel content' loading={!this.props.loaded} style={{display: this.state.display}}>
+        <Segment className='panel content' loading={this.props.loading} style={{display: this.state.display}}>
           <this.props.content />
         </Segment>
 
         { this.props.footer &&
-          <Segment className='panel bottom' clearing loading={!this.props.loaded}>
+          <Segment className='panel bottom' clearing loading={this.props.loading}>
             {<this.props.footer />}
           </Segment>
         }

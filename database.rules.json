@@ -4,82 +4,128 @@
       ".write": false,
       ".read": true
     },
+    "monster_data": {
+      ".write": false,
+      ".read": true
+    },
     "spells": {
+      ".write": false,
+      ".read": true
+    },
+    "spell_data": {
       ".write": false,
       ".read": true
     },
     "userdata": {
       "$uid": {
+        ".read": "$uid === auth.uid",
+        ".write": "$uid === auth.uid",
+
         "campaigns": {
-          ".read": "$uid === auth.uid",
-          ".write": "$uid === auth.uid",
-
           "$campaign": {
-            ".validate": "newData.hasChildren(['name', 'round', 'settings', 'slug', 'times']) && newData.child('name').isString() && newData.child('name').val().length < 25 && newData.child('round').isNumber()",
-
-            "players": {
-              "$player": {
-                ".validate": "newData.hasChildren(['name', 'player']) && newData.child('name').isString() && newData.child('name').val().length < 25 && newData.child('level').isNumber() && newData.child('armor_class').isNumber() && newData.child('hit_points').isNumber()"
-              }
-            },
-
-            "settings": {
-              ".validate": "newData.hasChildren(['longRest', 'roundDuration', 'shortRest'])"
-            },
-
-            "times": {
-              ".validate": "newData.hasChildren(['encounter', 'session', 'total']) && newData.child('encounter').isNumber() && newData.child('session').isNumber() && newData.child('total').isNumber()"
-            },
-
-            "turnorder": {
-              "$item": {
-                ".validate": "newData.hasChildren(['name', 'done']) && newData.child('name').isString() && newData.child('done').isBoolean()"
-              }
-            }
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
           }
         },
+
         "encounters": {
-          ".read": "$uid === auth.uid",
-          ".write": "$uid === auth.uid",
-
           "$encounter": {
-            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25",
-
-            "monsters": {
-              "$monster": {
-                ".validate": "newData.hasChildren(['name']) && newData.child('name').isString()"
-              }
-            },
-
-            "treasure": {
-              "cp": { ".validate": "newData.isNumber()" },
-              "sp": { ".validate": "newData.isNumber()" },
-              "ep": { ".validate": "newData.isNumber()" },
-              "gp": { ".validate": "newData.isNumber()" },
-              "pp": { ".validate": "newData.isNumber()" },
-
-              "art": {
-                "$item": {
-                  ".validate": "newData.isString()"
-                }
-              },
-
-              "gem": {
-                "$item": {
-                  ".validate": "newData.isString()"
-                }
-              }
-            }
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
           }
         },
+
         "monsters": {
-          ".read": "$uid === auth.uid",
-          ".write": "$uid === auth.uid"
+          "$monster": {
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
+          }
         },
+        
         "spells": {
-          ".read": "$uid === auth.uid",
-          ".write": "$uid === auth.uid"
+          "$spell": {
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
+          }
         }
+      }
+    },
+    "campaigns": {
+      ".write": "auth.uid !== null",
+      
+      "$campaign": {
+        ".write": "auth.uid === data.child('uid').val()",
+        ".read": "data.child('public').val() === true || data.child('uid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['name', 'round', 'settings', 'times']) && newData.child('name').isString() && newData.child('name').val().length < 25 && newData.child('round').isNumber()",
+      
+        "players": {
+          "$player": {
+            
+          }
+        },
+
+        "settings": {
+          ".validate": "newData.hasChildren(['longRest', 'roundDuration', 'shortRest'])"
+        },
+
+        "times": {
+          ".validate": "newData.hasChildren(['encounter', 'session', 'total']) && newData.child('encounter').isNumber() && newData.child('session').isNumber() && newData.child('total').isNumber()"
+        },
+
+        "turnorder": {
+          "$item": {
+            ".validate": "newData.hasChildren(['done']) && newData.child('name').isString() && newData.child('done').isBoolean()"
+          }
+        }
+      }
+    },
+    "encounters": {
+      ".write": "auth.uid !== null",
+
+      "$encounter": {
+        ".write": "auth.uid === data.child('uid').val()",
+        ".read": "data.child('uid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25",
+
+        "monsters": {
+          "$monster": {
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString()"
+          }
+        },
+
+        "treasure": {
+          "cp": { ".validate": "newData.isNumber()" },
+          "sp": { ".validate": "newData.isNumber()" },
+          "ep": { ".validate": "newData.isNumber()" },
+          "gp": { ".validate": "newData.isNumber()" },
+          "pp": { ".validate": "newData.isNumber()" },
+
+          "art": {
+            "$item": {
+              ".validate": "newData.isString()"
+            }
+          },
+
+          "gem": {
+            "$item": {
+              ".validate": "newData.isString()"
+            }
+          }
+        }
+      }
+    },
+    "custom_monsters": {
+      ".write": "auth.uid !== null",
+
+      "$monster": {
+        ".write": "auth.uid === data.child('uid').val()",
+        ".read": "data.child('public').val() === true || data.child('public').val() === true || data.child('uid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
+      }
+    },
+    "custom_spells": {
+      ".write": "auth.uid !== null",
+
+      "$spell": {
+        ".write": "auth.uid === data.child('uid').val()",
+        ".read": "data.child('public').val() === true || data.child('public').val() === true || data.child('uid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
       }
     },
     ".read": false,

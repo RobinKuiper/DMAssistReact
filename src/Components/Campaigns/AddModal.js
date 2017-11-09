@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Button, Grid, Label, Modal, Segment } from 'semantic-ui-react'
 import { Form } from 'formsy-semantic-ui-react'
 import { toSeconds } from './../../Lib/Common'
+import { Database } from './../../Lib/firebase'
 
 export default class AddModal extends Component {
     constructor(props) {
@@ -17,7 +18,7 @@ export default class AddModal extends Component {
     handleChange = (e, {name, value}) => this.setState({ [name]: value })
 
     add = () => {
-        this.props.campaignRef.child('turnorder/'+this.props.item.id+'/'+this.state.type).push({ name: this.state.name, time: this.state.time ? toSeconds(this.state.time) : null })
+        Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder/'+this.props.item.id+'/'+this.state.type).push({ name: this.state.name, time: this.state.time ? toSeconds(this.state.time) : null })
         this.setState({ open: false })
     }
 
