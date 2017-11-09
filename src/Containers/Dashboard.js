@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Grid, Icon, List, Message, Statistic } from 'semantic-ui-react'
+import { Grid, Icon, List, Message, Popup, Statistic } from 'semantic-ui-react'
 import { Auth, Database } from './../Lib/firebase'
 import Adsense from './../Components/Adsense'
 import Panel from './../Components/UI/Panel'
@@ -8,6 +8,7 @@ import Panel from './../Components/UI/Panel'
 import TreasureGenerator from './../Components/TreasureGenerator'
 
 import LoginModal from './../Components/Auth/LoginModal'
+import Affiliate from './../Components/Affiliate'
 
 export default class Dashboard extends Component {
   constructor(props){
@@ -15,7 +16,20 @@ export default class Dashboard extends Component {
 
     this.state = {
       showMessage: localStorage.getItem('showMessage') === 'false' ? false : true,
-      loading_campaigns: true
+      user_statistics: {
+        monsters: 0,
+        spells: 0,
+        campaigns: 0,
+        encounters: 0
+      },
+      statistics: {
+        monsters: 0,
+        spells: 0,
+        custom_monsters: 0,
+        custom_spells: 0
+      },
+      loading_campaigns: true,
+      loading_statistics: true
     }
   }
 
@@ -43,6 +57,12 @@ export default class Dashboard extends Component {
                   <Panel title={'Latest Spells'} content={this.renderSpells.bind(this)} footer={false} loaded={true} />
                 </Grid.Column>
               </Grid.Row>
+
+              <Grid.Row>
+                <Grid.Column>
+                  <Affiliate title='Get your dice and gaming supplies cheap!' alt='Easy Roller Dice' url='http://shareasale.com/r.cfm?b=755322&amp;u=1651477&amp;m=60247&amp;urllink=&amp;afftrack=' image='http://static.shareasale.com/image/60247/392x72.jpg' />
+                </Grid.Column>
+              </Grid.Row>
             </Grid>
           </Grid.Column>
 
@@ -55,7 +75,7 @@ export default class Dashboard extends Component {
 
             <Grid.Row>
               <Grid.Column>
-                <Panel title={'Statistics'} content={this.renderStatistics.bind(this)} footer={false} loaded={true} />
+                <Panel title={'Statistics'} content={this.renderStatistics.bind(this)} footer={false} loading={this.state.loading_statistics} />
               </Grid.Column>
             </Grid.Row>
           </Grid.Column>
@@ -75,10 +95,6 @@ export default class Dashboard extends Component {
             </Message.Content>
           </Message>
         )}
-
-        { process.env.NODE_ENV !== "development" &&
-          <Adsense client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
-        }
       </main>
     )
   }
@@ -105,57 +121,75 @@ export default class Dashboard extends Component {
 
   renderMonsters = () => (
     <List>
-    {/* this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => 
-      <List.Item as={Link} to={'/monster/'+item.slug} key={item.slug}>{item.name}</List.Item>
-    )*/}
+    { this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => 
+      <List.Item as={Link} to={'/monster/'+item.key} key={item.key}>{item.name}</List.Item>
+    )}
     </List>
   )
 
   renderSpells = () => (
     <List>
-    {/* this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item =>
-      <List.Item as={Link} to={'/spell/'+item.slug} key={item.slug}>{item.name}</List.Item>
-    )*/}
+    { this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item =>
+      <List.Item as={Link} to={'/spell/'+item.key} key={item.key}>{item.name}</List.Item>
+    )}
     </List>
   )
 
-  renderStatistics = () => (
-    <div>
-      <Statistic.Group>
-        <Statistic as={Link} to='/monsters'>
-          <Statistic.Value>MONSTERS</Statistic.Value>
-          <Statistic.Label>Monsters</Statistic.Label>
-        </Statistic>
+  renderStatistics = () => {
+    const { statistics, user_statistics } = this.state
 
-        <Statistic as={Link} to='/spells'>
-          <Statistic.Value>SPELLS</Statistic.Value>
-          <Statistic.Label>Spells</Statistic.Label>
-        </Statistic>
+    return (
+      <div>
+        <Statistic.Group>
+          <Popup content='SRD & Custom monsters' trigger={
+            <Statistic as={Link} to='/monsters'>
+              <Statistic.Value>{statistics.monsters + statistics.custom_monsters}</Statistic.Value>
+              <Statistic.Label>Monsters</Statistic.Label>
+            </Statistic>
+          } />
 
-        <Statistic as={Link} to='/monsters/custom'>
-          <Statistic.Value>CMONSTERS</Statistic.Value>
-          <Statistic.Label>My Monsters</Statistic.Label>
-        </Statistic>
+          <Popup content='SRD & Custom spells' trigger={
+            <Statistic as={Link} to='/spells'>
+              <Statistic.Value>{statistics.spells + statistics.custom_spells}</Statistic.Value>
+              <Statistic.Label>Spells</Statistic.Label>
+            </Statistic>
+          } />
 
-        <Statistic as={Link} to='/spells/custom'>
-          <Statistic.Value>CSPELLS</Statistic.Value>
-          <Statistic.Label>My Spells</Statistic.Label>
-        </Statistic>
+          <Statistic as={Link} to='/monsters/custom'>
+            <Statistic.Value>{user_statistics.monsters || 0}</Statistic.Value>
+            <Statistic.Label>My Monsters</Statistic.Label>
+          </Statistic>
 
-        <Statistic as={Link} to='/campaigns'>
-          <Statistic.Value>blaat</Statistic.Value>
-          <Statistic.Label>My Campaigns</Statistic.Label>
-        </Statistic>
-      </Statistic.Group>
+          <Statistic as={Link} to='/spells/custom'>
+            <Statistic.Value>{user_statistics.spells || 0}</Statistic.Value>
+            <Statistic.Label>My Spells</Statistic.Label>
+          </Statistic>
 
-      <a href={this.state.newSpells}>DOWNLOAD</a>
-      
-    </div>
-  )
+          <Statistic as={Link} to='/campaigns'>
+            <Statistic.Value>{user_statistics.campaigns || 0}</Statistic.Value>
+            <Statistic.Label>My Campaigns</Statistic.Label>
+          </Statistic>
+
+          <Statistic as={Link} to='/monsters'>
+            <Statistic.Value>{user_statistics.encounters || 0}</Statistic.Value>
+            <Statistic.Label>My Encounters</Statistic.Label>
+          </Statistic>
+        </Statistic.Group>        
+      </div>
+    )
+  }
 
   componentDidMount() {
     Auth.onAuthStateChanged((user) => {
       if (user){
+        Database.ref('statistics').on('value', snapshot => {
+          this.setState({ statistics: snapshot.val(), loading_statistics: false })
+        })
+
+        Database.ref('userdata').child(user.uid).child('statistics').on('value', snapshot => {
+          this.setState({ user_statistics: snapshot.val() })
+        })
+
         Database.ref('userdata').child(user.uid).child('campaigns').limitToLast(5).on('value', snapshot => {
           this.setState({ campaigns: snapshot.val(), loading_campaigns: false })
         })

@@ -10,7 +10,12 @@ export default class MonsterModal extends Component {
   componentDidMount(){
     const ref = this.props.monster.custom ? 'custom_monsters' : 'monster_data'
     Database.ref(ref).child(this.props.monster.key).on('value', snapshot => {
-      this.setState({ monster: snapshot.val() })
+      let monster = snapshot.val()
+      if(monster){
+        monster.key = this.props.monster.key
+        this.setState({ monster })
+      } else this.setState({ monster: null })
+      
     })
   }
 

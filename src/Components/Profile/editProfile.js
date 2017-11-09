@@ -166,7 +166,10 @@ export default class EditProfile extends Component {
             })
     }
 
-    handleUploadStart = () => this.setState({isUploading: true, progress: 0})
+    handleUploadStart = () => {
+        firebase.storage().ref('user/'+Auth.currentUser.uid+'/profile').delete()
+        this.setState({isUploading: true, progress: 0})
+    }
     handleProgress = (progress) => this.setState({progress})
     handleUploadError = (error) => {
         this.setState({isUploading: false});
@@ -174,14 +177,16 @@ export default class EditProfile extends Component {
     }
     handleUploadSuccess = (filename) => {
         this.setState({avatar: filename, progress: 100, isUploading: false});
-        firebase.storage().ref('images').child(filename).getDownloadURL().then(url => {
-            this.setProfilePhoto(url)
+        firebase.storage().ref('user/'+Auth.currentUser.uid+'/profile/').child(filename).getDownloadURL().then(url => {
+            if(this.state.user.profile && this.state.user.avatar) firebase.storage().ref('user/'+Auth.currentUser.uid+'/profile').child(this.state.user.profile.avatar.filename).delete()
+            this.setProfilePhoto(filename, url)
         });
     };
 
-    setProfilePhoto = (url) => {
+    setProfilePhoto = (filename, url) => {
+        Database.ref('userdata/'+Auth.currentUser.uid+'/profile/avatar').update({ filename, url })
         this.setState({photoURL: url})
-        this.state.user.updateProfile({ photoURL: url })
+        Auth.currentUser.updateProfile({ photoURL: url })
             .then(r => {
                 console.log(r)
                 this.forceUpdate()
@@ -201,7 +206,7 @@ export default class EditProfile extends Component {
                     }
                     <ImageUploader
                         name="avatar"
-                        storageRef={firebase.storage().ref('images')}
+                        storageRef={firebase.storage().ref('user/'+Auth.currentUser.uid+'/profile/')}
                         onUploadStart={this.handleUploadStart}
                         onUploadError={this.handleUploadError}
                         onUploadSuccess={this.handleUploadSuccess}

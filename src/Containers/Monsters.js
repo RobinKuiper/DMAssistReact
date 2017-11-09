@@ -15,6 +15,9 @@ import { PaginatorButtons } from './../Components/Paginator'
 
 import CreateMonster from './../Components/CreateMonster'
 
+import { removeByKey } from './../Lib/Array'
+import Affiliate from './../Components/Affiliate'
+
 export default class Monsters extends Component {
   constructor(props){
     super(props)
@@ -47,6 +50,9 @@ export default class Monsters extends Component {
 
           <Grid.Column width={5}>
             <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} setEncounter={(encounterActive) => this.setState({ encounterActive }) } />
+            { process.env.NODE_ENV !== "development" || true &&
+              <Affiliate title='Get your dice and gaming supplies cheap!' alt='Easy Roller Dice' url='http://shareasale.com/r.cfm?b=1010621&amp;u=1651477&amp;m=60247&amp;urllink=&amp;afftrack=' image='https://i.shareasale.com/image/60247/erd350x250.png' />
+            }
           </Grid.Column>
         </Grid>
       ) : (
@@ -68,6 +74,7 @@ export default class Monsters extends Component {
 
   renderContent = () => {
     var monsters = this.state.processed_monsters
+
 
     return (
       <div>
@@ -151,10 +158,6 @@ export default class Monsters extends Component {
             }
           </Table.Body>
         </Table>
-
-        { process.env.NODE_ENV !== "development" &&
-          <Adsense client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
-        }
       </div>
     )
   }
@@ -234,6 +237,13 @@ export default class Monsters extends Component {
           if(this.state.custom === true || this.state.custom === 'both'){
             this.setState({ processed_monsters: [monster].concat(this.state.processed_monsters) })
           }
+        })
+
+        Database.ref('userdata/'+ user.uid + '/monsters').on('child_removed', snapshot => {
+          const custom_monsters = removeByKey(this.state.custom_monsters, { key: 'key', value: snapshot.key })
+          const processed_monsters = removeByKey(this.state.processed_monsters, { key: 'key', value: snapshot.key })
+
+          this.setState({ custom_monsters, processed_monsters })
         })
       }
     })

@@ -10,7 +10,11 @@ export default class SpellModal extends Component {
   componentDidMount(){
     const ref = this.props.spell.custom ? 'custom_spells' : 'spell_data'
     Database.ref(ref).child(this.props.spell.key).on('value', snapshot => {
-      this.setState({ spell: snapshot.val() })
+      let spell = snapshot.val()
+      if(spell){
+        spell.key = this.props.spell.key
+        this.setState({ spell })
+      } else this.setState({ spell: null })
     })
   }
 

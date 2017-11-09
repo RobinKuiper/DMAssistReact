@@ -22,7 +22,6 @@ import Profile from './Containers/Profile'
 import Monster from './Containers/Monster'
 import Spell from './Containers/Spell'
 import './Lib/Validation'
-
 import Alert from './Components/Alert'
 
 const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 2 : 1000
@@ -115,7 +114,7 @@ class App extends Component {
               <MainSidebar mobile={true} visible={this.state.sidebarVisible} hideSidebar={() => this.setState({ sidebarVisible: false })} />
             </Mobile>
             
-            <Sidebar.Pusher >{/*onClick={() => this.setState({ sidebarVisible: false })}*/}
+            <Sidebar.Pusher>{/*onClick={() => this.setState({ sidebarVisible: false })}*/}
               <Alert ref={instance => { this.alert = instance }} />
 
               { this.state.user && !this.state.user.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }

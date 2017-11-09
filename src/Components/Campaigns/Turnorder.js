@@ -28,7 +28,7 @@ export default class Turnorder extends Component {
   }
 
   content = () => {
-    var encounterOptions = Object.keys(this.state.encounters).map(key => {
+    var encounterOptions = this.state.encounters && Object.keys(this.state.encounters).map(key => {
       return {
         key: key,
         value: key,
@@ -51,7 +51,7 @@ export default class Turnorder extends Component {
           </Grid.Column>
 
           <Grid.Column width={4} textAlign='right'>
-            <Dropdown button color='green' text='Add Encounter' options={encounterOptions} onChange={this.addEncounterToTurnorder.bind(this)} disabled={encounterOptions.length === 0} />
+            <Dropdown button color='green' text='Add Encounter' options={encounterOptions} onChange={this.addEncounterToTurnorder.bind(this)} disabled={!encounterOptions || encounterOptions.length === 0} />
           </Grid.Column>
         </Grid>
 

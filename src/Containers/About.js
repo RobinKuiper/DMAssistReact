@@ -5,7 +5,7 @@ export default class About extends Component {
   render() {
     return (
       <main>
-        <span>Version 0.1.8 Beta -</span>
+        <span>Version 0.2.1 Beta -</span>
         <Grid columns={1} textAlign='center'>
           <Grid.Column>
             <Segment raised style={{paddingTop: 30, paddingBottom: 30}}>
@@ -20,6 +20,10 @@ export default class About extends Component {
                   <Icon name='cloud' />
                   rgjkuiper.nl
                 </List.Item>
+                <List.Item as='a' href='https://www.facebook.com/DMAssist5e' target='_blank'>
+                  <Icon name='facebook' />
+                  Facebook
+                </List.Item>
                 <List.Item as='a' href='skype:robinkuiper.eu?chat'>
                   <Icon name='skype' />
                   Skype Me!
@@ -28,10 +32,18 @@ export default class About extends Component {
                   <Icon name='text telephone' />
                   Join Discord!
                 </List.Item>
+                <List.Item as='a' href='https://trello.com/b/kjjqAYvx/dmassist' target='_blank' title='Roadmap!'>
+                  <Icon name='trello' />
+                  Trello
+                </List.Item>
+                <List.Item as='a' href='https://trello.com/b/kjjqAYvx/dmassist' target='_blank' title='Source at Github!'>
+                  <Icon name='github' />
+                  Github
+                </List.Item>
               </List>
 
               <p><strong>Special thanks to:</strong><br />
-              Jordy Kuiper & Dennis Siemons - Helped with all the monsters and spells.</p>
+              Jordy Kuiper & Dennis Siemons - Helped with all the monsters, spells & testing.</p>
 
               <Divider />
 

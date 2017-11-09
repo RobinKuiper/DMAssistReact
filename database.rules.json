@@ -1,5 +1,9 @@
 {
   "rules": {
+    "statistics": {
+      ".write": false,
+      ".read": true
+    },
     "monsters": {
       ".write": false,
       ".read": true

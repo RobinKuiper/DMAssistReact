@@ -3,6 +3,7 @@ import { Button, Dropdown, Icon, Image, Menu, Sidebar } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { Auth } from './../../Lib/firebase'
 import Adsense from './../Adsense'
+import SocialButtons from './SocialButtons'
 
 import LoginModal from './../Auth/LoginModal'
 
@@ -73,23 +74,22 @@ export default class MainSidebar extends Component {
         </div>
 
         <Menu vertical fluid inverted style={{position: 'fixed', bottom: 0, paddingBottom: 5}}>
-          <Menu.Item as='a' href='https://discord.gg/VDqHRdz' target='_blank' title='Join our Discord!'>
-            Discord
-            <Icon name='text telephone' />
-          </Menu.Item>
           <Menu.Item as={Link} onClick={this.props.hideSidebar} to='/about'>
             About
             <Icon name='info' />
           </Menu.Item>
-          <Menu.Item style={{textAlign: 'center'}}>
+
+          <Menu.Item style={{textAlign: 'center'}}> 
             {/* TODO: Check paypal link */}
-            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+            <span style={{fontSize: 10}}>Help keep this tool online!</span>
+            <form style={{marginTop: 5}} action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
               <input type="hidden" name="cmd" value="_s-xclick" />
               <input type="hidden" name="hosted_button_id" value="R2U39H94QXGSY" />
               <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt='PayPal - The safer, easier way to pay online!' />
               <img alt="" border="0" src="https://www.paypalobjects.com/nl_NL/i/scr/pixel.gif" width="1" height="1" />
-            </form>               
+            </form>             
           </Menu.Item>
+          
         </Menu>
       </Sidebar>
     )
