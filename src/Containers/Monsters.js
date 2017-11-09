@@ -3,7 +3,7 @@ import { Button, Dropdown, Grid, Header, Input, Icon, Popup, Table } from 'seman
 import { Link } from 'react-router-dom'
 
 import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
-import { Auth } from './../Lib/firebase'
+import { Auth, Database } from './../Lib/firebase'
 
 import Adsense from './../Components/Adsense'
 
@@ -22,15 +22,17 @@ export default class Monsters extends Component {
 
     this.state = {
       searchQuery: '',
-      filteredMonsters: [],
+      processed_monsters: [],
       custom_monsters: [],
+      custom: 'both',
       sortBy: 'name',
       sortOrder: 'ascending',
       limit: 10,
       page: 0,
       toEncounterMonster: null,
       encounterActive: false,
-      isCreatingMonster: false //false
+      isCreatingMonster: false, //false
+      loading: false
     }
   }
 
@@ -40,7 +42,7 @@ export default class Monsters extends Component {
       { !this.state.isCreatingMonster ? (
         <Grid columns={2} stackable>
           <Grid.Column width={11}>
-            <Panel title={'Monsters'} content={this.renderContent} footer={this.renderFooter} />
+            <Panel title={'Monsters'} content={this.renderContent} footer={this.renderFooter} loading={this.state.loading} />
           </Grid.Column>
 
           <Grid.Column width={5}>
@@ -49,7 +51,7 @@ export default class Monsters extends Component {
         </Grid>
       ) : (
         <CreateMonster onSuccess={() => {
-          this.toggleCustom('show')
+          //this.toggleCustom('show')
           this.setState({ isCreatingMonster: false })
           this.props.alert('Your monster is saved!', 'success', 'checkmark')
         }} />
@@ -58,15 +60,14 @@ export default class Monsters extends Component {
     )
   }
 
-  toggleCustom = (type) => {
-    //this.setState({ custom: checked, filteredMonsters: (checked) ? this.props.custom_monsters : this.props.monsters })
-    const custom = type === 'show' ? true : type === 'hide' ? false : !this.state.custom
-    const filteredMonsters = (custom) ? this.props.custom_monsters : this.props.monsters
-    this.setState({ custom, filteredMonsters })
+  toggleCustom = () => {
+    const custom = this.state.custom === true ? 'both' : this.state.custom === 'both' ? false : true
+    const processed_monsters = custom === true ? this.state.custom_monsters : custom === 'both' ? this.props.monsters.concat(this.state.custom_monsters) : this.props.monsters
+    this.setState({ custom, processed_monsters })
   }
 
   renderContent = () => {
-    var monsters = (this.state.filteredMonsters.length === 0 && this.state.searchQuery === '') ? this.props.monsters : this.state.filteredMonsters
+    var monsters = this.state.processed_monsters
 
     return (
       <div>
@@ -79,7 +80,7 @@ export default class Monsters extends Component {
             <Input fluid icon='search' placeholder='Search name, alignment, size, type, etc.' value={this.state.searchQuery} onChange={this.search.bind(this)} />
           </Grid.Column>
           <Grid.Column textAlign='right' width={3}>
-            <Popup content='Show your custom monsters' trigger={<Button content={this.state.custom ? 'Custom: On' : 'Custom: Off'} color='blue' name='custom' active={this.state.custom} onClick={this.toggleCustom} />} />
+            <Popup content='Show your custom monsters' trigger={<Button content={this.state.custom === 'both' ? 'custom: Both' : this.state.custom ? 'Custom: On' : 'Custom: Off'} color='blue' name='custom' active={this.state.custom} onClick={this.toggleCustom} />} />
           </Grid.Column>
           <Grid.Column textAlign='right' width={3}>
             <Popup content='Create a new custom monster.' trigger={<Button icon='plus' color='green' content='Create' onClick={() => this.setState({ isCreatingMonster: true })} />} />
@@ -116,7 +117,7 @@ export default class Monsters extends Component {
           <Table.Body>
             { monsters.length > 0 ?
                 monsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => (
-                  <Table.Row key={monster.slug}>
+                  <Table.Row key={monster.key}>
                     <Table.Cell>{formatCR(monster.challenge_rating)}</Table.Cell>
                     <Table.Cell>
                       <Grid>
@@ -127,7 +128,7 @@ export default class Monsters extends Component {
 
                         <Grid.Column width={2}>
                           <Popup position='top center' content='Open in a new page' trigger={
-                            <Link to={'/monster/'+monster.slug}>
+                            <Link to={monster.custom ? '/monster/'+monster.key+'/custom' : '/monster/'+monster.key}>
                               <Icon name='external' />
                             </Link>
                           } />
@@ -159,7 +160,7 @@ export default class Monsters extends Component {
   }
 
   renderFooter = () => {
-    var monsters = (this.state.filteredMonsters.length === 0) ? this.props.monsters : this.state.filteredMonsters
+    var monsters = this.state.processed_monsters
     return (
       <div>
         <PaginatorButtons page={this.state.page} totalPages={Math.ceil(monsters.length/this.state.limit)} handlePageChange={(page) => { this.setState({page}) }}/>
@@ -200,19 +201,41 @@ export default class Monsters extends Component {
 
   search(e, {value}){
     this.setState({ searchQuery: value })
-    const m = (this.state.custom) ? this.props.custom_monsters : this.props.monsters
+    const processed_monsters = this.state.custom === true ? this.state.custom_monsters : this.state.custom === 'both' ? this.props.monsters.concat(this.state.custom_monsters) : this.props.monsters
 
     if(value === ''){
-      this.setState({ filteredMonsters: m })
+      this.setState({ processed_monsters })
       return;
     }else{
-      var monsters = m.filter((monster) => monster.name.toLowerCase().includes(value.toLowerCase()) ||
+      var monsters = processed_monsters.filter((monster) => monster.name.toLowerCase().includes(value.toLowerCase()) ||
         monster.type.toLowerCase().includes(value.toLowerCase()) ||
         monster.alignment.toLowerCase().includes(value.toLowerCase()) ||
         monster.size.toLowerCase().includes(value.toLowerCase())
       )
 
-      this.setState({ filteredMonsters: monsters })
+      this.setState({ processed_monsters: monsters })
     }
+  }
+
+  componentWillMount() {
+    if(this.state.custom === 'both' || this.state.custom === false)
+      this.setState({ processed_monsters: this.props.monsters.concat(this.state.processed_monsters) })
+  }
+
+  componentDidMount() {
+    Auth.onAuthStateChanged((user) => {
+      if (user){
+        Database.ref('userdata/'+ user.uid + '/monsters').on('child_added', snapshot => {
+          let monster = snapshot.val()
+          monster.key = snapshot.key
+          monster.custom = true
+          this.setState({ custom_monsters: [monster].concat(this.state.custom_monsters) })
+
+          if(this.state.custom === true || this.state.custom === 'both'){
+            this.setState({ processed_monsters: [monster].concat(this.state.processed_monsters) })
+          }
+        })
+      }
+    })
   }
 }

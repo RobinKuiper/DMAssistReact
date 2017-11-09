@@ -1,28 +1,31 @@
 import React, { Component } from 'react'
-import { Modal } from 'semantic-ui-react'
+import { Dimmer, Loader, Modal } from 'semantic-ui-react'
+import { Database } from './../Lib/firebase'
 
 import MonsterLayout from './MonsterLayout'
 
 export default class MonsterModal extends Component {
-  constructor(props){
-    super(props)
+  state = { monster: null }
 
-    this.state = { open: true }
+  componentDidMount(){
+    const ref = this.props.monster.custom ? 'custom_monsters' : 'monster_data'
+    Database.ref(ref).child(this.props.monster.key).on('value', snapshot => {
+      this.setState({ monster: snapshot.val() })
+    })
   }
 
   render() {
-    const monster = this.props.monster
-
     return (
       <Modal 
-        /*open={this.state.open} 
-        onOpen={() => this.setState({ open: true }) } 
-        onClose={() => this.setState({ open: false }) }*/
         closeIcon 
         trigger={this.props.trigger}>
         <Modal.Content>
-          { monster &&
-            <MonsterLayout monster={monster} backButton={false} />
+          <Dimmer active={!this.state.monster}>
+            <Loader size='massive'></Loader>
+          </Dimmer>
+
+          { this.state.monster &&
+            <MonsterLayout monster={this.state.monster} backButton={false} />
           }
         </Modal.Content>
       </Modal>

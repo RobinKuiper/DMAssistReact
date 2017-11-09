@@ -4,7 +4,15 @@
       ".write": false,
       ".read": true
     },
+    "monster_data": {
+      ".write": false,
+      ".read": true
+    },
     "spells": {
+      ".write": false,
+      ".read": true
+    },
+    "spell_data": {
       ".write": false,
       ".read": true
     },
@@ -26,12 +34,15 @@
         },
 
         "monsters": {
-          ".read": "$uid === auth.uid",
-          ".write": "$uid === auth.uid"
+          "$monster": {
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
+          }
         },
+        
         "spells": {
-          ".read": "$uid === auth.uid",
-          ".write": "$uid === auth.uid"
+          "$spell": {
+            ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
+          }
         }
       }
     },
@@ -97,6 +108,24 @@
             }
           }
         }
+      }
+    },
+    "custom_monsters": {
+      ".write": "auth.uid !== null",
+
+      "$monster": {
+        ".write": "auth.uid === data.child('uid').val()",
+        ".read": "data.child('public').val() === true || data.child('public').val() === true || data.child('uid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
+      }
+    },
+    "custom_spells": {
+      ".write": "auth.uid !== null",
+
+      "$spell": {
+        ".write": "auth.uid === data.child('uid').val()",
+        ".read": "data.child('public').val() === true || data.child('public').val() === true || data.child('uid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['name']) && newData.child('name').isString() && newData.child('name').val().length < 25"
       }
     },
     ".read": false,

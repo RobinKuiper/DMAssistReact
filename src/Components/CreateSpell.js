@@ -56,22 +56,17 @@ export default class CreateSpell extends Component {
             custom: true
         }
 
-        Database.ref('userdata/'+Auth.currentUser.uid+'/spells/'+spell.slug).set(spell)
-            .then(() => {
-                this.props.onSuccess()
-                if(spell.public) {
-                    Database.ref('custom_monsters/'+spell.slug).set(spell)
-                        /*.then(e => {
-                            
-                        })
-                        .catch(e => {
-                            
-                        })*/
-                }
-            })
-            /*.catch(e => {
-                
-            })*/
+        const key = Database.ref().child('custom_spells').push().key
+
+        let data = {}
+        data['custom_spells/' + key] = spell
+        data['userdata/' + Auth.currentUser.uid + '/spells/' + key] = { name, school, casting_time, level, duration }
+
+        Database.ref().update(data)
+          .then(() => {
+            this.props.onSuccess() 
+          })
+          .catch((e) => console.log(e))
     }
 
     

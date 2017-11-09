@@ -74,22 +74,17 @@ export default class CreateMonster extends Component {
             custom: true
         }
 
-        Database.ref('userdata/'+Auth.currentUser.uid+'/monsters/'+monster.slug).set(monster)
-            .then(() => {
-                this.props.onSuccess()
-                if(monster.public) {
-                    Database.ref('custom_monsters/'+monster.slug).set(monster)
-                        /*.then(e => {
-                            
-                        })
-                        .catch(e => {
-                            
-                        })*/
-                }
-            })
-            /*.catch(e => {
-                
-            })*/
+        const key = Database.ref().child('custom_monsters').push().key
+
+        let data = {}
+        data['custom_monsters/' + key] = monster
+        data['userdata/' + Auth.currentUser.uid + '/monsters/' + key] = { name, challenge_rating, armor_class, hit_points, type, alignment, size }
+
+        Database.ref().update(data)
+          .then(() => {
+            this.props.onSuccess() 
+          })
+          .catch((e) => console.log(e))
     }
 
     

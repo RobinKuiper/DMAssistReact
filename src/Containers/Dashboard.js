@@ -105,17 +105,17 @@ export default class Dashboard extends Component {
 
   renderMonsters = () => (
     <List>
-    { this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => 
+    {/* this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => 
       <List.Item as={Link} to={'/monster/'+item.slug} key={item.slug}>{item.name}</List.Item>
-    )}
+    )*/}
     </List>
   )
 
   renderSpells = () => (
     <List>
-    { this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item =>
+    {/* this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item =>
       <List.Item as={Link} to={'/spell/'+item.slug} key={item.slug}>{item.name}</List.Item>
-    )}
+    )*/}
     </List>
   )
 
@@ -123,22 +123,22 @@ export default class Dashboard extends Component {
     <div>
       <Statistic.Group>
         <Statistic as={Link} to='/monsters'>
-          <Statistic.Value>{this.props.monsters.length}</Statistic.Value>
+          <Statistic.Value>MONSTERS</Statistic.Value>
           <Statistic.Label>Monsters</Statistic.Label>
         </Statistic>
 
         <Statistic as={Link} to='/spells'>
-          <Statistic.Value>{this.props.spells.length}</Statistic.Value>
+          <Statistic.Value>SPELLS</Statistic.Value>
           <Statistic.Label>Spells</Statistic.Label>
         </Statistic>
 
         <Statistic as={Link} to='/monsters/custom'>
-          <Statistic.Value>{this.props.custom_monsters.length}</Statistic.Value>
+          <Statistic.Value>CMONSTERS</Statistic.Value>
           <Statistic.Label>My Monsters</Statistic.Label>
         </Statistic>
 
         <Statistic as={Link} to='/spells/custom'>
-          <Statistic.Value>{this.props.custom_spells.length}</Statistic.Value>
+          <Statistic.Value>CSPELLS</Statistic.Value>
           <Statistic.Label>My Spells</Statistic.Label>
         </Statistic>
 
@@ -147,6 +147,9 @@ export default class Dashboard extends Component {
           <Statistic.Label>My Campaigns</Statistic.Label>
         </Statistic>
       </Statistic.Group>
+
+      <a href={this.state.newSpells}>DOWNLOAD</a>
+      
     </div>
   )
 
