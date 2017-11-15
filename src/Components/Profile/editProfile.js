@@ -220,10 +220,9 @@ export default class EditProfile extends Component {
                             <Header>Social Accounts</Header>
                             <List horizontal>
                             { this.state.user.providerData.map(provider => {
-                                console.log(provider)
                                 if(provider.photoURL){
                                     return (
-                                        <List.Item>
+                                        <List.Item key={provider.providerId}>
                                             <Image as='a'
                                                 size='tiny' 
                                                 src={provider.photoURL} 
@@ -234,7 +233,7 @@ export default class EditProfile extends Component {
                                                         provider.providerId === 'github.com' && GithubLogo } 
                                                 onMouseOut={(e) => 
                                                     e.target.src=provider.photoURL} 
-                                                onClick={() => this.setProfilePhoto(provider.photoURL)}
+                                                onClick={() => this.setProfilePhoto(null, provider.photoURL)}
                                                 disabled={this.state.user.photoURL === provider.photoURL}
                                             />
                                         </List.Item>

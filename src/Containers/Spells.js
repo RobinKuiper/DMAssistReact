@@ -24,7 +24,7 @@ export default class Spells extends Component {
     this.state = {
       searchQuery: '',
       custom: 'both',
-      processed_spells: this.props.spells,
+      processed_spells: [],
       custom_spells: [],
       sortBy: 'name',
       sortOrder: 'ascending',
@@ -91,7 +91,7 @@ export default class Spells extends Component {
             <Input fluid icon='search' placeholder='Search name, school, duration, etc.' value={this.state.searchQuery} onChange={this.search.bind(this)} />
           </Grid.Column>
           <Grid.Column textAlign='right' width={3}>
-            <Popup content='Show your custom spells' trigger={<Button content={this.state.custom === 'both' ? 'custom: Both' : this.state.custom ? 'Custom: On' : 'Custom: Off'} color='blue' name='custom' active={this.state.custom} onClick={this.toggleCustom} />} />
+            <Popup content='Show your custom spells' trigger={<Button content={this.state.custom === 'both' ? 'custom: Both' : this.state.custom ? 'Custom: On' : 'Custom: Off'} color='blue' name='custom' onClick={this.toggleCustom} />} />
           </Grid.Column>
           <Grid.Column textAlign='right' width={3}>
             <Popup content='Create a custom spell' trigger={<Button icon='plus' color='green' content='Create' onClick={() => this.setState({ isCreatingSpell: true })} />} />
@@ -122,7 +122,7 @@ export default class Spells extends Component {
           <Table.Body>
             { spells.length > 0 ?
               spells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
-                  <Table.Row key={spell.slug}>
+                  <Table.Row key={spell.key}>
                     <Table.Cell>
                       <Grid>
                         <Grid.Column width={14}>

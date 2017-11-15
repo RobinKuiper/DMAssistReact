@@ -15,8 +15,8 @@ export default class Turnorder extends Component {
       encounters: {},
       monsterOptions: props.monsters.map(monster => {
         return {
-          key: monster.slug,
-          value: monster.slug,
+          key: monster.key,
+          value: monster.key,
           text: monster.name
         }
       })
@@ -169,26 +169,26 @@ export default class Turnorder extends Component {
     return monster
   }
 
+  /**
+   * addToTurnorder (Array/Object item, Bool monster)
+   */
   addToTurnorder = (item, monster=false) => {
-    if(item === null) Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder').push({ done: false })
-    else if(item.name){ 
-      item.done = false
-      item.monster = monster
-      Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder').push(item)
-    }else if(Array.isArray(item)){
-      for(var i = 0; i < item.length; i++){
+    if(item === null) Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder').push({ name: '', done: false })
+    if(!Array.isArray(item)) item = [item]
 
-        item[i] = (item[i].name) ? item[i] : { name: '' }
-        item[i].done = false
-        item[i].monster = monster
+    for(var i = 0; i < item.length; i++){
 
-        Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder').push(item[i])
-      }
+      item[i] = (item[i].name) ? item[i] : { name: '' }
+      item[i].done = false
+      item[i].hit_points = item[i].hit_points ? parseInt(item[i].hit_points, 10) : 0
+      item[i].monster = monster
+
+      Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder').push(item[i])
     }
   }
 
   addMonsterToTurnorder = (e, { searchQuery, value }) => {
-    let monster = this.props.monsters.find((monster) => { return monster.slug === value })
+    let monster = this.props.monsters.find((monster) => { return monster.key === value })
     this.addToTurnorder(monster, true)
   }
 
@@ -210,7 +210,11 @@ export default class Turnorder extends Component {
     campaign.turnorder = null
     Database.ref('/campaigns/'+this.props.campaign.key).set(campaign)
 
-    if(campaign.players) this.addToTurnorder(Object.keys(campaign.players).map(key => campaign.players[key]))
+    if(campaign.players) this.addToTurnorder(Object.keys(campaign.players).map(key => {
+      let player = campaign.players[key]
+      player.player = true
+      return player
+    }))
   }
 
   componentDidMount() {

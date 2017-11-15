@@ -13,10 +13,9 @@ export default class CreateSpell extends Component {
             options: {
                 ranges: [ 
                     { key: 0, value: 0, text: 'Self' }, 
-                    { key: -1, value: -1, text: 'Touch' },
-                    { key: -2, value: -2, text: 'Touch' },
-                    { key: -3, value: -3, text: 'Touch' },
-                    { key: -4, value: -4, text: 'Touch' },
+                    { key: -1, value: -1, text: 'Special' },
+                    { key: -2, value: -2, text: 'Sight' },
+                    { key: -3, value: -3, text: 'Unlimited' },
                     { key: -5, value: -5, text: 'Touch' },
                     { key: 2222, value: 2222, text: '1 Mile' },
                     { key: 5555, value: 5555, text: '500 Miles' },

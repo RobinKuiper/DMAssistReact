@@ -19,8 +19,8 @@ export default class CreateMonster extends Component {
             // Placeholders
             languages: '',
             senses: null,
-            saves: null,
-            skills: null,
+            saves: [],
+            skills: [],
             damage_immunities: null,
             damage_resistances: null,
             damage_vulnerabilities: null,
@@ -304,12 +304,12 @@ export default class CreateMonster extends Component {
                             <Table color='black' fixed>
                                 <Table.Header>
                                     <Table.Row>
-                                        <Table.HeaderCell>STR</Table.HeaderCell>
-                                        <Table.HeaderCell>DEX</Table.HeaderCell>
-                                        <Table.HeaderCell>CON</Table.HeaderCell>
-                                        <Table.HeaderCell>INT</Table.HeaderCell>
-                                        <Table.HeaderCell>WIS</Table.HeaderCell>
-                                        <Table.HeaderCell>CHA</Table.HeaderCell>
+                                        <Table.HeaderCell>STR *</Table.HeaderCell>
+                                        <Table.HeaderCell>DEX *</Table.HeaderCell>
+                                        <Table.HeaderCell>CON *</Table.HeaderCell>
+                                        <Table.HeaderCell>INT *</Table.HeaderCell>
+                                        <Table.HeaderCell>WIS *</Table.HeaderCell>
+                                        <Table.HeaderCell>CHA *</Table.HeaderCell>
                                     </Table.Row>
                                 </Table.Header>
 
@@ -322,11 +322,10 @@ export default class CreateMonster extends Component {
                                                 name='strength' 
                                                 value={this.state.str}
                                                 onChange={this.handleChange}
-                                                required
-                                                validations='isInt'
+                                                validations='isInt,isRequired'
                                                 validationErrors={{
                                                     isInt: 'Must be a number',
-                                                    isDefaultRequiredValue: 'Required Field',
+                                                    isRequired: 'Required Field',
                                                 }} 
                                                 errorLabel={ errorLabel }
                                             />
@@ -338,11 +337,10 @@ export default class CreateMonster extends Component {
                                                 name='dexterity' 
                                                 value={this.state.dex} 
                                                 onChange={this.handleChange}
-                                                required
-                                                validations='isInt'
+                                                validations='isInt,isRequired'
                                                 validationErrors={{
                                                     isInt: 'Must be a number',
-                                                    isDefaultRequiredValue: 'Required Field',
+                                                    isRequired: 'Required Field',
                                                 }} 
                                                 errorLabel={ errorLabel }
                                             />
@@ -354,11 +352,10 @@ export default class CreateMonster extends Component {
                                                 name='constitution' 
                                                 value={this.state.con} 
                                                 onChange={this.handleChange}
-                                                required
-                                                validations='isInt'
+                                                validations='isInt,isRequired'
                                                 validationErrors={{
                                                     isInt: 'Must be a number',
-                                                    isDefaultRequiredValue: 'Required Field',
+                                                    isRequired: 'Required Field',
                                                 }} 
                                                 errorLabel={ errorLabel }
                                             />
@@ -370,11 +367,10 @@ export default class CreateMonster extends Component {
                                                 name='intelligence' 
                                                 value={this.state.int} 
                                                 onChange={this.handleChange}
-                                                required
-                                                validations='isInt'
+                                                validations='isInt,isRequired'
                                                 validationErrors={{
                                                     isInt: 'Must be a number',
-                                                    isDefaultRequiredValue: 'Required Field',
+                                                    isRequired: 'Required Field',
                                                 }} 
                                                 errorLabel={ errorLabel }
                                             />
@@ -386,11 +382,10 @@ export default class CreateMonster extends Component {
                                                 name='wisdom' 
                                                 value={this.state.wis}
                                                 onChange={this.handleChange}
-                                                required
-                                                validations='isInt'
+                                                validations='isInt,isRequired'
                                                 validationErrors={{
                                                     isInt: 'Must be a number',
-                                                    isDefaultRequiredValue: 'Required Field',
+                                                    isRequired: 'Required Field',
                                                 }} 
                                                 errorLabel={ errorLabel }
                                             />
@@ -402,11 +397,10 @@ export default class CreateMonster extends Component {
                                                 name='charisma' 
                                                 value={this.state.cha} 
                                                 onChange={this.handleChange}
-                                                required
-                                                validations='isInt'
+                                                validations='isInt,isRequired'
                                                 validationErrors={{
                                                     isInt: 'Must be a number',
-                                                    isDefaultRequiredValue: 'Required Field',
+                                                    isRequired: 'Required Field',
                                                 }} 
                                                 errorLabel={ errorLabel }
                                             />

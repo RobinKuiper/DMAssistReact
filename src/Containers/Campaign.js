@@ -41,7 +41,7 @@ export default class Campaign extends Component {
               <Grid>
                 <Grid.Column width={6}>
                   <Button.Group size='massive' color='blue' floated='left'>
-                    <Popup content='Reset Session Time' trigger={<Button icon='undo' onClick={() => { this.state.campaignRef.child('/times/session').set(0) }}/>} />
+                    <Popup content='Reset Session Time' trigger={<Button icon='undo' onClick={() => { Database.ref('campaigns/'+campaign.key).child('/times/session').set(0) }}/>} />
                     <Button disabled>{formatTime(campaign.times.session)}</Button>
                   </Button.Group>
 
@@ -87,27 +87,29 @@ export default class Campaign extends Component {
     Database.ref('/campaigns/'+this.state.campaign.key).child('players').child(key).remove()
   }
 
+  /** TODO: REMOVE AND ONLY IN TURNORDER */
   addPlayerToTurnorder(key){
     let player = this.state.campaign.players[key]
     player.player = true
     this.addToTurnorder(player)
   }
 
+  /**
+   * addToTurnorder (Array/Object item, Bool monster)
+   * TODO: REMOVE AND ONLY IN TURNORDER
+   */
   addToTurnorder = (item, monster=false) => {
-    if(item === null) this.props.campaignRef.child('turnorder').push({ done: false })
-    else if(item.name){ 
-      item.done = false
-      item.monster = monster
-      Database.ref('/campaigns/'+this.state.campaign.key).child('turnorder').push(item)
-    }else if(Array.isArray(item)){
-      for(var i = 0; i < item.length; i++){
+    if(item === null) Database.ref('/campaigns/'+this.state.campaign.key).child('turnorder').push({ name: '', done: false })
+    if(!Array.isArray(item)) item = [item]
 
-        item[i] = (item[i].name) ? item[i] : { name: '' }
-        item[i].done = false
-        item[i].monster = monster
+    for(var i = 0; i < item.length; i++){
 
-        Database.ref('/campaigns/'+this.state.campaign.key).child('turnorder').push(item[i])
-      }
+      item[i] = (item[i].name) ? item[i] : { name: '' }
+      item[i].done = false
+      item[i].hit_points = item[i].hit_points ? parseInt(item[i].hit_points, 10) : 0
+      item[i].monster = monster
+
+      Database.ref('/campaigns/'+this.state.campaign.key).child('turnorder').push(item[i])
     }
   }
 
@@ -140,7 +142,6 @@ export default class Campaign extends Component {
       if (user){
         Database.ref('/campaigns/'+key).on('value', snapshot => {
           var campaign = snapshot.val()
-          console.log(campaign)
           if(campaign){
             campaign.key = snapshot.key
             this.setState({ campaign })

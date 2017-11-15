@@ -21,19 +21,21 @@ export default class TurnorderItem extends Component {
   }
 
   repeat = (increase) => {
-    this.setState({ tempHP: this.state.increaseHP ? this.state.tempHP+1 : this.state.tempHP-1 })
-    this.t = setTimeout(this.repeat, this.start)
+    this.setState({ tempHP: increase ? this.state.tempHP+1 : this.state.tempHP-1 })
+    this.t = setTimeout(() => {
+      this.repeat(increase)
+    }, this.start)
     this.start = this.start / 1.01
   }
 
   increaseHP = () => {
-    this.setState({ increaseHP: true })
-    this.repeat()
+    //this.setState({ increaseHP: true })
+    this.repeat(true)
   }
 
   decreaseHP = () => {
-    this.setState({ increaseHP: false })
-    this.repeat()
+    //this.setState({ increaseHP: false })
+    this.repeat(false)
   }
 
   onMouseUp = () => {
@@ -46,6 +48,10 @@ export default class TurnorderItem extends Component {
     var { name, value } = e.target
 
     if(e.keyCode === 13 || e.type === 'blur'){
+      if(name === 'hit_points'){
+        value = parseInt(value, 10)
+        this.setState({ tempHP: value })
+      }
       if(value !== null || value !== '') Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder/'+this.props.item.id).update({ [name]: value })
     }
   }
@@ -64,7 +70,7 @@ export default class TurnorderItem extends Component {
         ) : (
           <div>
             <Input placeholder='Initiative' type='number' name='initiative' transparent onBlur={this.handleInput} onKeyDown={this.handleInput} />
-            <Popup content={'Roll initiative for ' + item.name} trigger={<Button size='mini' color='blue' icon='undo' inverted onClick={() => {this.rollInitiative(item) }} />} />
+            { !item.player && <Popup content={'Roll initiative for ' + item.name} trigger={<Button size='mini' color='blue' icon='undo' inverted onClick={() => {this.rollInitiative(item) }} />} /> }
           </div>
         )}
         </Table.Cell>
@@ -72,13 +78,13 @@ export default class TurnorderItem extends Component {
         <Table.Cell>
         { item.hit_points ? (
           <Button.Group size='mini'>
-            <Popup content='Decrease Hit Points' trigger={<Button color='red' icon='minus' onMouseDown={this.decreaseHP.bind(this)} onMouseUp={this.onMouseUp} />} />{/*onClick={() => { this.props.campaignRef.child('turnorder/'+item.id).update({ hit_points: parseInt(item.hit_points, 10)-1 }) }}*/}
+            <Popup content='Decrease Hit Points' trigger={<Button color='red' icon='minus' onMouseDown={this.decreaseHP.bind(this)} onMouseUp={this.onMouseUp} onMouseLeave={this.onMouseUp} />} />{/*onClick={() => { this.props.campaignRef.child('turnorder/'+item.id).update({ hit_points: parseInt(item.hit_points, 10)-1 }) }}*/}
             <Popup position='top center' trigger={<Button content={this.state.tempHP || item.hit_points} />} on='click' hoverable content={<Input placeholder='5, -6, etc' type='number' onKeyDown={(e) => {if(e.keyCode === 13) {
               var newHP = parseInt(item.hit_points, 10)+parseInt(e.target.value, 10)
               this.setState({ tempHP: newHP })
               Database.ref('/campaigns/'+this.props.campaign.key).child('turnorder/'+item.id).update({ hit_points: newHP })
             }} } />} />
-            <Popup content='Increase Hit Points' trigger={<Button color='green' icon='plus' onMouseDown={this.increaseHP.bind(this)} onMouseUp={this.onMouseUp} />} />
+            <Popup content='Increase Hit Points' trigger={<Button color='green' icon='plus' onMouseDown={this.increaseHP.bind(this)} onMouseUp={this.onMouseUp} onMouseLeave={this.onMouseUp} />} />
           </Button.Group>
         ) : (
           <Input placeholder='Hit points' type='number' name='hit_points' onBlur={this.handleInput} onKeyDown={this.handleInput} transparent />

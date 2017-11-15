@@ -24,9 +24,9 @@ import Spell from './Containers/Spell'
 import './Lib/Validation'
 import Alert from './Components/Alert'
 
-const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 2 : 1000
+const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 20 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 200 : 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : false : true
+const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : true : true
 
 class App extends Component {
   constructor(props){
@@ -57,6 +57,7 @@ class App extends Component {
 
   loadMonsters = () => {
     let mRef = Database.ref('monsters').limitToLast(__LIMIT__);
+    console.log("LOAD MONSTERS ____________________");
 
     var t;
     mRef.on('child_added', snapshot => {
@@ -64,18 +65,19 @@ class App extends Component {
       monster.key = snapshot.key
       this.setState({ monsters: [monster].concat(this.state.monsters) })
 
-      if(!this.state.loaded){
+      if(!this.state.loaded && this.state.loadStep < 1){
         clearTimeout(t)
         t = setTimeout(() => {
           this.setState({ loaded: this.setLoaded() })
           this.loadSpells()
         }, __LOAD_TIMEOUT__)
-      }
+      }else clearTimeout(t)
     })
   }
 
   loadSpells = () => {
     let sRef = Database.ref('spells').limitToLast(__LIMIT__);
+    console.log("LOAD SPELLS ____________________");
 
     var t
     sRef.on('child_added', snapshot => {
