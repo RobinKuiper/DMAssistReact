@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Grid, Icon, List, Message, Popup, Statistic } from 'semantic-ui-react'
+import { Grid, Icon, List, Message } from 'semantic-ui-react'
 import { Auth, Database } from './../Lib/firebase'
 import Adsense from './../Components/Adsense'
 import Panel from './../Components/UI/Panel'
@@ -15,27 +15,8 @@ export default class Dashboard extends Component {
 
     this.state = {
       showMessage: localStorage.getItem('showMessage') === 'false' ? false : true,
-      user_statistics: {
-        monsters: 0,
-        spells: 0,
-        campaigns: 0,
-        encounters: 0
-      },
-      statistics: {
-        monsters: 0,
-        spells: 0,
-        custom_monsters: 0,
-        custom_spells: 0
-      },
       loading_campaigns: true,
-      loading_statistics: true
     }
-  }
-
-  componentWillMount() {
-    Database.ref('statistics').on('value', snapshot => {
-      this.setState({ statistics: snapshot.val(), loading_statistics: false })
-    })
   }
 
   render() {
@@ -69,12 +50,6 @@ export default class Dashboard extends Component {
             <Grid.Row>
               <Grid.Column>
                 <TreasureGenerator />
-              </Grid.Column>
-            </Grid.Row>
-
-            <Grid.Row>
-              <Grid.Column>
-                <Panel title={'Statistics'} content={this.renderStatistics.bind(this)} footer={false} loading={this.state.loading_statistics} />
               </Grid.Column>
             </Grid.Row>
           </Grid.Column>
@@ -138,57 +113,9 @@ export default class Dashboard extends Component {
     </List>
   )
 
-  renderStatistics = () => {
-    const { statistics, user_statistics } = this.state
-
-    return (
-      <div>
-        <Statistic.Group>
-          <Popup content='SRD & Custom monsters' trigger={
-            <Statistic as={Link} to='/monsters'>
-              <Statistic.Value>{statistics.monsters + statistics.custom_monsters}</Statistic.Value>
-              <Statistic.Label>Monsters</Statistic.Label>
-            </Statistic>
-          } />
-
-          <Popup content='SRD & Custom spells' trigger={
-            <Statistic as={Link} to='/spells'>
-              <Statistic.Value>{statistics.spells + statistics.custom_spells}</Statistic.Value>
-              <Statistic.Label>Spells</Statistic.Label>
-            </Statistic>
-          } />
-
-          <Statistic as={Link} to='/monsters/custom'>
-            <Statistic.Value>{(user_statistics && user_statistics.monsters) || 0}</Statistic.Value>
-            <Statistic.Label>My Monsters</Statistic.Label>
-          </Statistic>
-
-          <Statistic as={Link} to='/spells/custom'>
-            <Statistic.Value>{(user_statistics && user_statistics.spells) || 0}</Statistic.Value>
-            <Statistic.Label>My Spells</Statistic.Label>
-          </Statistic>
-
-          <Statistic as={Link} to='/campaigns'>
-            <Statistic.Value>{(user_statistics && user_statistics.campaigns) || 0}</Statistic.Value>
-            <Statistic.Label>My Campaigns</Statistic.Label>
-          </Statistic>
-
-          <Statistic as={Link} to='/monsters'>
-            <Statistic.Value>{(user_statistics && user_statistics.encounters) || 0}</Statistic.Value>
-            <Statistic.Label>My Encounters</Statistic.Label>
-          </Statistic>
-        </Statistic.Group>        
-      </div>
-    )
-  }
-
   componentDidMount() {
     Auth.onAuthStateChanged((user) => {
       if (user){
-        Database.ref('userdata').child(user.uid).child('statistics').on('value', snapshot => {
-          this.setState({ user_statistics: snapshot.val() })
-        })
-
         Database.ref('userdata').child(user.uid).child('campaigns').limitToLast(5).on('value', snapshot => {
           this.setState({ campaigns: snapshot.val() })
         })
