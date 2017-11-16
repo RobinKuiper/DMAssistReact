@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { __LOCAL__, Auth, Database } from './Lib/firebase'
 
 import { Dimmer, Loader, Message, Sidebar } from 'semantic-ui-react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { PropsRoute, PrivateRoute } from './Lib/Router'
 
 import MainSidebar from './Components/UI/Sidebar'
@@ -120,17 +120,17 @@ class App extends Component {
               { Auth.currentUser && !Auth.currentUser.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
               
               <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
-              <Route path='/about' component={About} alert={this.Alert} />
+              <PropsRoute path='/about' component={About} alert={this.Alert} />
               <PropsRoute path='/monsters/:custom?' component={Monsters} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
               <PropsRoute path='/monster/:slug/:custom?' component={Monster} />
               <PropsRoute path='/spells' component={Spells} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
               <PropsRoute path='/spell/:slug/:custom?' component={Spell} />
               <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" alert={this.Alert} />
               <PrivateRoute path='/campaign/:key' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
-              <Route path='/treasure-generator' component={TreasureGenerator} alert={this.Alert} />
-              <Route path='/profile' component={Profile} alert={this.Alert} />
+              <PropsRoute path='/treasure-generator' component={TreasureGenerator} alert={this.Alert} />
+              <PropsRoute path='/profile' component={Profile} alert={this.Alert} />
 
-              <Route path='/auth' component={AuthFunctionality} alert={this.Alert} />              
+              <PropsRoute path='/auth' component={AuthFunctionality} alert={this.Alert} />              
 
             </Sidebar.Pusher>
           </div>
