@@ -5,8 +5,6 @@ import { Link } from 'react-router-dom'
 import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
 import { Auth, Database } from './../Lib/firebase'
 
-import Adsense from './../Components/Adsense'
-
 import Panel from './../Components/UI/Panel'
 import MonsterModal from './../Components/MonsterModal'
 import Encounters from './../Components/Encounters'
@@ -16,6 +14,7 @@ import { PaginatorButtons } from './../Components/Paginator'
 import CreateMonster from './../Components/CreateMonster'
 
 import { removeByKey } from './../Lib/Array'
+import Affiliate from './../Components/Affiliate'
 
 export default class Monsters extends Component {
   constructor(props){
@@ -49,6 +48,7 @@ export default class Monsters extends Component {
 
           <Grid.Column width={5}>
             <Encounters ref={instance => { this.encounters = instance }} encounters={this.props.encounters} setEncounter={(encounterActive) => this.setState({ encounterActive }) } />
+            <Affiliate title='Get your dice and gaming supplies cheap!' alt='Easy Roller Dice' url='http://shareasale.com/r.cfm?b=1010621&amp;u=1651477&amp;m=60247&amp;urllink=&amp;afftrack=' image='https://i.shareasale.com/image/60247/erd350x250.png' />
           </Grid.Column>
         </Grid>
       ) : (
@@ -154,10 +154,6 @@ export default class Monsters extends Component {
             }
           </Table.Body>
         </Table>
-
-        { process.env.NODE_ENV !== "development" &&
-          <Adsense client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
-        }
       </div>
     )
   }
