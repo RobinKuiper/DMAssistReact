@@ -157,7 +157,7 @@ export default class Spells extends Component {
           title='Get your Anime, Manga, Figurines and more cheap!' 
           alt='Get your Anime, Manga, Figurines and more cheap!' 
           url='http://shareasale.com/r.cfm?b=939718&amp;u=1651477&amp;m=65886&amp;urllink=&amp;afftrack=' 
-          image='http://static.shareasale.com/image/65886/holiday1-male-728.jpg' 
+          image='https://i.shareasale.com/image/65886/holiday1-male-728.jpg' 
         />
       </div>
     )

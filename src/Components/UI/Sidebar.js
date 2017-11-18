@@ -115,4 +115,12 @@ export default class MainSidebar extends Component {
         this.setState({ user: null })
       })
   }
+
+  componentDidMount() {
+    Auth.onAuthStateChanged((user) => {
+      if (user){
+        this.setState({ user })
+      }
+    })
+  }
 }

@@ -15,7 +15,7 @@ if(process.env.NODE_ENV === "development" && __LOCAL__){
     storageBucket: "dndassist-2870c.appspot.com",
     messagingSenderId: "987962337354"
   }
-} else if(window && window.location && window.location.hostname === 'dmassist5e.firebaseapp.com'){
+} else if(window && window.location && (window.location.hostname === 'dmassist5e.firebaseapp.com' || window.location.hostname === 'dmassist.robinkuiper.nu')){
   config = {
     apiKey: "AIzaSyA_4Vn12xMBhQCCGFfBB12mNPwOulLq9wU",
     authDomain: "dmassist5e.firebaseapp.com",

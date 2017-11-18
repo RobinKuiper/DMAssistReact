@@ -17,7 +17,7 @@ const Campaigns = ({alert}) => (
         title='Buy Star Wars KOTOR Comics and Graphic Novels at TFAW.com' 
         alt='Buy Star Wars KOTOR Comics and Graphic Novels at TFAW.com' 
         url='http://shareasale.com/r.cfm?b=213589&amp;u=1651477&amp;m=8908&amp;urllink=&amp;afftrack=' 
-        image='http://static.shareasale.com/image/8908/728_KOTOR.gif' 
+        image='https://i.shareasale.com/image/8908/728_KOTOR.gif' 
       />
   </main>
 )

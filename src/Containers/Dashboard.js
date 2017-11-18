@@ -59,7 +59,7 @@ export default class Dashboard extends Component {
                   title='Get the new Aliens comic book series!' 
                   alt='Get the new Aliens comic book series!' 
                   url='http://shareasale.com/r.cfm?b=188076&amp;u=1651477&amp;m=8908&amp;urllink=&amp;afftrack=' 
-                  image='http://static.shareasale.com/image/728_aliens3.gif'
+                  image='https://i.shareasale.com/image/728_aliens3.gif'
                 />
               </Grid.Column>
             </Grid.Row>
@@ -75,7 +75,7 @@ export default class Dashboard extends Component {
             <Message.Content>
               <Message.Header>Why were some monsters/spells removed?</Message.Header>
               <p>I have decided to remove all none SRD (System Reference Document) monsters/spells from this tool. This is to prevent getting into copyright trouble with Wizards of the Coast.</p>
-              <p>Custom monster will be added soon, this way you can make every monster from every source without putting this tool at risk.</p>
+              <p>But you can make your own custom monsters/spells, this way you can make every monster/spell from every source without putting this tool at risk.</p>
               <p>Thank you for your understanding.</p>
             </Message.Content>
           </Message>
