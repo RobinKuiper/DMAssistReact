@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { pageLimits } from './../Lib/Common'
 import { Auth, Database } from './../Lib/firebase'
 
-import Adsense from './../Components/Adsense'
+import Affiliate from './../Components/Affiliate'
 
 import Panel from './../Components/UI/Panel'
 import SpellModal from './../Components/SpellModal'
@@ -153,9 +153,12 @@ export default class Spells extends Component {
           </Table.Body>
         </Table>
 
-        { process.env.NODE_ENV !== "development" &&
-          <Adsense client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
-        }
+        <Affiliate 
+          title='Get your Anime, Manga, Figurines and more cheap!' 
+          alt='Get your Anime, Manga, Figurines and more cheap!' 
+          url='http://shareasale.com/r.cfm?b=939718&amp;u=1651477&amp;m=65886&amp;urllink=&amp;afftrack=' 
+          image='http://static.shareasale.com/image/65886/holiday1-male-728.jpg' 
+        />
       </div>
     )
   }

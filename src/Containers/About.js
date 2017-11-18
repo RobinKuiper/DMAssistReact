@@ -16,9 +16,9 @@ export default class About extends Component {
 
               <List style={{marginBottom: 50}}>
                 <List.Item>Made by Robin Kuiper</List.Item>
-                <List.Item as='a' href='http://rgjkuiper.nl' target='_blank'>
+                <List.Item as='a' href='http://robinkuiper.nu' target='_blank'>
                   <Icon name='cloud' />
-                  rgjkuiper.nl
+                  robinkuiper.nu
                 </List.Item>
                 <List.Item as='a' href='https://www.facebook.com/DMAssist5e' target='_blank'>
                   <Icon name='facebook' />

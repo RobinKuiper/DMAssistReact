@@ -22,6 +22,7 @@ export default class MonsterModal extends Component {
   render() {
     return (
       <Modal 
+        basic
         closeIcon 
         trigger={this.props.trigger}>
         <Modal.Content>

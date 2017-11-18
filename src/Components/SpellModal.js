@@ -22,6 +22,7 @@ export default class SpellModal extends Component {
     return (
       <Modal 
         closeIcon 
+        basic
         trigger={this.props.trigger}>
         <Modal.Content>
           <Dimmer active={!this.state.spell}>

@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Grid, Icon, List, Message } from 'semantic-ui-react'
 import { Auth, Database } from './../Lib/firebase'
-import Adsense from './../Components/Adsense'
 import Panel from './../Components/UI/Panel'
 
 import TreasureGenerator from './../Components/TreasureGenerator'
 
 import LoginModal from './../Components/Auth/LoginModal'
+import Affiliate from './../Components/Affiliate'
 
 export default class Dashboard extends Component {
   constructor(props){
@@ -52,6 +52,17 @@ export default class Dashboard extends Component {
                 <TreasureGenerator />
               </Grid.Column>
             </Grid.Row>
+
+            <Grid.Row>
+              <Grid.Column>
+                <Affiliate 
+                  title='Get the new Aliens comic book series!' 
+                  alt='Get the new Aliens comic book series!' 
+                  url='http://shareasale.com/r.cfm?b=188076&amp;u=1651477&amp;m=8908&amp;urllink=&amp;afftrack=' 
+                  image='http://static.shareasale.com/image/728_aliens3.gif'
+                />
+              </Grid.Column>
+            </Grid.Row>
           </Grid.Column>
         </Grid>
 
@@ -69,10 +80,6 @@ export default class Dashboard extends Component {
             </Message.Content>
           </Message>
         )}
-
-        { process.env.NODE_ENV !== "development" &&
-          <Adsense client='ca-pub-2044382203546332' slot='7541388493' style={{marginTop: 40, width: 728, height: 90}} />
-        }
       </main>
     )
   }
