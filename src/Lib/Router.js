@@ -3,7 +3,7 @@ import { Route, Redirect } from 'react-router-dom'
 import { Auth } from './firebase'
 import ReactGA from 'react-ga'
 
-if(window && window.location && window.location.hostname === 'dmassist5e.firebaseapp.com')
+if(window && window.location && (window.location.hostname === 'dmassist5e.firebaseapp.com' || window.location.hostname === 'dmassist.robinkuiper.nu'))
   ReactGA.initialize('UA-69733203-5')
 
 export const PrivateRoute = ({ component, redirectTo, ...rest }) => {
@@ -39,7 +39,7 @@ const renderMergedProps = (component, ...rest) => {
 }
 
 function logPageView() {
-  if(window && window.location && window.location.hostname === 'dmassist5e.firebaseapp.com'){
+  if(window && window.location && (window.location.hostname === 'dmassist5e.firebaseapp.com' || window.location.hostname === 'dmassist.robinkuiper.nu')){
     ReactGA.set({ page: window.location.pathname + window.location.search });
     ReactGA.pageview(window.location.pathname + window.location.search);
   }

@@ -24,7 +24,7 @@ import Spell from './Containers/Spell'
 import './Lib/Validation'
 import Alert from './Components/Alert'
 
-const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 20 : 1000
+const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 10 : 1000
 const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 200 : 700 : 300
 const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : true : true
 
@@ -57,7 +57,6 @@ class App extends Component {
 
   loadMonsters = () => {
     let mRef = Database.ref('monsters').limitToLast(__LIMIT__);
-    console.log("LOAD MONSTERS ____________________");
 
     var t;
     mRef.on('child_added', snapshot => {
@@ -77,7 +76,6 @@ class App extends Component {
 
   loadSpells = () => {
     let sRef = Database.ref('spells').limitToLast(__LIMIT__);
-    console.log("LOAD SPELLS ____________________");
 
     var t
     sRef.on('child_added', snapshot => {

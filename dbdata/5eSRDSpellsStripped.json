@@ -122,7 +122,7 @@
 		"name": "Astral Projection",
 		"level": 9,
 		"school": "Necromancy",
-		"duration": -1,
+		"duration": "Special",
 		"casting_time": "1 hour"
 	},
 	"augury": {
@@ -451,7 +451,7 @@
 		"name": "Creation",
 		"level": 5,
 		"school": "Illusion",
-		"duration": -1,
+		"duration": "Special",
 		"casting_time": "1 minute"
 	},
 	"cure-wounds": {
