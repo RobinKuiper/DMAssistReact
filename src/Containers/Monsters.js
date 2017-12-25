@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Dropdown, Grid, Header, Input, Icon, Popup, Table } from 'semantic-ui-react'
+import { Button, Dropdown, Grid, Header, Input, Icon, Item, List, Popup, Table } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 
 import { pageLimits, formatCR, CRtoEXP } from './../Lib/Common'
@@ -15,6 +15,8 @@ import CreateMonster from './../Components/CreateMonster'
 
 import { removeByKey } from './../Lib/Array'
 import Affiliate from './../Components/Affiliate'
+
+import { Mobile } from './../Lib/Responsive'
 
 export default class Monsters extends Component {
   constructor(props){
@@ -74,86 +76,144 @@ export default class Monsters extends Component {
 
     return (
       <div>
-        <Grid columns={5}>
-          <Grid.Column width={3}>
-            <PaginatorButtons page={this.state.page} totalPages={Math.ceil(monsters.length/this.state.limit)} handlePageChange={(page) => { this.setState({page}) }}/>
-            {/*<Popup content='Show your custom monsters' trigger={<Checkbox toggle label='Custom' name='custom' checked={this.state.custom} onChange={this.toggleCustom} />} />*/}
-          </Grid.Column>
-          <Grid.Column width={5}>
-            <Input fluid icon='search' placeholder='Search name, alignment, size, type, etc.' value={this.state.searchQuery} onChange={this.search.bind(this)} />
-          </Grid.Column>
-          <Grid.Column textAlign='right' width={3}>
-            <Popup content='Show your custom monsters' trigger={<Button content={this.state.custom === 'both' ? 'custom: Both' : this.state.custom ? 'Custom: On' : 'Custom: Off'} color='blue' name='custom' onClick={this.toggleCustom} />} />
-          </Grid.Column>
-          <Grid.Column textAlign='right' width={3}>
-            <Popup content='Create a new custom monster.' trigger={<Button icon='plus' color='green' content='Create' onClick={() => this.setState({ isCreatingMonster: true })} />} />
-          </Grid.Column>
-          <Grid.Column textAlign='right' width={2}>
-            <Dropdown compact selection options={pageLimits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
-          </Grid.Column>
-        </Grid>
+        { Mobile ? (
+          <Grid>
+            <Grid.Row>
+              <Grid.Column width={16}>
+                <Input fluid icon='search' placeholder='Search name, alignment, size, type, etc.' value={this.state.searchQuery} onChange={this.search.bind(this)} />
+              </Grid.Column>
+            </Grid.Row>
 
-        <Table color='purple' selectable sortable unstackable>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
-                CR
-              </Table.HeaderCell>
-              <Table.HeaderCell sorted={this.state.sortBy === 'name' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('name') }}>
-                Name
-              </Table.HeaderCell>
-              <Table.HeaderCell sorted={this.state.sortBy === 'hit_points' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('hit_points') }}>
-                HP
-              </Table.HeaderCell>
-              <Table.HeaderCell sorted={this.state.sortBy === 'armor_class' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('armor_class') }}>
-                AC
-              </Table.HeaderCell>
-              <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
-                Exp
-              </Table.HeaderCell>
-              { Auth.currentUser && this.state.encounterActive &&
-                <Table.HeaderCell></Table.HeaderCell>
-              }
-            </Table.Row>
-          </Table.Header>
+            <Grid.Row>
+              <Grid.Column width={8}>
+                <PaginatorButtons page={this.state.page} totalPages={Math.ceil(monsters.length/this.state.limit)} handlePageChange={(page) => { this.setState({page}) }}/>
+              </Grid.Column>
 
-          <Table.Body>
-            { monsters.length > 0 ?
-                monsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => (
-                  <Table.Row key={monster.key}>
-                    <Table.Cell>{formatCR(monster.challenge_rating)}</Table.Cell>
-                    <Table.Cell>
-                      <Grid>
-                        <Grid.Column width={14}>
-                          <MonsterModal monster={monster} trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>} />
-                          <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
-                        </Grid.Column>
+              <Grid.Column width={8} textAlign='right'>
+                <Dropdown compact selection options={pageLimits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
+              </Grid.Column>
+            </Grid.Row>
 
-                        <Grid.Column width={2}>
-                          <Popup position='top center' content='Open in a new page' trigger={
-                            <Link to={monster.custom ? '/monster/'+monster.key+'/custom' : '/monster/'+monster.key}>
-                              <Icon name='external' />
-                            </Link>
-                          } />
-                        </Grid.Column>
-                      </Grid>
-                    </Table.Cell>
-                    <Table.Cell>{monster.hit_points}</Table.Cell>
-                    <Table.Cell>{monster.armor_class}</Table.Cell>
-                    <Table.Cell>{CRtoEXP(monster.challenge_rating) + ' XP'}</Table.Cell>
-                    { Auth.currentUser && this.state.encounterActive &&
-                      <Table.Cell>{(<Popup content='Add to encounter' trigger={<Button icon='plus' size='mini' onClick={() => this.encounters.addMonster(monster) } />} />)}</Table.Cell>
-                    }
-                  </Table.Row>
-                ))
-              : (
+            <Grid.Row>
+              <Grid.Column width={16}>
+                <Item.Group divided>
+                { monsters.length > 0 ?
+                    monsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => (
+                  <Item key={monster.key}>
+                    <Item.Content>
+                      <Item.Header as={Link} to={monster.custom ? '/monster/'+monster.key+'/custom' : '/monster/'+monster.key}>{monster.name}</Item.Header>
+                      <Item.Meta>{monster.alignment} - {monster.size} {monster.type}</Item.Meta>
+                      <Item.Description>
+                        <List horizontal divided>
+                          <List.Item>{monster.hit_points} HP</List.Item>
+                          <List.Item>{monster.armor_class} AC </List.Item>
+                        </List>
+                      </Item.Description>
+                      <Item.Extra>
+                        CR {formatCR(monster.challenge_rating)} ({CRtoEXP(monster.challenge_rating) + ' XP'})
+
+                        { Auth.currentUser && this.state.encounterActive &&
+                          <Popup content='Add to encounter' trigger={<Button floated='right' icon='plus' size='mini' onClick={() => this.encounters.addMonster(monster) } />} />
+                        }
+                        
+                      </Item.Extra>
+                    </Item.Content>
+                  </Item>
+                )) : (
+                  <Item>
+                    <Item.Content>
+                      <Item.Description>No monsters found.</Item.Description>
+                    </Item.Content>
+                  </Item>
+                )}
+                </Item.Group>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        ) : (
+          <div>
+            <Grid columns={5} stackable>
+              <Grid.Column width={3}>
+                <PaginatorButtons page={this.state.page} totalPages={Math.ceil(monsters.length/this.state.limit)} handlePageChange={(page) => { this.setState({page}) }}/>
+                {/*<Popup content='Show your custom monsters' trigger={<Checkbox toggle label='Custom' name='custom' checked={this.state.custom} onChange={this.toggleCustom} />} />*/}
+              </Grid.Column>
+              <Grid.Column width={5}>
+                <Input fluid icon='search' placeholder='Search name, alignment, size, type, etc.' value={this.state.searchQuery} onChange={this.search.bind(this)} />
+              </Grid.Column>
+              <Grid.Column textAlign='right' width={3}>
+                <Popup content='Show your custom monsters' trigger={<Button content={this.state.custom === 'both' ? 'custom: Both' : this.state.custom ? 'Custom: On' : 'Custom: Off'} color='blue' name='custom' onClick={this.toggleCustom} />} />
+              </Grid.Column>
+              <Grid.Column textAlign='right' width={3}>
+                <Popup content='Create a new custom monster.' trigger={<Button icon='plus' color='green' content='Create' onClick={() => this.setState({ isCreatingMonster: true })} />} />
+              </Grid.Column>
+              <Grid.Column textAlign='right' width={2}>
+                <Dropdown compact selection options={pageLimits} defaultValue={this.state.limit} onChange={this.changeLimit.bind(this)} />
+              </Grid.Column>
+            </Grid>
+
+            <Table color='purple' selectable sortable unstackable>
+              <Table.Header>
                 <Table.Row>
-                  <Table.Cell colSpan={5}>No monsters found.</Table.Cell>
+                  <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
+                    CR
+                  </Table.HeaderCell>
+                  <Table.HeaderCell sorted={this.state.sortBy === 'name' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('name') }}>
+                    Name
+                  </Table.HeaderCell>
+                  <Table.HeaderCell sorted={this.state.sortBy === 'hit_points' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('hit_points') }}>
+                    HP
+                  </Table.HeaderCell>
+                  <Table.HeaderCell sorted={this.state.sortBy === 'armor_class' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('armor_class') }}>
+                    AC
+                  </Table.HeaderCell>
+                  <Table.HeaderCell sorted={this.state.sortBy === 'challenge_rating' ? this.state.sortOrder : null} onClick={() => { this.changeSortBy('challenge_rating') }}>
+                    Exp
+                  </Table.HeaderCell>
+                  { Auth.currentUser && this.state.encounterActive &&
+                    <Table.HeaderCell></Table.HeaderCell>
+                  }
                 </Table.Row>
-              )
-            }
-          </Table.Body>
-        </Table>
+              </Table.Header>
+
+              <Table.Body>
+                { monsters.length > 0 ?
+                    monsters.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(monster => (
+                      <Table.Row key={monster.key}>
+                        <Table.Cell>{formatCR(monster.challenge_rating)}</Table.Cell>
+                        <Table.Cell>
+                          <Grid>
+                            <Grid.Column width={14}>
+                              <MonsterModal monster={monster} trigger={<Header sub style={{cursor: 'pointer'}}>{monster.name}</Header>} />
+                              <span style={{fontSize: '8pt'}}>{monster.alignment} - {monster.size} {monster.type}</span>
+                            </Grid.Column>
+
+                            <Grid.Column width={2}>
+                              <Popup position='top center' content='Open in a new page' trigger={
+                                <Link to={monster.custom ? '/monster/'+monster.key+'/custom' : '/monster/'+monster.key}>
+                                  <Icon name='external' />
+                                </Link>
+                              } />
+                            </Grid.Column>
+                          </Grid>
+                        </Table.Cell>
+                        <Table.Cell>{monster.hit_points}</Table.Cell>
+                        <Table.Cell>{monster.armor_class}</Table.Cell>
+                        <Table.Cell>{CRtoEXP(monster.challenge_rating) + ' XP'}</Table.Cell>
+                        { Auth.currentUser && this.state.encounterActive &&
+                          <Table.Cell>{(<Popup content='Add to encounter' trigger={<Button icon='plus' size='mini' onClick={() => this.encounters.addMonster(monster) } />} />)}</Table.Cell>
+                        }
+                      </Table.Row>
+                    ))
+                  : (
+                    <Table.Row>
+                      <Table.Cell colSpan={5}>No monsters found.</Table.Cell>
+                    </Table.Row>
+                  )
+                }
+              </Table.Body>
+            </Table>
+          </div>
+        )}
       </div>
     )
   }
