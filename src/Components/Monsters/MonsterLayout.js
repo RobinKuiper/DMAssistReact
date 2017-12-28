@@ -1,13 +1,17 @@
 import React from 'react'
 import { Button, Divider, Grid, Header, Label, List, Segment, Table, Popup } from 'semantic-ui-react'
-import { Capitalize, formatCR, CRtoEXP, calculateMod } from './../Lib/Common'
-import { Auth } from './../Lib/firebase'
-import Monster from './../Lib/Monster'
+import { Capitalize, formatCR, CRtoEXP, calculateMod } from './../../Lib/Common'
+import { Auth } from './../../Lib/firebase'
+import Monster from './../../Lib/Monster'
+import { Default, Mobile } from './../../Lib/Responsive'
 
 const MonsterLayout = ({ monster, backButton, history }) => (
     <Segment raised>
-        <Label color='red' ribbon>{Capitalize(monster.size)} {Capitalize(monster.type)} {monster.subtype && monster.subtype !== '' && <span>({monster.subtype})</span>}</Label>
-        {backButton && <Button size='tiny' content='Go Back' icon='chevron left' onClick={() => history.goBack()} />}
+        <Default>
+            <Label color='red' style={{marginBottom: 20}} ribbon>{Capitalize(monster.size)} {Capitalize(monster.type)} {monster.subtype && monster.subtype !== '' && <span>({monster.subtype})</span>}</Label>
+            {backButton && <Button size='tiny' content='Go Back' icon='chevron left' onClick={() => history.goBack()} />}
+        </Default>
+
         {monster.custom && Auth.currentUser && monster.uid === Auth.currentUser.uid && (
             <span>
                 <Popup content='Coming soon' trigger={<Button size='tiny' content='Edit' icon='edit' />} />
@@ -17,10 +21,27 @@ const MonsterLayout = ({ monster, backButton, history }) => (
                 }} />
             </span>
         )}
-        <Header>{monster.name}</Header>
+        <Grid>
+            <Mobile>
+                <Grid.Column width={3}>
+                    {backButton && <Button size='tiny' icon='chevron left' onClick={() => history.goBack()} />}
+                </Grid.Column>
+            </Mobile>
+
+            <Grid.Column width={13}>
+                <Header>
+                    {monster.name}
+
+                    <Mobile>
+                        <Header.Subheader>{Capitalize(monster.size)} {Capitalize(monster.type)} {monster.subtype && monster.subtype !== '' && <span>({monster.subtype})</span>}</Header.Subheader>
+                    </Mobile>
+                </Header>
+            </Grid.Column>
+        </Grid>
+        
         <Segment.Group>
             <Segment>
-                <Grid columns={2}>
+                <Grid columns={2} stackable>
                     <Grid.Column>
                         <List>
                             <List.Item>
@@ -61,45 +82,63 @@ const MonsterLayout = ({ monster, backButton, history }) => (
 
                 <Divider />
 
-                <Table color='black' fixed>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>STR</Table.HeaderCell>
-                            <Table.HeaderCell>DEX</Table.HeaderCell>
-                            <Table.HeaderCell>CON</Table.HeaderCell>
-                            <Table.HeaderCell>INT</Table.HeaderCell>
-                            <Table.HeaderCell>WIS</Table.HeaderCell>
-                            <Table.HeaderCell>CHA</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
+                <Mobile>
+                    <Grid columns={2}>
+                        <Grid.Column>
+                            <List.Item><strong>STR</strong> {monster.strength} ({calculateMod(monster.strength).formatted})</List.Item>
+                            <List.Item><strong>DEX</strong> {monster.dexterity} ({calculateMod(monster.dexterity).formatted})</List.Item>
+                            <List.Item><strong>CON</strong> {monster.constitution} ({calculateMod(monster.constitution).formatted})</List.Item>
+                        </Grid.Column>
 
-                    <Table.Body>
-                        <Table.Row>
-                            <Table.Cell>
-                                {monster.strength} ({calculateMod(monster.strength).formatted})
-                    </Table.Cell>
-                            <Table.Cell>
-                                {monster.dexterity} ({calculateMod(monster.dexterity).formatted})
-                    </Table.Cell>
-                            <Table.Cell>
-                                {monster.constitution} ({calculateMod(monster.constitution).formatted})
-                    </Table.Cell>
-                            <Table.Cell>
-                                {monster.intelligence} ({calculateMod(monster.intelligence).formatted})
-                    </Table.Cell>
-                            <Table.Cell>
-                                {monster.wisdom} ({calculateMod(monster.wisdom).formatted})
-                    </Table.Cell>
-                            <Table.Cell>
-                                {monster.charisma} ({calculateMod(monster.charisma).formatted})
-                    </Table.Cell>
-                        </Table.Row>
-                    </Table.Body>
-                </Table>
+                        <Grid.Column>
+                            <List.Item><strong>INT</strong> {monster.intelligence} ({calculateMod(monster.intelligence).formatted})</List.Item>
+                            <List.Item><strong>WIS</strong> {monster.wisdom} ({calculateMod(monster.wisdom).formatted})</List.Item>
+                            <List.Item><strong>CHA</strong> {monster.charisma} ({calculateMod(monster.charisma).formatted})</List.Item>
+                        </Grid.Column>
+                    </Grid>
+                </Mobile>
+
+                <Default>
+                    <Table color='black' fixed>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>STR</Table.HeaderCell>
+                                <Table.HeaderCell>DEX</Table.HeaderCell>
+                                <Table.HeaderCell>CON</Table.HeaderCell>
+                                <Table.HeaderCell>INT</Table.HeaderCell>
+                                <Table.HeaderCell>WIS</Table.HeaderCell>
+                                <Table.HeaderCell>CHA</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+
+                        <Table.Body>
+                            <Table.Row>
+                                <Table.Cell>
+                                    {monster.strength} ({calculateMod(monster.strength).formatted})
+                        </Table.Cell>
+                                <Table.Cell>
+                                    {monster.dexterity} ({calculateMod(monster.dexterity).formatted})
+                        </Table.Cell>
+                                <Table.Cell>
+                                    {monster.constitution} ({calculateMod(monster.constitution).formatted})
+                        </Table.Cell>
+                                <Table.Cell>
+                                    {monster.intelligence} ({calculateMod(monster.intelligence).formatted})
+                        </Table.Cell>
+                                <Table.Cell>
+                                    {monster.wisdom} ({calculateMod(monster.wisdom).formatted})
+                        </Table.Cell>
+                                <Table.Cell>
+                                    {monster.charisma} ({calculateMod(monster.charisma).formatted})
+                        </Table.Cell>
+                            </Table.Row>
+                        </Table.Body>
+                    </Table>
+                </Default>
 
                 <Divider />
 
-                <Grid columns={2}>
+                <Grid columns={2} stackable>
                     <Grid.Column>
                         <List>
                             <List.Item><strong>Skills:&nbsp;</strong>

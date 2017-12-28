@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { __LOCAL__, Auth, Database } from './Lib/firebase'
+import { Auth } from './Lib/firebase'
 
-import { Dimmer, Loader, Message, Sidebar } from 'semantic-ui-react'
+import { Message, Sidebar } from 'semantic-ui-react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { PropsRoute, PrivateRoute } from './Lib/Router'
 
@@ -9,7 +9,7 @@ import MainSidebar from './Components/UI/Sidebar'
 import Skype from './Components/Skype'
 import FixedMenu from './Components/UI/FixedMenu'
 
-import Dashboard from './Containers/Dashboard'
+//import Dashboard from './Containers/Dashboard'
 import Monsters from './Containers/Monsters'
 import Spells from './Containers/Spells'
 import Campaigns from './Containers/Campaigns'
@@ -24,70 +24,13 @@ import Spell from './Containers/Spell'
 import './Lib/Validation'
 import Alert from './Components/Alert'
 
-const __LIMIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 2 : 10 : 1000
-const __LOAD_TIMEOUT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? 200 : 700 : 300
-const __LOAD_SHIT__ = process.env.NODE_ENV === "development" ? __LOCAL__ ? false : true : true
-
 class App extends Component {
   constructor(props){
     super(props)
 
     this.state = {
-      user: null,
-      monsters: [],
-      custom_monsters: [],
-      spells: [],
-      custom_spells: [],
-      loaded: false,
-      loadStep: 0,
-      loadSteps: ['Loading Monsters...', 'Loading Spells...']
+      sidebarVisible: false
     }
-  }
-
-  setLoaded = (index) => {
-    var loadStep = this.state.loadStep + 1
-    this.setState({ loadStep })
-    return (this.state.loadStep >= this.state.loadSteps.length)
-  }
-
-  componentWillMount(){
-    if(__LOAD_SHIT__) this.loadMonsters()
-    else this.setState({ loaded: true })
-  }
-
-  loadMonsters = () => {
-    let mRef = Database.ref('monsters').limitToLast(__LIMIT__);
-
-    var t;
-    mRef.on('child_added', snapshot => {
-      let monster = snapshot.val()
-      monster.key = snapshot.key
-      this.setState({ monsters: [monster].concat(this.state.monsters) })
-
-      if(!this.state.loaded && this.state.loadStep < 1){
-        clearTimeout(t)
-        t = setTimeout(() => {
-          this.setState({ loaded: this.setLoaded() })
-          this.loadSpells()
-        }, __LOAD_TIMEOUT__)
-      }else clearTimeout(t)
-    })
-  }
-
-  loadSpells = () => {
-    let sRef = Database.ref('spells').limitToLast(__LIMIT__);
-
-    var t
-    sRef.on('child_added', snapshot => {
-      let spell = snapshot.val()
-      spell.key = snapshot.key
-      this.setState({ spells: [spell].concat(this.state.spells)  })
-
-      if(!this.state.loaded){
-        clearTimeout(t)
-        t = setTimeout(() => this.setState({ loaded: this.setLoaded() }), __LOAD_TIMEOUT__)
-      }
-    })
   }
 
   Alert = (message, type, icon, time = 5000) => {
@@ -97,10 +40,6 @@ class App extends Component {
   render() {
     return (
       <div id='outer-container'>
-        <Dimmer active={!this.state.loaded}>
-          <Loader size='massive'>{this.state.loadSteps[this.state.loadStep]}</Loader>
-        </Dimmer>
-
         <Default><Skype /></Default>
         <Router>
           <div>
@@ -117,14 +56,14 @@ class App extends Component {
 
               { Auth.currentUser && !Auth.currentUser.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
               
-              <PropsRoute exact path='/' component={Dashboard} campaigns={this.state.campaigns} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
+              <PropsRoute exact path='/' component={About} alert={this.Alert} />
               <PropsRoute path='/about' component={About} alert={this.Alert} />
-              <PropsRoute path='/monsters/:custom?' component={Monsters} custom_monsters={this.state.custom_monsters} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
+              <PropsRoute path='/monsters/:custom?' component={Monsters} alert={this.Alert} />
               <PropsRoute path='/monster/:slug/:custom?' component={Monster} />
-              <PropsRoute path='/spells' component={Spells} custom_spells={this.state.custom_spells} spells={this.state.spells} alert={this.Alert} />
+              <PropsRoute path='/spells' component={Spells} alert={this.Alert} />
               <PropsRoute path='/spell/:slug/:custom?' component={Spell} />
               <PropsRoute path='/campaigns' component={Campaigns} redirectTo="/" alert={this.Alert} />
-              <PrivateRoute path='/campaign/:key' redirectTo="/" component={Campaign} monsters={this.state.monsters} encounters={this.state.encounters} alert={this.Alert} />
+              <PrivateRoute path='/campaign/:key' redirectTo="/" component={Campaign} alert={this.Alert} />
               <PropsRoute path='/treasure-generator' component={TreasureGenerator} alert={this.Alert} />
               <PropsRoute path='/profile' component={Profile} alert={this.Alert} />
 

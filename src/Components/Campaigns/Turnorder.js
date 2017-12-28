@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
-import { Button, Dropdown, Grid, List, Popup, Table } from 'semantic-ui-react'
+import { Button, Dropdown, Grid, Item, List, Popup, Table } from 'semantic-ui-react'
 
 import { formatTime } from './../../Lib/Common'
 import { Auth, Database } from './../../Lib/firebase'
 
 import Panel from './../UI/Panel'
+import TurnorderTableItem from './TurnorderTableItem'
 import TurnorderItem from './TurnorderItem'
+
+import { Mobile, Default } from './../../Lib/Responsive'
 
 export default class Turnorder extends Component {
   constructor(props) {
@@ -13,34 +16,65 @@ export default class Turnorder extends Component {
 
     this.state = {
       encounters: {},
-      monsterOptions: props.monsters.map(monster => {
-        return {
-          key: monster.key,
-          value: monster.key,
-          text: monster.name
-        }
-      })
+      monsters: [],
+      monsterOptions: [],
+      encounterOptions: [],
+      loadingMonsters: true,
+      loadingEncounters: true
     }
   }
 
   render() {
-    return <Panel title='Turn Order' content={this.content} closeable />
+    return (
+      <div>
+        <Mobile>
+          <Panel title='Turn Order' content={this.mobileContent} closeable />
+        </Mobile>
+        
+        <Default>
+          <Panel title='Turn Order' content={this.content} closeable />
+        </Default>
+      </div>
+    )
   }
 
-  content = () => {
-    var encounterOptions = this.state.encounters && Object.keys(this.state.encounters).map(key => {
-      return {
-        key: key,
-        value: key,
-        text: this.state.encounters[key].name
-      }
-    })
+  mobileContent = () => (
+    <div>
+      <Dropdown style={{marginBottom: 10}} placeholder='Add Monster' fluid search selection options={this.state.monsterOptions} onChange={this.addMonsterToTurnorder.bind(this)} loading={this.state.loadingMonsters} />
+      <Dropdown style={{marginBottom: 10}} button color='green' fluid text='Add Encounter' options={this.state.encounterOptions} onChange={this.addEncounterToTurnorder.bind(this)} disabled={!this.state.encounterOptions || this.state.encounterOptions.length === 0} loading={this.state.loadingEncounters} />
 
+      <List horizontal style={{borderBottom: '1px solid #f1f1f1', width: '100%'}}>
+        <List.Item>Round: {this.props.campaign.round}</List.Item>
+        <List.Item>Time: {formatTime(this.props.campaign.times.encounter)}</List.Item>
+      </List>
+
+      <Item.Group divided relaxed>
+      { this.props.campaign.turnorder ? (
+          Object.keys(this.props.campaign.turnorder).map(key => {this.props.campaign.turnorder[key].id = key; return this.props.campaign.turnorder[key]}).sort(this.compare).map((turnorder) => (
+            <TurnorderItem key={turnorder.id} item={turnorder} campaign={this.props.campaign} setDone={() => this.setDone(turnorder.id)} />
+          ))
+        ) : (
+          <Item>
+            <Item.Content>
+              <Item.Description>Add items to your turnorder.</Item.Description>
+            </Item.Content>
+          </Item>
+        )
+      }
+      </Item.Group>
+
+      <Button.Group style={{borderTop: '1px solid #f1f1f1', width: '100%', paddingTop: 20}}>
+        <Popup content='Reset the turnorder' trigger={<Button color='red' icon='undo' content='Reset' onClick={this.resetTurnorder.bind(this)} />} />
+      </Button.Group>
+    </div>
+  )
+
+  content = () => {
     return (
       <div>
         <Grid columns={3} stackable>
           <Grid.Column width={10}>
-            <Dropdown placeholder='Add Monster' fluid search selection options={this.state.monsterOptions} onChange={this.addMonsterToTurnorder.bind(this)} />
+            <Dropdown placeholder='Add Monster' fluid search selection options={this.state.monsterOptions} onChange={this.addMonsterToTurnorder.bind(this)} loading={this.state.loadingMonsters} />
           </Grid.Column>
 
           <Grid.Column width={2}>
@@ -51,7 +85,7 @@ export default class Turnorder extends Component {
           </Grid.Column>
 
           <Grid.Column width={4} textAlign='right'>
-            <Dropdown button color='green' text='Add Encounter' options={encounterOptions} onChange={this.addEncounterToTurnorder.bind(this)} disabled={!encounterOptions || encounterOptions.length === 0} />
+            <Dropdown button color='green' text='Add Encounter' options={this.state.encounterOptions} onChange={this.addEncounterToTurnorder.bind(this)} disabled={!this.state.encounterOptions || this.state.encounterOptions.length === 0} loading={this.state.loadingEncounters} />
           </Grid.Column>
         </Grid>
 
@@ -76,7 +110,7 @@ export default class Turnorder extends Component {
           <Table.Body>
             { this.props.campaign.turnorder ? (
                 Object.keys(this.props.campaign.turnorder).map(key => {this.props.campaign.turnorder[key].id = key; return this.props.campaign.turnorder[key]}).sort(this.compare).map((turnorder) => (
-                  <TurnorderItem key={turnorder.id} item={turnorder} campaign={this.props.campaign} setDone={() => this.setDone(turnorder.id)} />
+                  <TurnorderTableItem key={turnorder.id} item={turnorder} campaign={this.props.campaign} setDone={() => this.setDone(turnorder.id)} />
                 ))
               ) : (
                 <Table.Row>
@@ -188,7 +222,7 @@ export default class Turnorder extends Component {
   }
 
   addMonsterToTurnorder = (e, { searchQuery, value }) => {
-    let monster = this.props.monsters.find((monster) => { return monster.key === value })
+    let monster = this.state.monsters.find((monster) => { return monster.key === value })
     this.addToTurnorder(monster, true)
   }
 
@@ -217,11 +251,43 @@ export default class Turnorder extends Component {
     }))
   }
 
+  componentWillMount() {
+    Database.ref('monsters').on('value', snapshot => {
+      let monsters = [], monsterOptions = []
+      snapshot.forEach(data => {
+        let monster = data.val()
+        monster.key = data.key
+        monsters.push(monster)
+
+        let option = {
+          key: monster.key,
+          value: monster.key,
+          text: monster.name
+        }
+        monsterOptions.push(option)
+      })
+      this.setState({ monsters, monsterOptions, loadingMonsters: false })
+    })
+  }
+
   componentDidMount() {
       Auth.onAuthStateChanged((user) => {
           if (user){
               Database.ref('userdata/' + Auth.currentUser.uid + '/encounters/').on('value', snapshot => {
-                  this.setState({ encounters: snapshot.val() })
+                  let encounters = [], encounterOptions = []
+                  snapshot.forEach(data => {
+                    let encounter = data.val()
+                    encounter.key = data.key
+                    encounters.push(encounter)
+
+                    let option = {
+                      key: encounter.key,
+                      value: encounter.key,
+                      text: encounter.name
+                    }
+                    encounterOptions.push(option)
+                  })
+                  this.setState({ encounters, encounterOptions, loadingEncounters: false })
               })
           }
       })

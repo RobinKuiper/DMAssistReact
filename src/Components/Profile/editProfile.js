@@ -4,6 +4,7 @@ import { Button, Divider, Grid, Header, Image, Label, List } from 'semantic-ui-r
 import { Form } from 'formsy-semantic-ui-react'
 import Panel from './../UI/Panel'
 import ImageUploader from 'react-firebase-image-uploader';
+import { Default, Mobile } from './../../Lib/Responsive'
 
 // IMAGES
 import FacebookLogo from './../../Images/Social/facebook-logo.png'
@@ -31,19 +32,27 @@ export default class EditProfile extends Component {
     render() {
         return (
             <main>
-                <Grid columns={3}>
-                    <Grid.Column width={4}>
-                        <Panel title="Photo" content={this.photo} loaded={true} />
-                    </Grid.Column>
+                <Mobile>
+                    <Panel title="Profile" content={this.content} loaded={!this.state.loading} />
+                    <Panel title="Photo" content={this.photo} loaded={true} />
+                    <Panel title="Linked Accounts" content={this.linkedAccounts} loaded={true} />
+                </Mobile>
 
-                    <Grid.Column width={8}>
-                        <Panel title="Profile" content={this.content} loaded={!this.state.loading} />
-                    </Grid.Column>
+                <Default>
+                    <Grid columns={3} stackable>
+                        <Grid.Column width={4}>
+                            <Panel title="Photo" content={this.photo} loaded={true} />
+                        </Grid.Column>
 
-                    <Grid.Column width={4}>
-                        <Panel title="Linked Accounts" content={this.linkedAccounts} loaded={true} />
-                    </Grid.Column>
-                </Grid>
+                        <Grid.Column width={8}>
+                            <Panel title="Profile" content={this.content} loaded={!this.state.loading} />
+                        </Grid.Column>
+
+                        <Grid.Column width={4}>
+                            <Panel title="Linked Accounts" content={this.linkedAccounts} loaded={true} />
+                        </Grid.Column>
+                    </Grid>
+                </Default>
             </main>
         )
     }

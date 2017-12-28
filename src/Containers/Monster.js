@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Grid } from 'semantic-ui-react'
 import { Database } from './../Lib/firebase'
+import { Default, isMatchingDevice } from './../Lib/Responsive'
 
-import MonsterLayout from './../Components/MonsterLayout'
+import MonsterLayout from './../Components/Monsters/MonsterLayout'
 
 export default class MonsterModal extends Component {
     state = { monster: null, loading: true }
@@ -25,9 +26,11 @@ export default class MonsterModal extends Component {
         return (
             <main>
                 <Grid>
-                    <Grid.Column width={1} />
+                    <Default>
+                        <Grid.Column width={1} />
+                    </Default>
 
-                    <Grid.Column width={14} loading={loading}>
+                    <Grid.Column width={isMatchingDevice('DESKTOP') && 14} loading={loading}>
                         { monster && 
                             <MonsterLayout monster={monster} backButton={true} history={this.props.history} />
                         }

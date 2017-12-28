@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import { Button, Divider, Grid, Header, Icon, Image, Label, List, Segment, Popup } from 'semantic-ui-react'
-import { formatSpellLevel, formatSpellRange } from './../Lib/Common'
-import { Auth } from './../Lib/firebase'
+import { formatSpellLevel, formatSpellRange } from './../../Lib/Common'
+import { Auth } from './../../Lib/firebase'
+import { Default, Mobile, isMatchingDevice } from './../../Lib/Responsive'
 
 // IMAGES
-import Verbal from './../Images/Verbal.png'
-import Material from './../Images/Material.png'
-import Somatic from './../Images/Somatic.png'
+import Verbal from './../../Images/Verbal.png'
+import Material from './../../Images/Material.png'
+import Somatic from './../../Images/Somatic.png'
 
 export default class SpellLayout extends Component {
   constructor(props) {
@@ -21,8 +22,11 @@ export default class SpellLayout extends Component {
 
     return (
       <Segment raised>
-        <Label color='red' ribbon>{formatSpellLevel(spell.level)} Level {spell.school}</Label>
-        {this.props.backButton && <Button size='tiny' content='Go Back' icon='chevron left' onClick={() => this.props.history.goBack()} />}
+        <Default>
+          <Label style={{marginBottom: 20}} color='red' ribbon>{formatSpellLevel(spell.level)} Level {spell.school}</Label>
+          {this.props.backButton && <Button size='tiny' content='Go Back' icon='chevron left' onClick={() => this.props.history.goBack()} />}
+        </Default>
+        
         {spell.custom && Auth.currentUser && spell.uid === Auth.currentUser.uid && (
           <span>
           <Popup content='Coming soon' trigger={<Button size='tiny' content='Edit' icon='edit' />} />
@@ -32,10 +36,28 @@ export default class SpellLayout extends Component {
             }} />
           </span>
         )}
-        <Header>{spell.name}</Header>
+        <Grid>
+          { this.props.backButton && (
+            <Mobile>
+                <Grid.Column width={3}>
+                  <Button size='tiny' icon='chevron left' onClick={() => this.props.history.goBack()} />
+                </Grid.Column>
+            </Mobile>
+          )}
+
+            <Grid.Column width={13}>
+                <Header>
+                    {spell.name}
+
+                    <Mobile>
+                        <Header.Subheader>{formatSpellLevel(spell.level)} Level {spell.school}</Header.Subheader>
+                    </Mobile>
+                </Header>
+            </Grid.Column>
+        </Grid>
         <Segment.Group>
           <Segment>
-            <Grid columns={2}>
+            <Grid columns={2} stackable>
               <Grid.Column>
                 <List>
                   <List.Item>
@@ -51,7 +73,7 @@ export default class SpellLayout extends Component {
               </Grid.Column>
 
               <Grid.Column>
-                <List>
+                <List horizontal={isMatchingDevice('MOBILE')}>
                   <List.Item><strong>Classes</strong></List.Item>
                   {spell.classes &&
                     spell.classes.map(c => (
@@ -87,7 +109,7 @@ export default class SpellLayout extends Component {
                 ))
               }
               {spell.material &&
-                <List.Item><strong>Material</strong><span>{spell.material}</span></List.Item>
+                <List.Item><strong>Material</strong> <span>{spell.material}</span></List.Item>
               }
             </List>
 

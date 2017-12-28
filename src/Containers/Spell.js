@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Grid } from 'semantic-ui-react'
 import { Database } from './../Lib/firebase'
+import { Default, isMatchingDevice } from './../Lib/Responsive'
 
-import SpellLayout from './../Components/SpellLayout'
+
+import SpellLayout from './../Components/Spells/SpellLayout'
 
 export default class MonsterModal extends Component {
     state = { spell: null, loading: true }
@@ -25,9 +27,11 @@ export default class MonsterModal extends Component {
         return (
             <main>
                 <Grid>
-                    <Grid.Column width={1} />
+                    <Default>
+                        <Grid.Column width={1} />
+                    </Default>
 
-                    <Grid.Column width={14} loading={loading}>
+                    <Grid.Column width={isMatchingDevice('DESKTOP') && 14} loading={loading}>
                         { spell && 
                             <SpellLayout spell={spell} backButton={true} history={this.props.history} />
                         }

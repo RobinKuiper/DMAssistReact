@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import { Button, Divider, Dropdown, Grid, Header, Input, List, Popup } from 'semantic-ui-react'
 import { Auth, Database } from './../Lib/firebase'
 import Panel from './UI/Panel'
-import MonsterModal from './MonsterModal'
+import MonsterModal from './Monsters/MonsterModal'
 import { CRtoEXP, formatNumber } from './../Lib/Common'
 import LoginModal from './Auth/LoginModal'
 
 import {Generator} from './../Lib/TreasureGenerator'
 
-export default class Encounters extends Component {
+export default class EncounterPanel extends Component {
     constructor(props) {
         super(props)
 

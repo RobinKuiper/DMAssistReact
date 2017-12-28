@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Dimmer, Loader, Modal } from 'semantic-ui-react'
-import { Database } from './../Lib/firebase'
+import { Database } from './../../Lib/firebase'
 
 import SpellLayout from './SpellLayout'
 

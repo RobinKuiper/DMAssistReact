@@ -8,6 +8,7 @@ import Adsense from './../Components/Adsense'
 //import FixedMenu from "./../Components/FixedMenu";
 import CampaignSettingsModal from './../Components/Campaigns/CampaignSettingsModal'
 import Players from './../Components/Campaigns/Players'
+import { Default } from './../Lib/Responsive'
 
 export default class Campaign extends Component {
   constructor(props) {
@@ -33,7 +34,7 @@ export default class Campaign extends Component {
           { this.state.removed && <Redirect to='/campaigns' />}
           {/*<FixedMenu title={this.state.campaign.name} />*/}
           <main>
-            <Turnorder campaign={campaign} monsters={this.props.monsters} encounters={this.props.encounters} campaignRef={this.state.campaignRef} />
+            <Turnorder campaign={campaign} campaignRef={this.state.campaignRef} />
 
             <Players players={campaign.players} handleSubmit={this.addPlayer.bind(this)} handleRemove={this.removePlayer.bind(this)} handleAdd={this.addPlayerToTurnorder.bind(this)} />
             
@@ -51,9 +52,11 @@ export default class Campaign extends Component {
                   </Button.Group>
                 </Grid.Column>
 
-                <Grid.Column width={4}>
-                  <Popup content='Coming Soon' trigger={<span>Public Link</span>} />
-                </Grid.Column>
+                <Default>
+                  <Grid.Column width={4}>
+                    <Popup content='Coming Soon' trigger={<span>Public Link</span>} />
+                  </Grid.Column>
+                </Default>
 
                 <Grid.Column width={6} textAlign='right'>
                   <CampaignSettingsModal alert={alert} campaign={campaign} trigger={<Button icon='settings' content='Settings' color='blue' />} />

@@ -5,6 +5,8 @@ var config = {}
 
 export const __LOCAL__ = false
 
+console.log(window && window.location && window.location.hostname)
+
 // TODO: CHANGE TO .ENV FILES
 if(process.env.NODE_ENV === "development" && __LOCAL__){
   config = {
@@ -15,7 +17,7 @@ if(process.env.NODE_ENV === "development" && __LOCAL__){
     storageBucket: "dndassist-2870c.appspot.com",
     messagingSenderId: "987962337354"
   }
-} else if(window && window.location && (window.location.hostname === 'dmassist5e.firebaseapp.com' || window.location.hostname === 'dmassist.robinkuiper.nu')){
+} else if(window && window.location && (window.location.hostname === 'dmassist5e.firebaseapp.com' || window.location.hostname === 'dmassist.eu' || window.location.hostname === 'dmassist.robinkuiper.nu')){
   config = {
     apiKey: "AIzaSyA_4Vn12xMBhQCCGFfBB12mNPwOulLq9wU",
     authDomain: "dmassist5e.firebaseapp.com",
