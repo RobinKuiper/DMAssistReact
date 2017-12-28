@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Grid } from 'semantic-ui-react'
 import { Database } from './../Lib/firebase'
 
-import SpellLayout from './../Components/SpellLayout'
+import SpellLayout from './../Components/Spells/SpellLayout'
 
 export default class MonsterModal extends Component {
     state = { spell: null, loading: true }

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Button, Divider, Grid, Header, Label, List, Segment, Table, Popup } from 'semantic-ui-react'
-import { Capitalize, formatCR, CRtoEXP, calculateMod } from './../Lib/Common'
-import { Auth } from './../Lib/firebase'
-import Monster from './../Lib/Monster'
+import { Capitalize, formatCR, CRtoEXP, calculateMod } from './../../Lib/Common'
+import { Auth } from './../../Lib/firebase'
+import Monster from './../../Lib/Monster'
 
 const MonsterLayout = ({ monster, backButton, history }) => (
     <Segment raised>

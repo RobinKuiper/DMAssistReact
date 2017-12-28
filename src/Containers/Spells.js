@@ -1,19 +1,22 @@
 import React, { Component } from 'react'
-import { Button, Grid, Header, Icon, Input, Dropdown, Popup, Table } from 'semantic-ui-react'
-import { Link } from 'react-router-dom'
+import { Button, Dropdown, Grid, Input, Item, Loader, Popup, Table } from 'semantic-ui-react'
 
 import { pageLimits } from './../Lib/Common'
 import { Auth, Database } from './../Lib/firebase'
 
-import Affiliate from './../Components/Affiliate'
-
 import Panel from './../Components/UI/Panel'
-import SpellModal from './../Components/SpellModal'
+import { SpellTableItem } from './../Components/Spells/SpellTableItem'
+import { SpellItem } from './../Components/Spells/SpellItem'
+
 import { PaginatorButtons } from './../Components/Paginator'
+
 import CreateSpell from './../Components/CreateSpell'
 
-import AlertContainer from 'react-alert'
 import { removeByKey } from './../Lib/Array'
+import Affiliate from './../Components/Affiliate'
+
+import { Mobile, Default } from './../Lib/Responsive'
+import InfiniteScroll from 'react-infinite-scroller'
 
 export default class Spells extends Component {
   constructor(props){
@@ -30,51 +33,90 @@ export default class Spells extends Component {
       sortOrder: 'ascending',
       limit: 10,
       page: 0,
-      loaded: true,
-      isCreatingSpell: false
+      loading: true,
+      isCreatingSpell: false,
+
+      hasMoreItems: true,
     }
   }
 
-  alertOptions = {
-    offset: 14,
-    position: 'top left',
-    theme: 'dark',
-    time: 5000,
-    transition: 'scale'
-  }
+  setPage(page){
+    let hasMoreItems = (this.state.processed_spells.length > this.state.limit*(this.state.page+1))
 
-  showAlert = (message, type, icon, time = 5000) => {
-      this.msg.show(message, {
-          time,
-          type,
-          icon: <Icon name={icon} />
-      })
+    this.setState({ page, hasMoreItems })
   }
 
   toggleCustom = () => {
     const custom = this.state.custom === true ? 'both' : this.state.custom === 'both' ? false : true
-    const processed_spells = custom === true ? this.state.custom_spells : custom === 'both' ? this.props.spells.concat(this.state.custom_spells) : this.props.spells
+    const processed_spells = custom === true ? this.state.custom_spells : custom === 'both' ? this.state.spells.concat(this.state.custom_spells) : this.state.spells
     this.setState({ custom, processed_spells })
   }
 
   render() {
-    return (
-      <main>
-        <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
-        { !this.state.isCreatingSpell ? (
-          <Grid columns={1}>
-            <Grid.Column>
-              <Panel title={'Spells'} content={this.renderContent} footer={this.renderFooter} loaded={this.state.loaded} />
-            </Grid.Column>
-          </Grid>
-        ) : (
-          <CreateSpell onSuccess={() => {
+    if(!this.state.isCreatingSpell){
+      return (
+        <main>
+          <Mobile>
+            <Grid columns={1}>
+              <Grid.Column>
+                <Panel title={'Spells'} content={this.renderMobileContent} loading={this.state.loading} />
+              </Grid.Column>
+            </Grid>
+          </Mobile>
+
+          <Default>
+            <Grid columns={1}>
+              <Grid.Column>
+                <Panel title={'Spells'} content={this.renderContent} footer={this.renderFooter} loading={this.state.loading} />
+              </Grid.Column>
+            </Grid>
+          </Default>
+        </main>
+      )
+    }else{
+      return <CreateSpell onSuccess={() => {
             this.toggleCustom('show')
             this.setState({ isCreatingSpell: false })
             this.showAlert('Your spell is saved!', 'success', 'checkmark')
           }} />
-        )}
-      </main>
+    }
+  }
+
+  renderMobileContent = () => {
+    var spells = this.state.processed_spells
+
+    return (
+      <Grid>
+        <Grid.Row>
+          <Grid.Column width={16}>
+            <Input fluid icon='search' placeholder='Search name, school, etc.' value={this.state.searchQuery} onChange={this.search.bind(this)} />
+          </Grid.Column>
+        </Grid.Row>
+
+        <Grid.Row>
+          <Grid.Column width={16}>
+            { spells.length > 0 ? (
+              <InfiniteScroll
+                  pageStart={0}
+                  loadMore={this.setPage.bind(this)}
+                  hasMore={this.state.hasMoreItems}
+                  loader={Loader}>
+                    <Item.Group divided>
+                      { spells.sort(this.compare.bind(this)).slice(0, this.state.limit*(this.state.page+1)).map(spell => (
+                            <SpellItem spell={spell} />
+                      ))}
+                    </Item.Group>
+              </InfiniteScroll>
+              ) : (
+                <Item>
+                  <Item.Content>
+                    <Item.Description>No spells found.</Item.Description>
+                  </Item.Content>
+                </Item>
+              )}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     )
   }
 
@@ -88,7 +130,7 @@ export default class Spells extends Component {
             <PaginatorButtons page={this.state.page} totalPages={Math.ceil(spells.length/this.state.limit)} handlePageChange={(page) => { this.setState({page}) }}/>
           </Grid.Column>
           <Grid.Column width={5}>
-            <Input fluid icon='search' placeholder='Search name, school, duration, etc.' value={this.state.searchQuery} onChange={this.search.bind(this)} />
+            <Input fluid icon='search' placeholder='Search name, school, etc.' value={this.state.searchQuery} onChange={this.search.bind(this)} />
           </Grid.Column>
           <Grid.Column textAlign='right' width={3}>
             <Popup content='Show your custom spells' trigger={<Button content={this.state.custom === 'both' ? 'custom: Both' : this.state.custom ? 'Custom: On' : 'Custom: Off'} color='blue' name='custom' onClick={this.toggleCustom} />} />
@@ -122,27 +164,7 @@ export default class Spells extends Component {
           <Table.Body>
             { spells.length > 0 ?
               spells.sort(this.compare.bind(this)).slice(this.state.page*this.state.limit, this.state.limit*(this.state.page+1)).map(spell => (
-                  <Table.Row key={spell.key}>
-                    <Table.Cell>
-                      <Grid>
-                        <Grid.Column width={14}>
-                          <SpellModal spell={spell} trigger={<Header sub style={{cursor: 'pointer'}}>{spell.name}</Header>} />
-                          <span style={{fontSize: '8pt'}}>{spell.school}</span>
-                        </Grid.Column>
-
-                        <Grid.Column width={2}>
-                          <Popup position='top center' content='Open in a new page' trigger={
-                            <Link to={spell.custom ? '/spell/'+spell.key+'/custom' : '/spell/'+spell.key}>
-                              <Icon name='external' />
-                            </Link>
-                          } />
-                        </Grid.Column>
-                      </Grid>
-                    </Table.Cell>
-                    <Table.Cell>{spell.school}</Table.Cell>
-                    <Table.Cell>{spell.casting_time}</Table.Cell>
-                    <Table.Cell>{spell.duration}</Table.Cell>
-                  </Table.Row>
+                  <SpellTableItem spell={spell} />
                 ))
               : (
                 <Table.Row>
@@ -204,7 +226,7 @@ export default class Spells extends Component {
 
   search(e, {value}){
     this.setState({ searchQuery: value })
-    const processed_spells = this.state.custom === true ? this.state.custom_spells : this.state.custom === 'both' ? this.props.spells.concat(this.state.custom_spells) : this.props.spells
+    const processed_spells = this.state.custom === true ? this.state.custom_spells : this.state.custom === 'both' ? this.state.spells.concat(this.state.custom_spells) : this.state.spells
 
     if(value === ''){
       this.setState({ processed_spells })
@@ -212,7 +234,6 @@ export default class Spells extends Component {
     }else{
       var spells = processed_spells.filter((spell) => spell.name.toLowerCase().includes(value.toLowerCase()) ||
         spell.school.toLowerCase().includes(value.toLowerCase()) ||
-        spell.duration.toLowerCase().includes(value.toLowerCase()) ||
         spell.casting_time.toLowerCase().includes(value.toLowerCase())
       )
 
@@ -221,8 +242,15 @@ export default class Spells extends Component {
   }
 
   componentWillMount() {
-    if(this.state.custom === 'both' || this.state.custom === false)
-      this.setState({ processed_spells: this.props.spells.concat(this.state.processed_spells) })
+    Database.ref('spells').on('value', snapshot => {
+      let spells = []
+      snapshot.forEach(value => {
+        let spell = value.val()
+        spell.key = value.key
+        spells.push(spell)
+      })
+      this.setState({ spells, processed_spells: spells, loading: false })
+    })
   }
 
   componentDidMount() {

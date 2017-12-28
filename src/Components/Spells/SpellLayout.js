@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { Button, Divider, Grid, Header, Icon, Image, Label, List, Segment, Popup } from 'semantic-ui-react'
-import { formatSpellLevel, formatSpellRange } from './../Lib/Common'
-import { Auth } from './../Lib/firebase'
+import { formatSpellLevel, formatSpellRange } from './../../Lib/Common'
+import { Auth } from './../../Lib/firebase'
 
 // IMAGES
-import Verbal from './../Images/Verbal.png'
-import Material from './../Images/Material.png'
-import Somatic from './../Images/Somatic.png'
+import Verbal from './../../Images/Verbal.png'
+import Material from './../../Images/Material.png'
+import Somatic from './../../Images/Somatic.png'
 
 export default class SpellLayout extends Component {
   constructor(props) {

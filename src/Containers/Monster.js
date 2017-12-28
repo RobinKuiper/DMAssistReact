@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Grid } from 'semantic-ui-react'
 import { Database } from './../Lib/firebase'
 
-import MonsterLayout from './../Components/MonsterLayout'
+import MonsterLayout from './../Components/Monsters/MonsterLayout'
 
 export default class MonsterModal extends Component {
     state = { monster: null, loading: true }
