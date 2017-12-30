@@ -9,7 +9,7 @@ import MainSidebar from './Components/UI/Sidebar'
 import Skype from './Components/Skype'
 import FixedMenu from './Components/UI/FixedMenu'
 
-//import Dashboard from './Containers/Dashboard'
+import Dashboard from './Containers/Dashboard'
 import Monsters from './Containers/Monsters'
 import Spells from './Containers/Spells'
 import Campaigns from './Containers/Campaigns'
@@ -56,7 +56,7 @@ class App extends Component {
 
               { Auth.currentUser && !Auth.currentUser.emailVerified && !this.state.verification_mail_send && <Message error content={<p>Your email address is not verified. Click the link in the verification mail, or <span style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => this.sendVerification()}>send another mail</span>.</p>} /> }
               
-              <PropsRoute exact path='/' component={About} alert={this.Alert} />
+              <PropsRoute exact path='/' component={Dashboard} alert={this.Alert} />
               <PropsRoute path='/about' component={About} alert={this.Alert} />
               <PropsRoute path='/monsters/:custom?' component={Monsters} alert={this.Alert} />
               <PropsRoute path='/monster/:slug/:custom?' component={Monster} />

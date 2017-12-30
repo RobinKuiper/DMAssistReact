@@ -5,7 +5,7 @@ import { Auth, Database } from './../../Lib/firebase'
 import LoginModal from './../Auth/LoginModal'
 
 // IMAGES
-import NoCampaignImage from './../../Images/no-campaign-image.png'
+import NoCampaignImage from './../../Images/no-campaign-image.jpg'
 
 export default class Overview extends Component {
   render() {
