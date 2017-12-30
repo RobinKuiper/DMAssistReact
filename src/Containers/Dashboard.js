@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Grid, Icon, List, Message } from 'semantic-ui-react'
+import { Grid, Header, Icon, Image, Item, List, Message, Segment } from 'semantic-ui-react'
 import { Auth, Database } from './../Lib/firebase'
 import Panel from './../Components/UI/Panel'
 
-import TreasureGenerator from './../Components/TreasureGenerator'
-
 import LoginModal from './../Components/Auth/LoginModal'
 import Affiliate from './../Components/Affiliate'
+
+import CampaignSS from './../Images/Screenshots/campaign.png'
+import MonstersSS from './../Images/Screenshots/monsters.png'
+import NoCampaignImage from './../Images/no-campaign-image.jpg'
+
+import { Lightbox } from './../Components/UI/Lightbox'
 
 export default class Dashboard extends Component {
   constructor(props){
@@ -22,47 +26,39 @@ export default class Dashboard extends Component {
   render() {
     return (
       <main>
-
         <Grid stackable>
-          <Grid.Column width={6}>
-            <Grid>
-              <Grid.Row>
-                <Grid.Column>
-                  <Panel title={'Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} />
-                </Grid.Column>
-              </Grid.Row>
+          <Grid.Column width={10}>
+            <Segment raised>
+              <Header dividing>
+                DMAssist
+                <Header.Subheader>Making life of evil easier!</Header.Subheader>
+              </Header>
 
-              <Grid.Row>
-                <Grid.Column>
-                  <Panel title={'Latest Monsters'} content={this.renderMonsters.bind(this)} footer={false} loaded={true} />
-                </Grid.Column>
-              </Grid.Row>
+              <p>This tool is designed to help good dungeon master be even better!</p>
 
-              <Grid.Row>
-                <Grid.Column>
-                  <Panel title={'Latest Spells'} content={this.renderSpells.bind(this)} footer={false} loaded={true} />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
+              <p>
+                You can keep track of your turnorder, create monster encounters which your players can fight, lookup the spells you want to use against them, etc.
+              </p>
+              <p>
+                At the moment this is a beta version and more futures are incoming!
+              </p>
+
+              <Image.Group size='medium'>
+                <Lightbox src={CampaignSS} trigger={(<Image src={CampaignSS} bordered title="Campaign Screenshot" />)} />
+                <Lightbox src={MonstersSS} trigger={(<Image src={MonstersSS} bordered title="Monsters screenshot" />)} />
+              </Image.Group>
+            </Segment>
           </Grid.Column>
 
-          <Grid.Column width={10} as={Grid}>
-            <Grid.Row>
-              <Grid.Column>
-                <TreasureGenerator />
-              </Grid.Column>
-            </Grid.Row>
+          <Grid.Column width={6}>
+            <Panel title={'Your Campaigns'} content={this.renderCampaigns.bind(this)} footer={false} />
 
-            <Grid.Row>
-              <Grid.Column>
-                <Affiliate 
-                  title='Get the new Aliens comic book series!' 
-                  alt='Get the new Aliens comic book series!' 
-                  url='http://shareasale.com/r.cfm?b=188076&amp;u=1651477&amp;m=8908&amp;urllink=&amp;afftrack=' 
-                  image='https://i.shareasale.com/image/728_aliens3.gif'
-                />
-              </Grid.Column>
-            </Grid.Row>
+            <Affiliate 
+              title='Get the new Aliens comic book series!' 
+              alt='Get the new Aliens comic book series!' 
+              url='http://shareasale.com/r.cfm?b=188076&amp;u=1651477&amp;m=8908&amp;urllink=&amp;afftrack=' 
+              image='https://i.shareasale.com/image/728_aliens3.gif'
+            />
           </Grid.Column>
         </Grid>
 
@@ -87,15 +83,22 @@ export default class Dashboard extends Component {
   renderCampaigns = () => {
     if(Auth.currentUser){
       return (
-        <List>
+        <Grid stackable>
         { this.state.campaigns  ?
             Object.keys(this.state.campaigns).map(key => {
-              return <List.Item as={Link} to={'/campaign/'+key} key={key}>{this.state.campaigns[key].name}</List.Item>
+              let item = this.state.campaigns[key]
+              
+              return (
+                <Grid.Column as={Link} to={'/campaign/'+key} computer={4} textAlign='center'>
+                  <Image src={item.pictureURL || NoCampaignImage} fluid />
+                  <Header>{item.name}</Header>
+                </Grid.Column>
+              )
             })
           :
-            <List.Item>You don't have any campaigns yet.</List.Item>
+            <Item>You don't have any campaigns yet.</Item>
         }
-        </List>
+        </Grid>
       )
     }else{
       return (
@@ -104,26 +107,10 @@ export default class Dashboard extends Component {
     }
   }
 
-  renderMonsters = () => (
-    <List>
-    { this.props.monsters.slice(this.props.monsters.length-5, this.props.monsters.length).map(item => 
-      <List.Item as={Link} to={'/monster/'+item.key} key={item.key}>{item.name}</List.Item>
-    )}
-    </List>
-  )
-
-  renderSpells = () => (
-    <List>
-    { this.props.spells.slice(this.props.spells.length-5, this.props.spells.length).map(item =>
-      <List.Item as={Link} to={'/spell/'+item.key} key={item.key}>{item.name}</List.Item>
-    )}
-    </List>
-  )
-
   componentDidMount() {
     Auth.onAuthStateChanged((user) => {
       if (user){
-        Database.ref('userdata').child(user.uid).child('campaigns').limitToLast(5).on('value', snapshot => {
+        Database.ref('userdata').child(user.uid).child('campaigns').on('value', snapshot => {
           this.setState({ campaigns: snapshot.val() })
         })
       }

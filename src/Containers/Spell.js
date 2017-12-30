@@ -3,7 +3,6 @@ import { Grid } from 'semantic-ui-react'
 import { Database } from './../Lib/firebase'
 import { Default, isMatchingDevice } from './../Lib/Responsive'
 
-
 import SpellLayout from './../Components/Spells/SpellLayout'
 
 export default class MonsterModal extends Component {
